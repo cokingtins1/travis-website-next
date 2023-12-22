@@ -5,7 +5,7 @@ export default function ProductCard() {
 	return (
 		<>
 			<div className='w-fit'>
-				<Image src={beatKitImage}></Image>
+				<Image src={beatKitImage} alt='product image'></Image>
 				<div className="product-title">
 					Dope Drum Kit With Fire Beats
 				</div>
