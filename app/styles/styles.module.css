@@ -1,0 +1,118 @@
+/* .main {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    background-color: var(--primary-background-base);
+    color: var(--text-base);
+    width: 100%;
+    height: 10%;
+
+}
+
+
+.header:hover {
+    background-color: var(--primary-background-highlight);
+}
+
+.heroSection {
+    background-color: var(--primary-background-base);
+    position: relative;
+    width: 100%;
+    height: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.heroImg {
+    position: absolute;
+    bottom: 0;
+    z-index: 1;
+}
+
+.heroRing {
+    position: absolute;
+
+    width: 50vw;
+    height: 50dvw;
+    border-radius: 50%;
+    z-index: 0;
+    border: 25px red solid;
+    box-shadow: inset 0 0 30px red, 0 0 30px red;
+} */
+
+.main {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin: 0;
+        padding: 0;
+    }
+    
+    .header {
+        display: flex;
+        align-items: center;
+        background-color: var(--primary-background-base);
+        color: var(--text-base);
+        width: 100%;
+        height: 10%;
+    
+    }
+    
+    .header:hover {
+        background-color: var(--primary-background-highlight);
+    }
+    
+    .heroSection {
+        background-color: var(--primary-background-base);
+        position: relative;
+        width: 100%;
+        height: 90%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center; 
+    }
+    
+    .heroImgContainer{
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center; 
+    
+    }
+    
+    
+    .heroRing {
+        position: relative;
+         top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0; 
+        border-radius: 50%;
+        width: 600px;
+        height: 600px;
+        z-index: 1;
+        border: 25px red solid;
+        box-shadow: inset 0 0 30px red, 0 0 30px red;
+    }
+    
+    @media screen and (max-width: 768px) {
+        .heroRing {
+            height: 400px;
+            width: 400px;
+        }
+        
+    } 

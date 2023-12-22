@@ -1,0 +1,44 @@
+
+.checkBoxContainer{
+    display: flex;
+    align-items: center;
+}
+
+.checkBoxLabel{
+    cursor: pointer;
+    display: flex;
+}
+
+.checkBoxInput{
+    cursor: pointer;
+    opacity: 0;
+    position: absolute;
+}
+
+.checkBoxLabel:before{
+    content: "";
+    width: 1em;
+    height: 1em;
+    border-radius: 0.15em;
+    margin-right: 0.5em;
+    border: 0.05em solid black;
+}
+
+.checkBoxLabel:hover::before,
+.checkBoxInput:hover + .checkBoxLabel::before{
+    background-color: #35E07D
+}
+
+/* .checkBoxInput:focus +.checkBoxLabel::before{
+    box-shadow: 0 0 20px black;
+} */
+
+.checkBoxInput:checked + .checkBoxLabel::before{
+    content: '\002714';
+    background-color: #27AE60;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
