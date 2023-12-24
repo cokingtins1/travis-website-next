@@ -1,15 +1,31 @@
 import * as React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
+// import { useLocalStorage } from "../CustomHooks/useLocalStorage"
 import Checkbox from "@mui/joy/Checkbox"
 import Box from "@mui/material/Box"
 import Drawer from "@mui/material/Drawer"
 import Close from "@mui/icons-material/Close"
 
+function useLocalStorage(key, initialValue) {
+	const [value, setValue] = useState(() => {
+		if (typeof window !== "undefined") {
+			const jsonValue = localStorage.getItem(key)
+			if (jsonValue != null) return JSON.parse(jsonValue)
+		}
+		return initialValue
+	})
+
+	useEffect(() => {
+		localStorage.setItem(key, JSON.stringify(value))
+	}, [key, value])
+
+	return [value, setValue]
+}
+
 export default function FilterBar({ mediaReq }) {
-	const [openKeys, setOpenKeys] = useState(false)
+	const [openKeys, setOpenKeys] = useLocalStorage('openKeys', {});
 	const [drawerOpen, setDrawerOpen] = useState(false)
-	const [isChecked, setIsChecked] = useState(false)
-	const [checkedItems, setCheckedItems] = useState({})
+	const [checkBoxes, setCheckBoxes] = useLocalStorage("checkboxes", {})
 
 	const filterItems = {
 		"Product Type": [
@@ -22,12 +38,12 @@ export default function FilterBar({ mediaReq }) {
 		Genre: ["Breaks", "Dark", "FX", "Lo-fi", "Loops"],
 	}
 
-	const filterArray = []
-	function storeFilters(value) {
-		setCheckedItems(prevState => ({...prevState, [value]:!prevState[value]}))
-
-		filterArray.push(value)
-		console.log(filterArray)
+	const handleCheckbox = (checkboxKey) => {
+		setCheckBoxes((prevCheckboxes) => ({
+			...prevCheckboxes,
+			[checkboxKey]: !prevCheckboxes[checkboxKey],
+		}))
+		// console.log(checkBoxes)
 	}
 
 	const toggleAccordion = (key) => {
@@ -62,8 +78,8 @@ export default function FilterBar({ mediaReq }) {
 							>
 								{values.map((value, index) => (
 									<Checkbox
-										onChange={() => storeFilters(value)}
-										checked={checkedItems[value] || false}
+										checked={checkBoxes[value] || false}
+										onChange={() => handleCheckbox(value)}
 										className="overflow-hidden"
 										color="neutral"
 										key={index}
