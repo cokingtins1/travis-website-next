@@ -1,20 +1,31 @@
 .main{
     max-width: 1200px;
     margin-inline: auto;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
     display: grid;
-    grid-template-columns: minmax(414px,1fr) minmax(300px,1fr);
-    gap: 1rem;
-    padding: 1rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    }
+
+    .productImgCont, .productInfoCont  {
+        padding: 0.5rem;
     }
 
     .productImgCont{
-        /* max-width: 500px;
-        min-width: 300px; */
-        border: 1px solid black
-
+        border: var(--border)
     }
 
     .productInfoCont{
-        /* width: 800px; */
-        border: 1px solid black
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        border: var(--border)
     }
+
+    @media (max-width: 768px) {
+        .main{
+            grid-template-columns: 1fr;
+        }
+    }
+    

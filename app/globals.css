@@ -11,7 +11,12 @@
   --primary-background-highlight: #1a1a1a;
   --primary-background-press: #000;
 
-  --media-filter-bar: 1024px
+  --media-filter-bar: 1024px;
+
+  --txt-size-title: 2rem;
+
+  /* --border: 1px solid #A4ADB7; */
+  --border: 1px solid #DADDE1;
 }
 
 
@@ -37,10 +42,10 @@ dd {
 }
 
 /* Remove list styles on ul, ol elements with a list role, which suggests default styling will be removed */
-ul[role='list'],
+/* ul[role='list'],
 ol[role='list'] {
   list-style: none;
-}
+} */
 
 /* Set core root defaults */
 html:focus-within {
@@ -49,7 +54,6 @@ html:focus-within {
 
 /* Set core body defaults */
 body {
-  height: 100dvh;
   text-rendering: optimizeSpeed;
   line-height: 1.5;
   
