@@ -7,10 +7,38 @@
 
 }
 
+.searchBarWrapper{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: .5rem;
+}
+
+.searchBar{
+    border: 1px solid black;
+    border-radius: 4rem;
+    padding: .25rem 1rem;
+    min-width: 100px;
+    max-width: 350px;
+    height: 3rem;
+    flex: 1;
+}
+
+.searchBtn{
+    border: 1px solid black;
+    border-radius: 1rem;
+    width: 3rem;
+    height: 3rem;
+    padding: .5rem;
+
+    position: relative;
+    overflow: hidden;
+}
+
 .adminButtons{
     display: flex;
     flex-direction: row;
-    justify-content: end;
+    justify-content: flex-end;
     gap: 1rem;
 }
 
@@ -28,7 +56,8 @@
     overflow: hidden;
 }
 
-.iconBtn::before {
+.iconBtn::before,
+.searchBtn::before {
     content: "";
     position: absolute;
     top: 0;
@@ -39,13 +68,60 @@
     transition: left 0.2s ease-in-out;
 }
 
-.iconBtn:hover::before {
+.iconBtn:hover::before,
+.searchBtn:hover::before  {
     left: 0;
 }
 
 
+.navWrapper{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+
+.navLink{
+    cursor: pointer;
+    position: relative;
+    text-decoration: none;
+}
+
+.navLink::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 4px;
+    border-radius: 4px;
+    background-color: #18272F;
+    bottom: 0;
+    left: 0;
+    transform-origin: right;
+    transform: scaleX(0);
+    transition: transform .2s ease-in-out;
+  }
+  
+  .navLink:hover::before {
+    transform-origin: left;
+    transform: scaleX(1);
+  }
+  
+
+
+
+
 @media (max-width: 1024px) {
     .label{
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .headerWrapper{
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .searchBarWrapper{
         display: none;
     }
 }

@@ -2,6 +2,7 @@ import styles from "./styles.module.css"
 import beatKitImage from "@/public/beatKitImage.jpg"
 import Image from "next/image"
 
+
 export default function Page() {
 	return (
 		<main className={styles.main}>
