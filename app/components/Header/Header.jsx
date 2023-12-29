@@ -1,4 +1,4 @@
-import logoImg from "@/app/pulbic/Logo.png"
+import logoImg from "@/app/public/Logo.png"
 import Image from "next/image"
 import styles from "./styles.module.css"
 import AccountCircle from "@mui/icons-material/AccountCircle"
@@ -41,7 +41,7 @@ export default function Header() {
                     <Link href={'/'} className={styles.navLink} >Home</Link>
                     <Link href={'/store'} className={styles.navLink} >Store</Link>
                     <Link href={'/id'} className={styles.navLink} >Dope Drum Kit</Link>
-                    <Link href={'/store'} className={styles.navLink} >Store</Link>
+                    <Link href={'/id2'} className={styles.navLink} >New Beats</Link>
                     <Link href={'/store'} className={styles.navLink} >Store</Link>
                     <Link href={'/store'} className={styles.navLink} >Store</Link>
 

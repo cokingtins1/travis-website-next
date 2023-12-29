@@ -1,7 +1,9 @@
-import styles from "./styles.module.css"
+import styles from './styles.module.css'
 import beatKitImage from "@/public/beatKitImage.jpg"
 import Image from "next/image"
 
+
+const context = new AudioContext
 
 export default function Page() {
 	return (

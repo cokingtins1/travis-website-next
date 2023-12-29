@@ -1,0 +1,22 @@
+.wrapper{
+    border: 1px solid black;
+    border-radius: 1rem;
+    padding: 1rem;
+}
+
+.iconCont{
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin: 1rem 2rem;
+}
+
+.productInfo > * {
+    display: flex;
+    justify-content: space-between;
+    margin: 1rem 0;
+}
+
+.productAbout{
+    margin: 1rem 0;
+} 

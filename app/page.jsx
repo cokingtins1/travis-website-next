@@ -1,8 +1,8 @@
 import styles from "@/app/styles/styles.module.css"
 import Image from "next/image"
 import Link from "next/link"
-import heroImg from "@/app/pulbic/hero-picture.png"
-import logoImg from "@/app/pulbic/Logo.png"
+import heroImg from "@/app/public/hero-picture.png"
+import logoImg from "@/app/public/Logo.png"
 
 export default function HomePage() {
 	return (
