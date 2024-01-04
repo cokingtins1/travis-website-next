@@ -7,7 +7,7 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder"
 import IosShareIcon from "@mui/icons-material/IosShare"
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart"
 
-export default function ProductMeta() {
+export default function ProductMeta({product}) {
 	return (
 		<>
 			<div className={styles.wrapper}>
@@ -19,7 +19,7 @@ export default function ProductMeta() {
 					></Image>
 				</div>
 				<h1 className="text-2xl text-center">
-					Super Dope Beat - Vol. 1 - Drum Kit
+					{product.productName}
 				</h1>
 
 				<div className={styles.iconCont}>

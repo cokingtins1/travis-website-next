@@ -6,7 +6,6 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart"
 import SearchIcon from "@mui/icons-material/Search"
 import Link from "next/link"
 
-
 export default function Header() {
 	return (
 		<>
@@ -19,7 +18,11 @@ export default function Header() {
 						style={{ maxWidth: "168px" }}
 					/>
 					<div className={styles.searchBarWrapper}>
-						<input type="text" placeholder='Search' className={styles.searchBar} />
+						<input
+							type="text"
+							placeholder="Search"
+							className={styles.searchBar}
+						/>
 						<button className={styles.searchBtn}>
 							<SearchIcon className={styles.searchIcon} />
 						</button>
@@ -37,15 +40,14 @@ export default function Header() {
 						</button>
 					</div>
 				</div>
-                <nav className={styles.navWrapper}>
-                    <Link href={'/'} className={styles.navLink} >Home</Link>
-                    <Link href={'/store'} className={styles.navLink} >Store</Link>
-                    <Link href={'/id'} className={styles.navLink} >Dope Drum Kit</Link>
-                    <Link href={'/id2'} className={styles.navLink} >New Beats</Link>
-                    <Link href={'/store'} className={styles.navLink} >Store</Link>
-                    <Link href={'/store'} className={styles.navLink} >Store</Link>
-
-                </nav>
+				<nav className={styles.navWrapper}>
+					<Link href={"/"} className={styles.navLink}>
+						Home
+					</Link>
+					<Link href={"/store"} className={styles.navLink}>
+						Store
+					</Link>
+				</nav>
 			</header>
 		</>
 	)

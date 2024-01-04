@@ -1,5 +1,7 @@
+"use client"
+
 import * as React from "react"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 // import { useLocalStorage } from "../CustomHooks/useLocalStorage"
 import Checkbox from "@mui/joy/Checkbox"
 import Box from "@mui/material/Box"
@@ -22,8 +24,8 @@ function useLocalStorage(key, initialValue) {
 	return [value, setValue]
 }
 
-export default function FilterBar({ mediaReq }) {
-	const [openKeys, setOpenKeys] = useLocalStorage('openKeys', {});
+export default function FilterBar() {
+	const [openKeys, setOpenKeys] = useLocalStorage("openKeys", {})
 	const [drawerOpen, setDrawerOpen] = useState(false)
 	const [checkBoxes, setCheckBoxes] = useLocalStorage("checkboxes", {})
 
@@ -52,15 +54,13 @@ export default function FilterBar({ mediaReq }) {
 
 	const list = () => (
 		<>
-			<div className={`${!mediaReq ? "w-60 p-2 mx-2" : null}`}>
-				{!mediaReq ? (
-					<Box className="flex justify-end cursor-pointer">
-						<Close
-							onClick={() => setDrawerOpen(false)}
-							className=" mx-4"
-						/>
-					</Box>
-				) : null}
+			<Box className="w-60 p-2 mx-2">
+				<Box className="flex justify-end cursor-pointer">
+					<Close
+						onClick={() => setDrawerOpen(false)}
+						className=" mx-4"
+					/>
+				</Box>
 
 				{Object.entries(filterItems).map(([key, values]) => (
 					<div className="py-2" key={key}>
@@ -90,28 +90,22 @@ export default function FilterBar({ mediaReq }) {
 						)}
 					</div>
 				))}
-			</div>
+			</Box>
 		</>
 	)
 
 	return (
-		<div>
-			{mediaReq ? (
-				<div>{list()}</div>
-			) : (
-				<>
-					<button onClick={() => setDrawerOpen(!drawerOpen)}>
-						Filter & Sort
-					</button>
-					<Drawer
-						anchor="left"
-						open={drawerOpen}
-						onClose={() => setDrawerOpen(false)}
-					>
-						{list()}
-					</Drawer>
-				</>
-			)}
-		</div>
+		<>
+			<button onClick={() => setDrawerOpen(!drawerOpen)}>
+				Filter & Sort
+			</button>
+			<Drawer
+				anchor="left"
+				open={drawerOpen}
+				onClose={() => setDrawerOpen(false)}
+			>
+				{list()}
+			</Drawer>
+		</>
 	)
 }

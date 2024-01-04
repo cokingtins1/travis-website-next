@@ -2,6 +2,9 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import React from 'react'
 import Header from './components/Header/Header'
+import { Test } from './api/store/route'
+
+// Test()
 
 const inter = Inter({ subsets: ['latin'] })
 

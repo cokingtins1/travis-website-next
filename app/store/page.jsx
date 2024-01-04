@@ -1,31 +1,24 @@
-"use client"
-
+import getProducts from '@/libs/getProducts'
 import FilterBar from "../components/FilterComponents/FilterBar"
 import ProductCard from "../components/ProductCard/ProcudtCard"
 import styles from "./styles.module.css"
-import useMediaQuery from "@mui/material/useMediaQuery"
 
-export default function Store() {
-	// Defines the window range that the filter btn is shown
-	const mediaReq = useMediaQuery(`(min-width:1280px)`)
+
+export default async function Page() {
+	const { products } = await getProducts()
 
 	return (
 		<>
 			<main className={styles.main}>
-				<div className={styles.heroSection}></div>
-				<div className={styles.productSection}>
-				{!mediaReq ? <FilterBar mediaReq={mediaReq} /> : null}
-					<div className={styles.filterGrid}>
-						{mediaReq ? <FilterBar mediaReq={mediaReq} /> : null}
-					</div>
-					<div className={styles.productGrid}>
-						<ProductCard />
-						<ProductCard />
-						<ProductCard />
-						<ProductCard />
-						<ProductCard />
-					</div>
-				</div>
+				<section className={styles.heroSection}></section>
+				<section className={styles.productSection}>
+					<FilterBar />
+					<section>
+						<ul className={styles.productGrid}>
+							<ProductCard products = {products} />
+						</ul>
+					</section>
+				</section>
 			</main>
 		</>
 	)

@@ -1,16 +1,27 @@
 import Image from "next/image"
 import beatKitImage from "@/public/beatKitImage.jpg"
+import Link from "next/link"
 
-export default function ProductCard() {
+export default async function ProductCard({ products }) {
 	return (
 		<>
-			<div className="flex flex-1 flex-col">
-				<Image src={beatKitImage} alt="product image"></Image>
-				<div className="product-title">
-					Dope Drum Kit With Fire Beats
-				</div>
-				<div className="cost">$29.99</div>
-			</div>
+			{products.map((p, index) => (
+				<li key={index} className="flex flex-1 flex-col">
+					<Link href={`product/${p._id}`}>
+						<Image src={beatKitImage} alt="product image"></Image>
+					</Link>
+					<p className="product-title">{p.productName}</p>
+					<p className="cost">{p.cost}</p>
+				</li>
+			))}
+
+			{/* <div className="flex flex-1 flex-col">
+				<Link href={"/id"}>
+					<Image src={beatKitImage} alt="product image"></Image>
+				</Link>
+				<p className="product-title">Dope Beat Kit</p>
+				<p className="cost">$29.99</p>
+			</div> */}
 		</>
 	)
 }
