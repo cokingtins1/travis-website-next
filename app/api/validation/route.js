@@ -1,31 +1,26 @@
 import { NextResponse } from "next/server"
-
-// export async function POST(req, res) {
-
-// 	try {
-// 		const data = await json(req, {limit: '1mb'})
-// 	} catch (error) {
-
-// 	}
-// 	function validateLogin(email, password, passVerify) {
-// 		// console.log(email, password, passVerify)
-// 	}
-
-// 	// validateLogin(email, password, passVerify)
-
-// 	// res.status(200).json({ message: "login verified" })
-// 	// return NextResponse.json({message: 'you did it'})
-// 	console.log(data)
-// 	return new Response(" this is the message", { status: 200 })
-// }
+import bcrypt from "bcrypt"
+import { redirect } from "next/dist/server/api-utils"
 
 export async function POST(req, res) {
+	const users = []
+
 	if (req.method === "POST") {
 		const body = await req.json()
-		console.log(body)
+		try {
+			const hashedPassword = await bcrypt.hash(body.password, 10)
+			users.push({
+				id: Date.now().toString(),
+				email: body.email,
+				password: hashedPassword,
+			})
+			redirect("/login")
+		} catch (error) {}
 	} else {
-		console.log("not a post")
+		redirect("/signup")
 	}
 
-	return Response.json({message: 'ajsshgljakg'})
+	console.log(users)
+
+	return Response.json({ message: "ajsshgljakg" })
 }

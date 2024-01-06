@@ -4,6 +4,8 @@ import styles from "./styles.module.css"
 import TextField from "@mui/material/TextField"
 import Button from "@mui/material/Button"
 import { useState } from "react"
+import Link from "next/link"
+
 
 export default function LoginForm() {
 	const [email, setEmail] = useState("")
@@ -14,7 +16,7 @@ export default function LoginForm() {
 	const [passwordError, setPasswordError] = useState("")
 	const [passVerifyError, setPassVerifyError] = useState("")
 
-	function handleSubmit(e) {
+	async function handleSubmit(e) {
 		e.preventDefault()
 
 		const formData = {
@@ -41,28 +43,27 @@ export default function LoginForm() {
 			setPassVerifyError("")
 		}
 
-		// if (errors.length === 0) {
-		// 	// check DB if email exists
-		// 	console.log("there are no errors")
-		// }
+		if (!emailError && !passwordError && !passVerifyError) {
+			// check DB if email exists
+			console.log("there are no errors")
+			try {
+				const res = await fetch("/api/validation", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify(formData),
+				})
 
-		// try {
-		// 	const res = await fetch("/api/validation", {
-		// 		method: "POST",
-		// 		headers: {
-		// 			"Content-Type": "application/json",
-		// 		},
-		// 		body: JSON.stringify(formData),
-		// 	})
+				if (!res.ok) {
+					throw new Error("Error validating data")
+				}
 
-		// 	if (!res.ok) {
-		// 		throw new Error("Error validating data")
-		// 	}
-
-		// 	console.log(res)
-		// } catch (error) {
-		// 	console.log(error)
-		// }
+				console.log(res)
+			} catch (error) {
+				console.log(error)
+			}
+		}
 	}
 	return (
 		<>
@@ -101,6 +102,12 @@ export default function LoginForm() {
 					Login
 				</Button>
 			</form>
+
+			<Link href={'/signup'}>
+				<Button className="my-4" variant="outlined">
+					Sign Up
+				</Button>
+			</Link>
 		</>
 	)
 }
