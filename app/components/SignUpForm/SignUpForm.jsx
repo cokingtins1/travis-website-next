@@ -5,8 +5,12 @@ import TextField from "@mui/material/TextField"
 import Button from "@mui/material/Button"
 import { useFormik } from "formik"
 import * as Yup from "yup"
+import { useAuth } from '@/libs/contexts/AuthContext'
 
 export default function SignUpForm() {
+
+	const {signup} = useAuth()
+
 	async function createUser(formData) {
 		console.log("there are no errors")
 		try {
@@ -44,7 +48,10 @@ export default function SignUpForm() {
 				.required("please validate your password"),
 		}),
 		onSubmit: (values) => {
-			alert(JSON.stringify(values, null, 2))
+			console.log(values)
+			signup(values.email, values.password)
+			// createUser(values)
+			// alert(JSON.stringify(values, null, 2))
 		},
 	})
 	return (
