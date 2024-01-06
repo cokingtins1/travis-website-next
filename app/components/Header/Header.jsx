@@ -28,12 +28,14 @@ export default function Header() {
 						</button>
 					</div>
 					<div className={styles.adminButtons}>
-						<button className={styles.iconBtn}>
-							<AccountCircle />
-							<label className={styles.label} htmlFor="">
-								Login
-							</label>
-						</button>
+						<Link href={"/login"}>
+							<button className={styles.iconBtn}>
+								<AccountCircle />
+								<label className={styles.label} htmlFor="">
+									Login
+								</label>
+							</button>
+						</Link>
 						<button className={styles.iconBtn}>
 							<ShoppingCartIcon />
 							<label className={styles.label}>Cart</label>

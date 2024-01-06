@@ -14,14 +14,6 @@ export default async function ProductCard({ products }) {
 					<p className="cost">{p.cost}</p>
 				</li>
 			))}
-
-			{/* <div className="flex flex-1 flex-col">
-				<Link href={"/id"}>
-					<Image src={beatKitImage} alt="product image"></Image>
-				</Link>
-				<p className="product-title">Dope Beat Kit</p>
-				<p className="cost">$29.99</p>
-			</div> */}
 		</>
 	)
 }
