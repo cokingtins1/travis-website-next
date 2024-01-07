@@ -2,35 +2,38 @@
 
 import styles from "./styles.module.css"
 import TextField from "@mui/material/TextField"
+import Link from "next/link"
 import Button from "@mui/material/Button"
 import { useFormik } from "formik"
 import * as Yup from "yup"
-import { useAuth } from '@/libs/contexts/AuthContext'
+import { useAuth } from "@/libs/contexts/UserContext"
+import { useRouter } from 'next/navigation'
+
 
 export default function SignUpForm() {
+	const { signup } = useAuth()
+	const router = useRouter()
 
-	const {signup} = useAuth()
+	// async function createUser(formData) {
+	// 	console.log("there are no errors")
+	// 	try {
+	// 		const res = await fetch("/api/validation", {
+	// 			method: "POST",
+	// 			headers: {
+	// 				"Content-Type": "application/json",
+	// 			},
+	// 			body: JSON.stringify(formData),
+	// 		})
 
-	async function createUser(formData) {
-		console.log("there are no errors")
-		try {
-			const res = await fetch("/api/validation", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(formData),
-			})
+	// 		if (!res.ok) {
+	// 			throw new Error("Error validating data")
+	// 		}
 
-			if (!res.ok) {
-				throw new Error("Error validating data")
-			}
-
-			console.log(res)
-		} catch (error) {
-			console.log(error)
-		}
-	}
+	// 		console.log(res)
+	// 	} catch (error) {
+	// 		console.log(error)
+	// 	}
+	// }
 
 	const formik = useFormik({
 		initialValues: {
@@ -47,15 +50,21 @@ export default function SignUpForm() {
 				.oneOf([Yup.ref("password"), null], "Passwords must match")
 				.required("please validate your password"),
 		}),
-		onSubmit: (values) => {
-			console.log(values)
-			signup(values.email, values.password)
+		onSubmit: async (values) => {
+			try {
+				await signup(values.email, values.password)
+				router.push('/dashboard')
+			} catch (error) {
+				console.log(error)
+			}
+
 			// createUser(values)
 			// alert(JSON.stringify(values, null, 2))
 		},
 	})
 	return (
 		<>
+			{/* {currentUser.email} */}
 			<form className={styles.loginForm} onSubmit={formik.handleSubmit}>
 				<TextField
 					fullWidth
@@ -105,6 +114,14 @@ export default function SignUpForm() {
 					Sign Up
 				</Button>
 			</form>
+
+			<div className="flex gap-4 align-middle">
+				<p>Already have an account</p>
+				<Link href={"/login"}>
+					{" "}
+					<u className="text-blue-700">Login</u>
+				</Link>
+			</div>
 		</>
 	)
 }

@@ -1,6 +1,6 @@
 import LoginForm from "../components/LoginForm/LoginForm"
 import styles from "./styles.module.css"
-import Divider from "@mui/material/Divider"
+
 
 export default function Page() {
 	return (

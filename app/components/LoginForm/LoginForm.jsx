@@ -3,111 +3,82 @@
 import styles from "./styles.module.css"
 import TextField from "@mui/material/TextField"
 import Button from "@mui/material/Button"
-import { useState } from "react"
 import Link from "next/link"
-
+import { useFormik } from "formik"
+import * as Yup from "yup"
+import { useAuth } from "@/libs/contexts/UserContext"
+import { useRouter } from 'next/navigation'
 
 export default function LoginForm() {
-	const [email, setEmail] = useState("")
-	const [password, setPassword] = useState("")
-	const [passVerify, setPassVerify] = useState("")
+	const { login } = useAuth()
+	const router = useRouter()
 
-	const [emailError, setEmailError] = useState("")
-	const [passwordError, setPasswordError] = useState("")
-	const [passVerifyError, setPassVerifyError] = useState("")
-
-	async function handleSubmit(e) {
-		e.preventDefault()
-
-		const formData = {
-			email: email,
-			password: password,
-			passVerify: passVerify,
-		}
-
-		if (!email || !/\S+@\S+\.\S+/.test(email)) {
-			setEmailError("Please enter a vailid email")
-		} else {
-			setEmailError("")
-		}
-
-		if (!password || password.length < 6) {
-			setPasswordError("Please enter a password more than 6 characters")
-		} else {
-			setPasswordError("")
-		}
-
-		if (!passVerify || password !== passVerify) {
-			setPassVerifyError("Passwords do not match")
-		} else {
-			setPassVerifyError("")
-		}
-
-		if (!emailError && !passwordError && !passVerifyError) {
-			// check DB if email exists
-			console.log("there are no errors")
+	const formik = useFormik({
+		initialValues: {
+			email: "",
+			password: "",
+			passVerify: "",
+		},
+		validationSchema: Yup.object({
+			email: Yup.string()
+				.email("Invalid Email")
+				.required("A valid email is required"),
+			password: Yup.string().required("A password is required"),
+		}),
+		onSubmit: async (values) => {
 			try {
-				const res = await fetch("/api/validation", {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify(formData),
-				})
-
-				if (!res.ok) {
-					throw new Error("Error validating data")
-				}
-
-				console.log(res)
+				await login(values.email, values.password)
+				router.push('/dashboard')
 			} catch (error) {
-				console.log(error)
+				console.log('Failed to Login')
 			}
-		}
-	}
+
+			// createUser(values)
+			// alert(JSON.stringify(values, null, 2))
+		},
+	})
 	return (
 		<>
-			<form className={styles.loginForm} onSubmit={handleSubmit}>
+			{/* {currentUser.email} */}
+			<form className={styles.loginForm} onSubmit={formik.handleSubmit}>
 				<TextField
 					fullWidth
+					id="email"
+					name="email"
 					label="email"
-					value={email}
-					onChange={(e) => setEmail(e.target.value)}
-					error={Boolean(emailError)}
-					helperText={emailError}
+					value={formik.values.email}
+					onChange={formik.handleChange}
+					onBlur={formik.handleBlur}
+					error={Boolean(formik.touched.email && formik.errors.email)}
+					helperText={formik.touched.email && formik.errors.email}
 				/>
 				<TextField
 					fullWidth
+					id="password"
+					name="password"
 					label="password"
-					name="passsword"
 					type="password"
-					minLength={2}
-					value={password}
-					onChange={(e) => setPassword(e.target.value)}
-					error={Boolean(passwordError)}
-					helperText={passwordError}
+					value={formik.values.password}
+					onChange={formik.handleChange}
+					onBlur={formik.handleBlur}
+					error={Boolean(
+						formik.touched.password && formik.errors.password
+					)}
+					helperText={
+						formik.touched.password && formik.errors.password
+					}
 				/>
-				<TextField
-					fullWidth
-					label="verify password"
-					name="passVerify"
-					type="password"
-					value={passVerify}
-					onChange={(e) => setPassVerify(e.target.value)}
-					error={Boolean(passVerifyError)}
-					helperText={passVerifyError}
-				/>
-
 				<Button type="submit" variant="outlined">
-					Login
+					Log In
 				</Button>
 			</form>
-
-			<Link href={'/signup'}>
-				<Button className="my-4" variant="outlined">
-					Sign Up
-				</Button>
-			</Link>
+			<div className="flex gap-4 align-middle">
+				<p>Need an account?</p>
+				<Link href={"/signup"}>
+					{" "}
+					<u className="text-blue-700">Sign Up</u>
+				</Link>
+			</div>
 		</>
 	)
 }
