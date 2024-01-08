@@ -4,39 +4,13 @@ import styles from "./styles.module.css"
 import TextField from "@mui/material/TextField"
 import Button from "@mui/material/Button"
 import Link from "next/link"
-import { useFormik } from "formik"
-import * as Yup from "yup"
 import { useAuth } from "@/libs/contexts/UserContext"
-import { useRouter } from 'next/navigation'
+import createFormik from "@/libs/FormSubmit"
 
 export default function LoginForm() {
 	const { login } = useAuth()
-	const router = useRouter()
 
-	const formik = useFormik({
-		initialValues: {
-			email: "",
-			password: "",
-			passVerify: "",
-		},
-		validationSchema: Yup.object({
-			email: Yup.string()
-				.email("Invalid Email")
-				.required("A valid email is required"),
-			password: Yup.string().required("A password is required"),
-		}),
-		onSubmit: async (values) => {
-			try {
-				await login(values.email, values.password)
-				router.push('/dashboard')
-			} catch (error) {
-				console.log('Failed to Login')
-			}
-
-			// createUser(values)
-			// alert(JSON.stringify(values, null, 2))
-		},
-	})
+	const formik = createFormik("login", login)
 	return (
 		<>
 			{/* {currentUser.email} */}

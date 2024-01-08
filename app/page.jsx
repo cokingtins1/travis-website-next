@@ -4,7 +4,9 @@ import Link from "next/link"
 import heroImg from "@/app/public/hero-picture.png"
 import logoImg from "@/app/public/Logo.png"
 
+
 export default function HomePage() {
+
 	return (
 		<main className={styles.main}>
 			<div className={styles.header}>
