@@ -1,12 +1,31 @@
-"use client"
+import beatKitImage from "@/public/beatKitImage.jpg"
+import Link from "next/link"
+import Image from "next/image"
+import getPosts from "@/libs/getPosts"
 
-import createFormik from "@/libs/FormSubmit"
-import { useAuth } from "@/libs/contexts/UserContext"
+export default async function Page() {
+	const postData = await getPosts()
 
-export default function Page() {
-	const { signup } = useAuth()
-
-	const formik = createFormik("signup", signup)
-	console.log("signup form:", formik)
-	return <div>sandbox</div>
+	return (
+		<>
+			<div className="mx-80">
+				<ul className="grid grid-cols-4 gap-4 minmax-12rem">
+					{postData.map((post) => {
+						return (
+							<li key={post.id} className="flex flex-1 flex-col">
+								<Link href={`/store/${post.id}`}>
+									<Image
+										src={beatKitImage}
+										alt="product image"
+									></Image>
+								</Link>
+								<p className="product-title">{post.title}</p>
+								<p className="cost">{post.id}</p>
+							</li>
+						)
+					})}
+				</ul>
+			</div>
+		</>
+	)
 }

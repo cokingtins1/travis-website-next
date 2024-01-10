@@ -5,7 +5,7 @@ import TextField from "@mui/material/TextField"
 import Link from "next/link"
 import Button from "@mui/material/Button"
 import { useAuth } from "@/libs/contexts/UserContext"
-import createFormik from "@/libs/FormSubmit"
+import createFormik from "@/libs/createForm"
 
 export default function SignUpForm() {
 	const { signup } = useAuth()
@@ -14,7 +14,6 @@ export default function SignUpForm() {
 
 	return (
 		<>
-			{/* {currentUser.email} */}
 			<form className={styles.loginForm} onSubmit={formik.handleSubmit}>
 				<TextField
 					fullWidth
