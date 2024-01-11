@@ -3,6 +3,7 @@
 import getPosts from "@/libs/getPosts"
 import { useEffect, useMemo, useState } from "react"
 import SearchBar from "./SearchBar"
+import SearchResultList from './SearchResultList'
 
 export default function SearchResultBox() {
 	const [posts, setPosts] = useState([])
@@ -31,17 +32,17 @@ export default function SearchResultBox() {
 			<div>
 				<h1>Search Results</h1>
 				<SearchBar posts={posts} query={query} setQuery={setQuery} />
-				{query.length === 0 ? (
-					<span>no items</span>
-				) : (
-					filteredItems.map((post) => {
-						return (
-							<div key={post.id}>
-								<p>{post.title}</p>
-							</div>
-						)
-					})
-				)}
+				{query.length > 0 &&
+				<SearchResultList filteredItems = {filteredItems} query={query} />
+					// filteredItems.map((post) => {
+					// 	return (
+					// 		<div key={post.id}>
+					// 			<p>{post.title}</p>
+					// 		</div>
+					// 	)
+					// })
+					
+					}
 			</div>
 		</>
 	)
