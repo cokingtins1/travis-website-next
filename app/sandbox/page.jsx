@@ -2,13 +2,14 @@ import beatKitImage from "@/public/beatKitImage.jpg"
 import Link from "next/link"
 import Image from "next/image"
 import getPosts from "@/libs/getPosts"
+import SearchResultBox from '../components/SearchBar/SearchResults'
 
 export default async function Page() {
 	const postData = await getPosts()
-
 	return (
 		<>
-			<div className="mx-80">
+			<div className="flex mx-80">
+				<SearchResultBox />
 				<ul className="grid grid-cols-4 gap-4 minmax-12rem">
 					{postData.map((post) => {
 						return (

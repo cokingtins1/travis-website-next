@@ -1,10 +1,10 @@
 import styles from "./styles.module.css"
 import AccountCircle from "@mui/icons-material/AccountCircle"
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart"
-import SearchIcon from "@mui/icons-material/Search"
 import Link from "next/link"
 import Image from 'next/image'
 import logoImg from '@/public/Logo.png'
+import SearchBar from '../SearchBar/SearchBar'
 
 export default function Header() {
 	return (
@@ -17,7 +17,8 @@ export default function Header() {
 						className="flex justify-start"
 						width={50}
 					/>
-					<div className={styles.searchBarWrapper}>
+					{/* <SearchBar/> */}
+					{/* <div className={styles.searchBarWrapper}>
 						<input
 							type="text"
 							placeholder="Search"
@@ -26,7 +27,7 @@ export default function Header() {
 						<button className={styles.searchBtn}>
 							<SearchIcon className={styles.searchIcon} />
 						</button>
-					</div>
+					</div> */}
 					<div className={styles.adminButtons}>
 						<Link href={"/login"}>
 							<button className={styles.iconBtn}>
