@@ -1,19 +1,23 @@
-import DummyProductCard from "../components/DummyComponents/DummyProductCard"
-import Button from '@mui/material/Button';
+// My files
+
 import styles from "./styles.module.css"
+import DummyProductCard from "../components/DummyComponents/DummyProductCard"
+import SideBar from "../components/Dashboard Components/SideBar"
+
+// MUI
+import Button from "@mui/material/Button"
 
 export default function Page() {
 	return (
 		<main className={styles.main}>
-			<section className={styles.sideBar}></section>
+			<section className={styles.sideBar}>
+				<SideBar />
+			</section>
 			<section className={styles.mainContent}>
 				<section className={styles.addContent}>
-                    <div>
-                        <p>Tracks</p>
-                        <Button variant='contained'>+ Add Content</Button>
-                    </div>
-                    
-                </section>
+					<p>Tracks</p>
+					<Button variant="contained">+ Add Content</Button>
+				</section>
 
 				<section>
 					<ul className={styles.productGrid}>
