@@ -7,20 +7,19 @@ import Alert from "@mui/material/Alert"
 import CardContent from "@mui/material/CardContent"
 import { useState } from "react"
 import { useAuth } from "@/libs/contexts/UserContext"
-import { useRouter } from "next/navigation"
+import { redirect } from "next/navigation"
 import PrivateRoute from "@/libs/PrivateRoute"
 
-export function Profile() {
+export default function Profile() {
 	const [error, setError] = useState("")
 	const { currentUser, logout } = useAuth()
-	const router = useRouter()
 
 	async function handleLogout() {
 		setError("")
 
 		try {
 			await logout()
-			router.push("/login")
+			redirect('/login')
 		} catch (error) {
 			setError("Failed to log out")
 		}
@@ -51,6 +50,8 @@ export function Profile() {
 	)
 }
 
-export default function PrivateProfile () {
-    return <PrivateRoute component={Profile} />
+
+// Make route private. Add back export default
+export function Page() {
+	return <PrivateRoute component={Profile}/>
 }

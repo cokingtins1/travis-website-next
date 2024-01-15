@@ -5,8 +5,8 @@ import {
 	getAuth,
 	onAuthStateChanged,
 	createUserWithEmailAndPassword,
-    signInWithEmailAndPassword,
-    signOut,
+	signInWithEmailAndPassword,
+	signOut,
 	sendPasswordResetEmail,
 } from "firebase/auth"
 
@@ -14,6 +14,7 @@ import { createFirebaseApp } from "../firebase/serverApp"
 
 const AuthContext = createContext()
 
+// return the current context value of AuthContext
 export function useAuth() {
 	return useContext(AuthContext)
 }
@@ -26,20 +27,20 @@ export default function AuthProvider({ children }) {
 	const auth = getAuth(app)
 
 	function signup(email, password) {
-        // if I don't want to user firebase, just replace below. See 33:05
+		// if I don't want to use firebase, just replace below. See 33:05
 		return createUserWithEmailAndPassword(auth, email, password)
 	}
 
-    function login(email, password){
-        // if I don't want to user firebase, just replace below. See 33:05
-        return signInWithEmailAndPassword(auth, email, password)
-    }
+	function login(email, password) {
+		// if I don't want to use firebase, just replace below. See 33:05
+		return signInWithEmailAndPassword(auth, email, password)
+	}
 
-    function logout(){
-        return signOut(auth)
-    }
+	function logout() {
+		return signOut(auth)
+	}
 
-	function resetPassword(email){
+	function resetPassword(email) {
 		return sendPasswordResetEmail(auth, email)
 	}
 
@@ -53,12 +54,13 @@ export default function AuthProvider({ children }) {
 
 	const value = {
 		currentUser,
-        login,
+		login,
 		signup,
-        logout,
+		logout,
 		resetPassword,
 	}
 
+	// Anything wrapped in the AuthContext component will have access to the 'value' object
 	return (
 		<AuthContext.Provider value={value}>
 			{!loadingUser && children}

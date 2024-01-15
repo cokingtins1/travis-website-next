@@ -1,18 +1,12 @@
-"use client"
-
-import { useRouter } from "next/navigation"
-import { useAuth } from "./contexts/UserContext"
-import { useEffect } from "react"
+import { useAuth } from "@/libs/contexts/UserContext"
+import { redirect } from "next/navigation"
 
 export default function PrivateRoute({ component: Component, ...rest }) {
 	const { currentUser } = useAuth()
-	const router = useRouter()
 
-	useEffect(() => {
-		if (!currentUser) {
-			router.push("/")
-		}
-	}, [currentUser, router])
+	if (!currentUser) {
+		redirect("/login")
+	}
 
-	return currentUser ? <Component {...rest} /> : null
+	return <Component {...rest} />
 }

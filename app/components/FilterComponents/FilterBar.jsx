@@ -101,6 +101,7 @@ export default function FilterBar() {
 			</button>
 			<Drawer
 				anchor="left"
+				variant='permanent'
 				open={drawerOpen}
 				onClose={() => setDrawerOpen(false)}
 			>

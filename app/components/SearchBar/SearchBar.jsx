@@ -1,11 +1,6 @@
 import SearchIcon from "@mui/icons-material/Search"
 
-export default function SearchBar({
-	query,
-	setQuery,
-}) {
-
-
+export default function SearchBar({ query, setQuery }) {
 	return (
 		<form
 			className=" flex gap-2"
@@ -18,6 +13,7 @@ export default function SearchBar({
 				type="text"
 				placeholder="Search"
 				id="search"
+                autoComplete='off'
 				value={query}
 				onChange={(e) => {
 					setQuery(e.target.value)
