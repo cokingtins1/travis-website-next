@@ -12,14 +12,14 @@ import HomeIcon from "@mui/icons-material/Home"
 import InboxIcon from "@mui/icons-material/MoveToInbox"
 import ExpandLess from "@mui/icons-material/ExpandLess"
 import ExpandMore from "@mui/icons-material/ExpandMore"
-import LibraryMusicIcon from '@mui/icons-material/LibraryMusic';
-import AlbumIcon from '@mui/icons-material/Album';
-import YouTubeIcon from '@mui/icons-material/YouTube';
+import LibraryMusicIcon from "@mui/icons-material/LibraryMusic"
+import AlbumIcon from "@mui/icons-material/Album"
+import YouTubeIcon from "@mui/icons-material/YouTube"
 import AddIcon from "@mui/icons-material/Add"
 
-// React Hooks
+// React/Next
 import { useState } from "react"
-
+import Link from "next/link"
 
 export default function SideBar() {
 	const [open, setOpen] = useState()
@@ -29,21 +29,23 @@ export default function SideBar() {
 	}
 
 	const myContent = [
-		{ id: 1, text: "Add Content", icon: <AddIcon /> },
-		{ id: 2, text: "Tracks", icon: <LibraryMusicIcon /> },
-		{ id: 3, text: "Albums", icon: <AlbumIcon /> },
-		{ id: 4, text: "Videos", icon: <YouTubeIcon /> },
+		{ id: 1, text: "Add Content", icon: <AddIcon />, href: "/add-content" },
+		{ id: 2, text: "Tracks", icon: <LibraryMusicIcon />, href: "/tracks" },
+		{ id: 3, text: "Albums", icon: <AlbumIcon />, href: "/albums" },
+		{ id: 4, text: "Videos", icon: <YouTubeIcon />, href: "/videos" },
 	]
 
 	return (
 		<>
 			<List>
-				<ListItemButton>
-					<ListItemIcon>
-						<HomeIcon />
-					</ListItemIcon>
-					<ListItemText primary="Dashboard" />
-				</ListItemButton>
+				<Link href={"/dashboard"}>
+					<ListItemButton>
+						<ListItemIcon>
+							<HomeIcon />
+						</ListItemIcon>
+						<ListItemText primary="Dashboard" />
+					</ListItemButton>
+				</Link>
 				<ListItemButton
 					onClick={() => {
 						setOpen(!open)
@@ -59,10 +61,15 @@ export default function SideBar() {
 				<Collapse in={open} timeout="auto" unmountOnExit>
 					<List component="div" disablePadding>
 						{myContent.map((item) => (
-							<ListItemButton key={item.id} sx={{ pl: 4 }}>
-								<ListItemIcon>{item.icon}</ListItemIcon>
-								<ListItemText primary={item.text} />
-							</ListItemButton>
+							<Link
+								key={item.id}
+								href={`/dashboard/${item.href}`}
+							>
+								<ListItemButton sx={{ pl: 4 }}>
+									<ListItemIcon>{item.icon}</ListItemIcon>
+									<ListItemText primary={item.text} />
+								</ListItemButton>
+							</Link>
 						))}
 					</List>
 				</Collapse>

@@ -43,8 +43,8 @@ export default function Header() {
 					<Link href={"/sandbox"} className={styles.navLink}>
 						Sandbox
 					</Link>
-					<Link href={"/studio"} className={styles.navLink}>
-						Studio
+					<Link href={"/dashboard"} className={styles.navLink}>
+						Dashboard
 					</Link>
 				</nav>
 			</header>

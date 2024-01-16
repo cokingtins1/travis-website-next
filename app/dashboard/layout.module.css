@@ -1,0 +1,27 @@
+.main{
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    display: grid;
+    grid-template-columns: 25% 75%;
+    gap: 1rem;
+    /* padding: 1rem; */
+
+    }
+
+.sideBar{
+    border: 1px solid black;
+    height: fit-content;
+    padding: .5rem;
+}
+
+.content{
+    border: 1px solid black;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow-y: auto;
+    gap: 1rem;
+    /* padding: .5rem; */
+}
