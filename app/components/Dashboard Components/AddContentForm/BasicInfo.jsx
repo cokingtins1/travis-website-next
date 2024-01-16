@@ -1,5 +1,8 @@
 import TextField from "@mui/material/TextField"
 
+import beatKitImage from "@/public/beatKitImage.jpg"
+import Image from "next/image"
+
 export default function BasicInfo({
 	title,
 	type,
@@ -9,39 +12,48 @@ export default function BasicInfo({
 }) {
 	return (
 		<>
-			<TextField
-				label="Title"
-				type="text"
-				value={title}
-				onChange={(e) => {
-					updateFields({ title: e.target.value })
-				}}
-			/>
+			<form>
+				<div className="flex gap-4">
+					<div>
+						<Image
+							width={250}
+							src={beatKitImage}
+							alt="product image"
+						></Image>
+					</div>
+					<div>
+						<TextField
+							fullWidth
+							size="small"
+							id="title"
+							label="Title"
+							type="text"
+							InputLabelProps={{
+								shrink: true,
+							}}
+							value={title}
+							onChange={(e) => {
+								updateFields({ type: e.target.value })
+							}}
+						/>
 
-			<label>Type: </label>
-			<input
-				type="text"
-				value={type}
-				onChange={(e) => {
-					updateFields({ type: e.target.value })
-				}}
-			/>
-			<label>Release Date: </label>
-			<input
-				type="text"
-				value={releaseDate}
-				onChange={(e) => {
-					updateFields({ releaseDate: e.target.value })
-				}}
-			/>
-			<label>Description: </label>
-			<input
-				type="text"
-				value={description}
-				onChange={(e) => {
-					updateFields({ description: e.target.value })
-				}}
-			/>
+						<TextField
+							fullWidth
+							size="small"
+							id="title"
+							label="Title"
+							type="text"
+							InputLabelProps={{
+								shrink: true,
+							}}
+							value={title}
+							onChange={(e) => {
+								updateFields({ type: e.target.value })
+							}}
+						/>
+					</div>
+				</div>
+			</form>
 		</>
 	)
 }

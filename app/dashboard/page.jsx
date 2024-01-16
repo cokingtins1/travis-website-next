@@ -1,4 +1,5 @@
 import Button from "@mui/material/Button"
+import Link from "next/link"
 
 import styles from "./page.module.css"
 import DummyProductCard from "@/app/components/DummyComponents/DummyProductCard"
@@ -8,7 +9,9 @@ export default function Page() {
 		<>
 			<section className={styles.addContent}>
 				<p>Tracks</p>
-				<Button variant="contained">+ Add Content</Button>
+				<Link href={"/dashboard/add-content"}>
+					<Button variant="contained">+ Add Content</Button>
+				</Link>
 			</section>
 
 			<section>

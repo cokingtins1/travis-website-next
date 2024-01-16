@@ -1,4 +1,9 @@
 .headerWrapper{
+    padding: 1rem;
+    height: var(--headerHeight);
+}
+
+.headerTop{
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     align-items: center;
@@ -119,7 +124,7 @@
 }
 
 @media (max-width: 768px) {
-    .headerWrapper{
+    .headerTop{
         grid-template-columns: 1fr 1fr;
     }
 
