@@ -1,9 +1,9 @@
-
 import { Inter } from "next/font/google"
 import "./globals.css"
 import React from "react"
 import Header from "./components/Header/Header"
 import AuthProvider from "@/libs/contexts/UserContext"
+
 // import PrivateRoute from "@/libs/PrivateRoute"
 // import { Profile } from "./components/Dashboard/dashboard"
 // import Store from "./store/page"

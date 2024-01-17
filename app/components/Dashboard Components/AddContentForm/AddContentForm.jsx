@@ -1,25 +1,23 @@
 "use client"
-
+// AddContentForm.jsx
 import { useState } from "react"
 
 import useMultipleStepForm from "./useMultipleStepForm"
 import BasicInfo from "./BasicInfo"
 import Files from "./Files"
+import dayjs from "dayjs"
+
 
 import styles from "./AddContentForm.module.css"
 
 import Button from "@mui/material/Button"
 
 const INITIAL_DATA = {
-	FILES: {
-		files: null,
-	},
-	BASIC_INFO: {
-		title: "",
-		type: "",
-		releaseDate: "",
-		description: "",
-	},
+	files: null,
+	title: "",
+	type: "",
+	releaseDate: dayjs(),
+	description: "",
 }
 
 export default function AddContentForm() {
@@ -50,7 +48,7 @@ export default function AddContentForm() {
 		alert("Form submitted")
 	}
 
-
+	// console.log(data)
 
 	return (
 		<>
@@ -71,8 +69,7 @@ export default function AddContentForm() {
 						</Button>
 					</div>
 				</form>
-			</div> 
-
+			</div>
 		</>
 	)
 }

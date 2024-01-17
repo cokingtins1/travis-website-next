@@ -1,3 +1,5 @@
+"use client"
+
 import beatKitImage from "@/public/beatKitImage.jpg"
 import Link from "next/link"
 import Image from "next/image"
@@ -5,30 +7,35 @@ import getPosts from "@/libs/getPosts"
 import SearchComponent from "../components/SearchBar/SearchComponent"
 import AddContentForm from "../components/Dashboard Components/AddContentForm/AddContentForm"
 
-export default async function Page() {
-	const postData = await getPosts()
+import dayjs from "dayjs"
+import { DatePicker } from "@mui/x-date-pickers/DatePicker"
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
+import { useState } from "react"
+
+export default function Page() {
+	// const [value, setValue] = useState(dayjs().format("DD/MM/YYYY"))
+	const [value, setValue] = useState(dayjs())
+	// console.log("Value:", value, "Type:", typeof(value), typeof(dayjs().format("DD/MM/YYYY")))
+	console.log(value)
 	return (
 		<>
 			<div className=" flex justify-center">
-				{/* <SearchComponent /> */}
+				<LocalizationProvider dateAdapter={AdapterDayjs}>
+					{/* <DatePicker
+						// defaultValue={dayjs('2022-04-17')}
+						value={dayjs(value).format("DD/MM/YYYY")}
+						onChange={(newValue) =>
+							setValue(dayjs(newValue).format("DD/MM/YYYY"))
+						}
+					/> */}
 
-				<AddContentForm />
-				{/* <ul className="grid grid-cols-4 gap-4 minmax-12rem">
-					{postData.map((post) => {
-						return (
-							<li key={post.id} className="flex flex-1 flex-col">
-								<Link href={`/store/${post.id}`}>
-									<Image
-										src={beatKitImage}
-										alt="product image"
-									></Image>
-								</Link>
-								<p className="product-title">{post.title}</p>
-								<p className="cost">{post.id}</p>
-							</li>
-						)
-					})}
-				</ul> */}
+					<DatePicker
+						value={value}
+						onChange={(newValue) => setValue(newValue)}
+						
+					/>
+				</LocalizationProvider>
 			</div>
 		</>
 	)
