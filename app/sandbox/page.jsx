@@ -12,31 +12,39 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
 import { useState } from "react"
+import InputTag from "../components/Dashboard Components/AddContentForm/Upload Components/InputTag"
+import SearchTag from "../components/Dashboard Components/AddContentForm/Upload Components/SearchTag"
 
 export default function Page() {
 	// const [value, setValue] = useState(dayjs().format("DD/MM/YYYY"))
-	const [value, setValue] = useState(dayjs())
+	// const [value, setValue] = useState(dayjs())
 	// console.log("Value:", value, "Type:", typeof(value), typeof(dayjs().format("DD/MM/YYYY")))
-	console.log(value)
+	// console.log(value)
 	return (
 		<>
 			<div className=" flex justify-center">
-				<LocalizationProvider dateAdapter={AdapterDayjs}>
-					{/* <DatePicker
-						// defaultValue={dayjs('2022-04-17')}
-						value={dayjs(value).format("DD/MM/YYYY")}
-						onChange={(newValue) =>
-							setValue(dayjs(newValue).format("DD/MM/YYYY"))
-						}
-					/> */}
-
-					<DatePicker
-						value={value}
-						onChange={(newValue) => setValue(newValue)}
-						
-					/>
-				</LocalizationProvider>
+				{/* <InputTag /> */}
+				<SearchTag />
 			</div>
 		</>
 	)
 }
+
+{
+	/* <LocalizationProvider dateAdapter={AdapterDayjs}>
+{/* <DatePicker
+	// defaultValue={dayjs('2022-04-17')}
+	value={dayjs(value).format("DD/MM/YYYY")}
+	onChange={(newValue) =>
+		setValue(dayjs(newValue).format("DD/MM/YYYY"))
+	}
+/> */
+}
+
+{
+	/* <DatePicker
+	value={value}
+	onChange={(newValue) => setValue(newValue)}
+/> */
+}
+// </LocalizationProvider> */}

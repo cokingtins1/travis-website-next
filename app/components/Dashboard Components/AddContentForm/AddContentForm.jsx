@@ -7,10 +7,10 @@ import BasicInfo from "./BasicInfo"
 import Files from "./Files"
 import dayjs from "dayjs"
 
-
 import styles from "./AddContentForm.module.css"
 
 import Button from "@mui/material/Button"
+import MetaData from "./MetaData"
 
 const INITIAL_DATA = {
 	files: null,
@@ -40,6 +40,7 @@ export default function AddContentForm() {
 	} = useMultipleStepForm([
 		<Files {...data} updateFields={updateFields} />,
 		<BasicInfo {...data} updateFields={updateFields} />,
+		<MetaData {...data} updateFields={updateFields} />,
 	])
 
 	function handleSubmit(e) {
@@ -52,21 +53,36 @@ export default function AddContentForm() {
 
 	return (
 		<>
-			<div className="relative bg-white border border-black p-8 rounded-md">
+			<div className="relative bg-white border border-black p-4 rounded-md ">
 				<form action="" onSubmit={handleSubmit}>
-					<div className="position: absolute top-2 right-2">
-						{currentStepIndex + 1} / {steps.length}
-					</div>
-					{step}
-					<div className="flex mt-4 gap-2 justify-end">
-						{!isFirstStep && (
-							<Button variant="contained" onClick={back}>
-								Back
+					<div className="flex flex-col">
+						<div className="flex self-end m-1">
+							{currentStepIndex + 1} / {steps.length}
+						</div>
+						<div className="h-[32rem]">{step}</div>
+						<div className="flex mt-4 gap-2 self-end ">
+							{!isFirstStep && (
+								<Button
+									sx={{ width: 100 }}
+									variant="contained"
+									onClick={back}
+								>
+									Back
+								</Button>
+							)}
+							<Button
+								sx={{
+									width: 100,
+									backgroundColor: isLastStep
+										? "green"
+										: "default",
+								}}
+								variant="contained"
+								onClick={next}
+							>
+								{isLastStep ? "Upload" : "Next"}
 							</Button>
-						)}
-						<Button variant="contained" onClick={next}>
-							{isLastStep ? "Upload" : "Next"}
-						</Button>
+						</div>
 					</div>
 				</form>
 			</div>

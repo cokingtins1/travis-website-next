@@ -1,9 +1,8 @@
-"use client"
-// BasicInto.jsx
 import TextField from "@mui/material/TextField"
 import MenuItem from "@mui/material/MenuItem"
-import dayjs from "dayjs"
+import EditIcon from "@mui/icons-material/Edit"
 import { DatePicker } from "@mui/x-date-pickers/DatePicker"
+import Button from "@mui/material/Button"
 
 import FormControl from "@mui/material/FormControl"
 import InputLabel from "@mui/material/InputLabel"
@@ -11,9 +10,6 @@ import Select from "@mui/material/Select"
 
 import beatKitImage from "@/public/beatKitImage.jpg"
 import Image from "next/image"
-
-import styles from "./BasicInfo.module.css"
-import { useState } from "react"
 
 export default function BasicInfo({
 	title,
@@ -28,19 +24,25 @@ export default function BasicInfo({
 		{ value: "Melody" },
 	]
 
-	const [date, setDate] = useState()
 	return (
 		<>
-			<div className={styles.formContainer}>
-				<div>
-					<Image
-						width={250}
-						src={beatKitImage}
-						alt="product image"
-					></Image>
+			<div className="grid grid-cols-6 gap-4">
+				<div className="col-span-2 flex items-start justify-center">
+					<div className="flex flex-col items-center ">
+						<Image
+							width={250}
+							src={beatKitImage}
+							alt="product image"
+						></Image>
+						<Button>
+							{" "}
+							<span className='mx-2'><EditIcon /> </span>
+							Edit Picture
+						</Button>
+					</div>
 				</div>
-				<FormControl>
-					<div className={styles.inputContainer}>
+				<FormControl className="col-span-4">
+					<div className="grid grid-cols-2 grid-rows-5 gap-x-4 gap-y-4">
 						<TextField
 							className="col-span-2"
 							fullWidth
@@ -56,7 +58,7 @@ export default function BasicInfo({
 								updateFields({ title: e.target.value })
 							}}
 						/>
-						{/* <TextField
+						<TextField
 							fullWidth
 							size="medium"
 							id="type"
@@ -70,16 +72,16 @@ export default function BasicInfo({
 							onChange={(e) => {
 								updateFields({ type: e.target.value })
 							}}
-							>
+						>
 							{contentType.map((option) => (
 								<MenuItem
-								key={option.value}
-								value={option.value}
+									key={option.value}
+									value={option.value}
 								>
 									{option.value}
 								</MenuItem>
 							))}
-						</TextField> */}
+						</TextField>
 
 						<DatePicker
 							label="Release Date"
@@ -94,7 +96,7 @@ export default function BasicInfo({
 							className="col-span-2 row-span-3"
 							fullWidth
 							multiline
-							rows={3}
+							rows={5}
 							id="title"
 							label="Description (optional)"
 							type="text"
