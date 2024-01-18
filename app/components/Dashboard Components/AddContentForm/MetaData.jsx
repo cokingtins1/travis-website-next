@@ -4,10 +4,9 @@ import MusicNoteIcon from "@mui/icons-material/MusicNote"
 import InputLabel from "@mui/material/InputLabel"
 
 import { useState } from "react"
+import TagInput from "./Upload Components/TagInput"
 
-export default function MetaData() {
-	const [tags, setTags] = useState([""])
-
+export default function MetaData({ tags, updateFields }) {
 	return (
 		<FormControl>
 			<div className="grid grid-rows-5">
@@ -16,7 +15,12 @@ export default function MetaData() {
 						{" "}
 						<MusicNoteIcon /> Track details
 					</p>
-					<p>Tags (up to 3)</p>
+					<TagInput
+						value={tags}
+						onChange={(newTagList) => {
+							updateFields({ tags: newTagList })
+						}}
+					/>
 				</div>
 				<div>Mood</div>
 				<div>Keys and BPM</div>

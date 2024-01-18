@@ -18,6 +18,7 @@ const INITIAL_DATA = {
 	type: "",
 	releaseDate: dayjs(),
 	description: "",
+	tags:"",
 }
 
 export default function AddContentForm() {
@@ -49,7 +50,7 @@ export default function AddContentForm() {
 		alert("Form submitted")
 	}
 
-	// console.log(data)
+	console.log(data)
 
 	return (
 		<>
