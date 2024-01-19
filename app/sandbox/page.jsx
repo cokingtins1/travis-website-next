@@ -14,11 +14,10 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
 import { useState } from "react"
 import InputTag from "../components/Dashboard Components/AddContentForm/Upload Components/InputTag"
 import SearchTag from "../components/Dashboard Components/AddContentForm/Upload Components/TagInput"
-import TagInput from '../components/Dashboard Components/AddContentForm/Upload Components/TagInput'
+import TagInput from "../components/Dashboard Components/AddContentForm/Upload Components/TagInput"
 
-import DropDown from "@/app/components/Dashboard Components/AddContentForm/Upload Components/DropDown.json"
-
-
+import DropDownSelect from "@/app/components/Dashboard Components/AddContentForm/Upload Components/DropdownSelect"
+import { Button } from "../components/UI/Button"
 
 export default function Page() {
 	// const [value, setValue] = useState(dayjs().format("DD/MM/YYYY"))
@@ -29,7 +28,9 @@ export default function Page() {
 		<>
 			<div className=" flex justify-center">
 				{/* <InputTag /> */}
-				<TagInput dropDownList={DropDown.Genre} addFunctionality limit={2} />
+				{/* <TagInput dropDownList={DropDown.Genre} addFunctionality limit={2} /> */}
+				<DropDownSelect/>
+
 			</div>
 		</>
 	)

@@ -5,6 +5,12 @@
 
 
 :root{
+
+
+  --primary: #f1f1f1;
+  --secondary: rgba(30, 41, 59, 0.5);
+  --tertiary: rgb(51 65 85);
+
   --text-base: #fff;
   --text-subdued: #a7a7a7;
   --primary-background-base: #121212;
@@ -21,6 +27,31 @@
   --headerHeight: 120px;
   --screenMinusHeaderHeight: calc(100dvh - (var(--headerHeight))) 
 
+}
+
+* {
+  scrollbar-gutter: stable;
+  scrollbar-color: var(--secondary) var(--primary);
+}
+
+*::-webkit-scrollbar {
+  width: 17px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--primary);
+  border-radius: 100vw;
+  margin-block: .125em;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--secondary);
+  border-radius: 100vw;
+  border: 3px solid var(--primary);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--tertiary);
 }
 
 

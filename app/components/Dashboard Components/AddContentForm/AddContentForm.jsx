@@ -19,6 +19,10 @@ const INITIAL_DATA = {
 	releaseDate: dayjs(),
 	description: "",
 	tags:"",
+	genres:"",
+	moods:"",
+	keys:"",
+	bpm:"",
 }
 
 export default function AddContentForm() {
