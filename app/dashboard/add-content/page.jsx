@@ -3,7 +3,7 @@ import AddContentForm from "@/app/components/Dashboard Components/AddContentForm
 export default function AddContent() {
 	return (
 		<>
-			<div className="mt-[4rem]">
+			<div className="overflow-hidden p-4">
 				<AddContentForm />
 			</div>
 		</>

@@ -6,10 +6,19 @@ import { useEffect, useRef, useState } from "react"
 export default function DropDownSelect({
 	label = "",
 	dropDownList = false, // dropDownList is an object
-	width = "20",
+	width = "fit",
 	value,
 	onChange,
 }) {
+	const sizeVariants = {
+		min: "w-min",
+		max: "w-max",
+		fit: "w-fit",
+		small: "w-20",
+		medium: "w-40",
+		large: "w-80",
+	}
+
 	const [dropDownValue, setDropDownValue] = useState(value || "")
 	const [isfocused, setIsfocused] = useState(false)
 	const [popperOpen, setPopperOpen] = useState(false)
@@ -74,7 +83,7 @@ export default function DropDownSelect({
 				>
 					<div className="flex items-center">
 						<input
-							className={`w-${width} bg-none p-1 focus:outline-none disabled:bg-white`}
+							className={`${sizeVariants[width]} bg-none p-1 focus:outline-none disabled:bg-white`}
 							type="text"
 							disabled
 							ref={inputRef}

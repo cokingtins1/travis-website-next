@@ -7,10 +7,9 @@ import BasicInfo from "./BasicInfo"
 import Files from "./Files"
 import dayjs from "dayjs"
 
-import styles from "./AddContentForm.module.css"
-
 import Button from "@mui/material/Button"
 import MetaData from "./MetaData"
+import Pricing from "./Pricing"
 
 const INITIAL_DATA = {
 	files: null,
@@ -18,11 +17,26 @@ const INITIAL_DATA = {
 	type: "",
 	releaseDate: dayjs(),
 	description: "",
-	tags:"",
-	genres:"",
-	moods:"",
-	keys:"",
-	bpm:"",
+	tags: "",
+	genres: "",
+	moods: "",
+	keys: "",
+	bpm: "",
+	instruments: "",
+	price: {
+		exclusive: {
+			checked: true,
+			price: 250,
+		},
+		basic: {
+			checked: true,
+			price: 30,
+		},
+		premium: {
+			checked: true,
+			price: 50,
+		},
+	},
 }
 
 export default function AddContentForm() {
@@ -46,6 +60,7 @@ export default function AddContentForm() {
 		<Files {...data} updateFields={updateFields} />,
 		<BasicInfo {...data} updateFields={updateFields} />,
 		<MetaData {...data} updateFields={updateFields} />,
+		<Pricing {...data} updateFields={updateFields} />,
 	])
 
 	function handleSubmit(e) {
@@ -58,13 +73,15 @@ export default function AddContentForm() {
 
 	return (
 		<>
-			<div className="relative bg-white border border-black p-4 rounded-md ">
+			<div className="w-full bg-white border border-black p-4 rounded-md ">
 				<form action="" onSubmit={handleSubmit}>
 					<div className="flex flex-col">
 						<div className="flex self-end m-1">
 							{currentStepIndex + 1} / {steps.length}
 						</div>
-						<div className="h-[32rem]">{step}</div>
+						<div className="h-[36rem] overflow-auto p-2">
+							{step}
+						</div>
 						<div className="flex mt-4 gap-2 self-end ">
 							{!isFirstStep && (
 								<Button

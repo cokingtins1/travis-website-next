@@ -2,6 +2,11 @@ import Divider from "@mui/material/Divider"
 import SentimentSatisfiedAltOutlinedIcon from "@mui/icons-material/SentimentSatisfiedAltOutlined"
 import MusicNoteIcon from "@mui/icons-material/MusicNote"
 import MonitorHeartOutlinedIcon from "@mui/icons-material/MonitorHeartOutlined"
+import KeyboardVoiceIcon from "@mui/icons-material/KeyboardVoice"
+import YouTubeIcon from "@mui/icons-material/YouTube"
+import Button from "@mui/material/Button"
+import CloudUploadIcon from "@mui/icons-material/CloudUpload"
+import { styled } from "@mui/material/styles"
 
 import DropDown from "./Upload Components/DropDown.json"
 
@@ -15,10 +20,22 @@ export default function MetaData({
 	moods,
 	keys,
 	bpm,
+	instruments,
 	updateFields,
 }) {
+	const VisuallyHiddenInput = styled("input")({
+		clip: "rect(0 0 0 0)",
+		clipPath: "inset(50%)",
+		height: 1,
+		overflow: "hidden",
+		position: "absolute",
+		bottom: 0,
+		left: 0,
+		whiteSpace: "nowrap",
+		width: 1,
+	})
 	return (
-		<div className="grid auto-rows-auto gap-4">
+		<div className="grid auto-rows-auto gap-4 pr-2">
 			<div>
 				<p className="text-xl font-bold">
 					{" "}
@@ -78,14 +95,46 @@ export default function MetaData({
 					<InputType
 						label="Moods"
 						value={bpm}
-						onChange={(newBpm) => {
-							updateFields({ bpm: newBpm })
-						}}
+						onChange={(newBpm) => updateFields({ bpm: newBpm })}
 					/>
 				</div>
 			</div>
-			<div>Instruments & Vocals</div>
-			<div>Related Videos</div>
+			<Divider />
+
+			<div>
+				<p className="text-xl font-bold">
+					{" "}
+					<KeyboardVoiceIcon /> Instruments & Vocals
+				</p>
+				<TagInput
+					label="Instruments"
+					value={instruments}
+					dropDownList={DropDown.Instruments}
+					addFunctionality
+					onChange={(newTagList) => {
+						updateFields({ instruments: newTagList })
+					}}
+				/>
+			</div>
+			<Divider />
+			<div>
+				<p className="text-xl font-bold">
+					{" "}
+					<YouTubeIcon /> Related videos
+				</p>
+				<div className='my-12'>
+					<Button
+						component="label"
+						variant="contained"
+						startIcon={<CloudUploadIcon />}
+						sx={{ width: "115px", height: "40px" }}
+					>
+						Upload
+						<VisuallyHiddenInput type="file" />
+					</Button>
+				</div>
+			</div>
+			<Divider />
 		</div>
 	)
 }

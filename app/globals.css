@@ -30,7 +30,6 @@
 }
 
 * {
-  scrollbar-gutter: stable;
   scrollbar-color: var(--secondary) var(--primary);
 }
 
@@ -52,6 +51,16 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background-color: var(--tertiary);
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
 }
 
 

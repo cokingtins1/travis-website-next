@@ -7,6 +7,7 @@ export default function TagInput({
 	limit = null,
 	value,
 	onChange,
+	type,
 }) {
 	const [tagList, setTagList] = useState(value || [])
 	const [newTag, setNewTag] = useState("")
@@ -152,9 +153,10 @@ export default function TagInput({
 					<div className="flex items-center">
 						{tagList.length > 0 && renderTags()}
 						<input
-							className="bg-none grow p-1 focus:outline-none"
-							type="text"
+							className="bg-none grow p-1 focus:outline-none disabled:bg-white"
+							type={type}
 							ref={inputRef}
+							disabled={dropDownList ? true : false}
 							value={newTag}
 							onChange={(e) => setNewTag(e.target.value)}
 							onKeyDown={(e) => {

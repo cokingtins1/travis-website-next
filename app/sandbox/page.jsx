@@ -18,19 +18,25 @@ import TagInput from "../components/Dashboard Components/AddContentForm/Upload C
 
 import DropDownSelect from "@/app/components/Dashboard Components/AddContentForm/Upload Components/DropdownSelect"
 import { Button } from "../components/UI/Button"
+import InputType from "../components/Dashboard Components/AddContentForm/Upload Components/InputType"
+import PricingSwitch from "../components/Dashboard Components/AddContentForm/Upload Components/Switch"
 
 export default function Page() {
 	// const [value, setValue] = useState(dayjs().format("DD/MM/YYYY"))
 	// const [value, setValue] = useState(dayjs())
 	// console.log("Value:", value, "Type:", typeof(value), typeof(dayjs().format("DD/MM/YYYY")))
 	// console.log(value)
+
 	return (
 		<>
 			<div className=" flex justify-center">
 				{/* <InputTag /> */}
 				{/* <TagInput dropDownList={DropDown.Genre} addFunctionality limit={2} /> */}
-				<DropDownSelect/>
-
+				<PricingSwitch
+					onCheckedChange={(newChecked) => {
+						console.log(newChecked)
+					}}
+				/>
 			</div>
 		</>
 	)
