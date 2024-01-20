@@ -5,17 +5,19 @@
 
 
 :root{
-
-
   --primary: #f1f1f1;
   --secondary: rgba(30, 41, 59, 0.5);
   --tertiary: rgb(51 65 85);
+
+  --bg-base: rgb(18,18,18);
+  --bg-elevated: rgb(36,36,36);
 
   --text-base: #fff;
   --text-subdued: #a7a7a7;
   --primary-background-base: #121212;
   --primary-background-highlight: #1a1a1a;
   --primary-background-press: #000;
+  
 
   --media-filter-bar: 1024px;
 
@@ -27,6 +29,12 @@
   --headerHeight: 120px;
   --screenMinusHeaderHeight: calc(100dvh - (var(--headerHeight))) 
 
+}
+
+html{
+  background-color: var(--bg-base);
+  color: #DADDE1;
+  padding: .5rem;
 }
 
 * {
@@ -140,5 +148,11 @@ select {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+@layer components {
+  .bg-primary{
+    @apply bg-slate-600
   }
 }

@@ -1,6 +1,7 @@
 .headerWrapper{
     padding: 1rem;
     height: var(--headerHeight);
+    background-color: var(--bg-elevated);
 }
 
 .headerTop{

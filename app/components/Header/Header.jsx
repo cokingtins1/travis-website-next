@@ -6,8 +6,6 @@ import Image from "next/image"
 import logoImg from "@/public/Logo.png"
 import SearchComponent from "../SearchBar/SearchComponent"
 
-const headerHeight = '300px'
-
 export default function Header() {
 	return (
 		<>

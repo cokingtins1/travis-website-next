@@ -4,7 +4,7 @@ import Link from "next/link"
 
 export default function DummyProductCard() {
 	return (
-		<li className="flex flex-1 flex-col border border-slate-500">
+		<li className="flex flex-1 flex-col rounded hover:bg-slate-50 p-2">
 			<Link href={"/studio"}>
 				<Image src={beatKitImage} alt="product image"></Image>
 			</Link>

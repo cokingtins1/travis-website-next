@@ -32,11 +32,11 @@ export default function Page() {
 			<div className=" flex justify-center">
 				{/* <InputTag /> */}
 				{/* <TagInput dropDownList={DropDown.Genre} addFunctionality limit={2} /> */}
-				<PricingSwitch
-					onCheckedChange={(newChecked) => {
-						console.log(newChecked)
-					}}
-				/>
+				<Button>Click Me</Button>
+			</div>
+
+			<div>
+				<h1 className='text-center xl:text-rose-500 '>Test Tailwind Config Div</h1>
 			</div>
 		</>
 	)

@@ -24,10 +24,6 @@ import Link from "next/link"
 export default function SideBar() {
 	const [open, setOpen] = useState()
 
-	const filterItems = {
-		Navlinks: ["Dashboard", "My Content", "Tracks", "Stats", "Sales"],
-	}
-
 	const myContent = [
 		{ id: 1, text: "Add Content", icon: <AddIcon />, href: "/add-content" },
 		{ id: 2, text: "Tracks", icon: <LibraryMusicIcon />, href: "/tracks" },
