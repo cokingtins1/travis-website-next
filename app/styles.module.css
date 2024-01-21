@@ -8,22 +8,7 @@
     padding: 0;
 }
 
-.header {
-    display: flex;
-    align-items: center;
-    background-color: var(--primary-background-base);
-    color: var(--text-base);
-    width: 100%;
-    height: 10%;
-
-}
-
-.header:hover {
-    background-color: var(--primary-background-highlight);
-}
-
 .heroSection {
-    background-color: var(--primary-background-base);
     position: relative;
     width: 100%;
     height: 90%;

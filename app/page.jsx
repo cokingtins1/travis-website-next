@@ -5,9 +5,6 @@ import heroImg from "../public/hero-picture.png"
 export default function HomePage() {
 	return (
 		<main className={styles.main}>
-			<div className={styles.header}>
-
-			</div>
 			<div className={styles.heroSection}>
 				<div className={styles.heroImgContainer}>
 					<div className={styles.heroRing}>

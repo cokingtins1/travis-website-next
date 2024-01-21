@@ -14,11 +14,12 @@
 .sideBar{
     padding: .5rem;
     background-color: var(--bg-elevated);
+    border-radius: 0.25rem;
 }
 
 .content{
     background-color: var(--bg-elevated);
-    border-radius: 1rem;
+    border-radius: 0.25rem;
     display: flex;
     flex-direction: column;
     flex-grow: 1;

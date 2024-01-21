@@ -46,7 +46,7 @@ export default function DropDownSelect({
 
 	function Popper() {
 		return (
-			<div className="absolute top-full left-0 z-10 h-48 w-11/12 bg-white rounded border border-slate-300 overflow-hidden overflow-y-auto px-1 py-2">
+			<div className="absolute top-full left-0 z-10 h-48 w-11/12 bg-slate-300 rounded border border-slate-300 overflow-hidden overflow-y-auto px-1 py-2">
 				<ul>
 					{dropDownList.map((item, index) => (
 						<li
@@ -83,7 +83,7 @@ export default function DropDownSelect({
 				>
 					<div className="flex items-center">
 						<input
-							className={`${sizeVariants[width]} bg-none p-1 focus:outline-none disabled:bg-white`}
+							className={`${sizeVariants[width]} bg-inherit p-1 focus:outline-none disabled:bg-inherit`}
 							type="text"
 							disabled
 							ref={inputRef}

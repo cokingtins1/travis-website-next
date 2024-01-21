@@ -29,14 +29,23 @@ export default function Page() {
 
 	return (
 		<>
-			<div className=" flex justify-center">
+			<div className="flex flex-col items-center justify-center gap-4 mt-12">
 				{/* <InputTag /> */}
 				{/* <TagInput dropDownList={DropDown.Genre} addFunctionality limit={2} /> */}
-				<Button>Click Me</Button>
-			</div>
-
-			<div>
-				<h1 className='text-center xl:text-rose-500 '>Test Tailwind Config Div</h1>
+				<div className="grid grid-cols-2 auto-rows-auto items-center gap-y-2">
+					<span>default</span>
+					<Button onClick={()=> {console.log('clicked')}} variant='default'>Click Me</Button>
+					<span>destrictive</span>
+					<Button variant='destructive'>Click Me</Button>
+					<span>outline</span>
+					<Button variant='outline'>Click Me</Button>
+					<span>subtle</span>
+					<Button variant='subtle'>Click Me</Button>
+					<span>ghost</span>
+					<Button variant='ghost'>Click Me</Button>
+					<span>link</span>
+					<Button variant='link'>Click Me</Button>
+				</div>
 			</div>
 		</>
 	)

@@ -22,6 +22,8 @@ import { useState } from "react"
 import Link from "next/link"
 
 export default function SideBar() {
+	const iconPrimary = "#b3b3b3"
+
 	const [open, setOpen] = useState()
 
 	const myContent = [
@@ -37,7 +39,7 @@ export default function SideBar() {
 				<Link href={"/dashboard"}>
 					<ListItemButton>
 						<ListItemIcon>
-							<HomeIcon />
+							<HomeIcon sx={{ color: iconPrimary }} />
 						</ListItemIcon>
 						<ListItemText primary="Dashboard" />
 					</ListItemButton>
@@ -48,7 +50,7 @@ export default function SideBar() {
 					}}
 				>
 					<ListItemIcon>
-						<InboxIcon />
+						<InboxIcon sx={{ color: iconPrimary }} />
 					</ListItemIcon>
 					<ListItemText primary="My Content" />
 					{open ? <ExpandLess /> : <ExpandMore />}
@@ -62,7 +64,9 @@ export default function SideBar() {
 								href={`/dashboard/${item.href}`}
 							>
 								<ListItemButton sx={{ pl: 4 }}>
-									<ListItemIcon>{item.icon}</ListItemIcon>
+									<ListItemIcon sx={{ color: iconPrimary }}>
+										{item.icon}
+									</ListItemIcon>
 									<ListItemText primary={item.text} />
 								</ListItemButton>
 							</Link>

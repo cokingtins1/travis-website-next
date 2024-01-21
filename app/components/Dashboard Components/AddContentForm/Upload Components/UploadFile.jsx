@@ -17,14 +17,14 @@ export default function UploadFile() {
 		width: 1,
 	})
 	return (
-		<div className="flex justify-between items-center rounded-lg border border-slate-400 p-2">
+		<div className="flex justify-between items-center rounded-lg border border-border-primary p-2">
 			<div className="flex gap-2">
-				<span className="flex items-center rounded-full border border-slate-300 p-2">
+				<span className="flex items-center rounded-full border border-border-primary p-2">
 					<MusicNoteIcon sx={{ fontSize: 40 }} />
 				</span>
 				<div>
 					<p className="font-semibold">Un-tagged audio</p>
-					<p className="text-sm text-slate-400">
+					<p className="text-sm text-text-secondary">
 						Upload .mp3 or .wav files only
 					</p>
 				</div>

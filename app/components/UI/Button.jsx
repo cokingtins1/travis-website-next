@@ -8,7 +8,7 @@ const buttonVariants = cva(
 		variants: {
 			variant: {
 				default:
-					"bg-slate-900 text-white hover:bg-slate-700 dark:bg-slate-50 dark:text-slate-900",
+					"bg-bg-button text-white hover:bg-slate-700 dark:bg-slate-50 dark:text-slate-900",
 				destructive:
 					"bg-red-500 text-white hover:bg-red-600 dark:hover:bg-red-600",
 				outline:
@@ -29,14 +29,17 @@ const buttonVariants = cva(
 		},
 	}
 )
-const Button = forwardRef(({ className, size, variant, ...props }, ref) => {
-	return (
-		<button
-        ref={ref}
-			className={cn(buttonVariants({ variant, size, className }))}
-			{...props}
-		/>
-	)
-})
+const Button = forwardRef(
+	({ className, size, variant, type = "submit", ...props }, ref) => {
+		return (
+			<button
+				ref={ref}
+				type={type}
+				className={cn(buttonVariants({ variant, size, className }))}
+				{...props}
+			/>
+		)
+	}
+)
 
 export { Button, buttonVariants }

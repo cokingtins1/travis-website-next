@@ -1,9 +1,10 @@
 import { useState } from "react"
 
 export default function useMultipleStepForm(steps) {
-	const [currentStepIndex, setCurrentStepIndex] = useState(3)
+	const [currentStepIndex, setCurrentStepIndex] = useState(0)
 
 	function next() {
+		console.log('next hit')
 		setCurrentStepIndex((i) => {
 			if (i >= steps.length - 1) return i
 			return i + 1

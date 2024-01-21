@@ -14,12 +14,19 @@ module.exports = {
 					"conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
 			},
 			colors: {
-				"primary-color": "var(--test-bg-color)",
+				"text-primary": "#fff",
+				"text-secondary": "#a7a7a7",
+				"border-primary": "#a7a7a7",
+				"icon-primary": "#b3b3b3"
 			},
-      backgroundColor: {
-        "bg-elevated": "rgb(36,36,36)"
-      },
-      
+			backgroundColor: {
+				"bg-elevated": "rgb(36,36,36)",
+				"bg-hover" : "#2a2a2a",
+				"bg-dropDown": "rgb(45,45,45)",
+				"bg-button": "#2a2a2a",
+				"bg-buttonHover": "#2a2a2a",
+
+			},
 		},
 	},
 	plugins: [],

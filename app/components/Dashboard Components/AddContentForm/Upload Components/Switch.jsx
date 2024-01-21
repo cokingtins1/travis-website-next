@@ -34,7 +34,7 @@ export default function PricingSwitch({
 				</span>
 				<div>
 					<p className="font-semibold">{contractTitle}</p>
-					<p className="text-sm text-slate-400">{contractSubtext}</p>
+					<p className="text-sm text-text-secondary">{contractSubtext}</p>
 				</div>
 			</div>
 			{free || (

@@ -5,6 +5,8 @@ import Link from "next/link"
 import Image from "next/image"
 import logoImg from "@/public/Logo.png"
 import SearchComponent from "../SearchBar/SearchComponent"
+import MUISwitch from "@mui/material/Switch"
+
 
 export default function Header() {
 	return (
@@ -19,6 +21,7 @@ export default function Header() {
 					/>
 					<SearchComponent />
 					<div className={styles.adminButtons}>
+						<MUISwitch/>
 						<Link href={"/login"}>
 							<button className={styles.iconBtn}>
 								<AccountCircle />

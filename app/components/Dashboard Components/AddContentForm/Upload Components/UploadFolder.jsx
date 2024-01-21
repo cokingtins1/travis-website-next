@@ -16,14 +16,14 @@ export default function UploadFolder() {
 		width: 1,
 	})
 	return (
-		<div className="flex justify-between items-center rounded-lg border border-slate-400 p-2">
+		<div className="flex justify-between items-center rounded-lg border border-border-primary p-2">
 			<div className="flex gap-2">
-				<span className="flex items-center rounded-full border border-slate-300 p-2">
+				<span className="flex items-center rounded-full border border-border-primary p-2">
 					<FolderIcon sx={{ fontSize: 40 }} />
 				</span>
 				<div>
 					<p className="font-semibold">Track stems</p>
-					<p className="text-sm text-slate-400">
+					<p className="text-sm text-text-secondary">
 						Upload .zip or .rar files only
 					</p>
 				</div>

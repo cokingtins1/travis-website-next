@@ -153,7 +153,7 @@ export default function TagInput({
 					<div className="flex items-center">
 						{tagList.length > 0 && renderTags()}
 						<input
-							className="bg-none grow p-1 focus:outline-none disabled:bg-white"
+							className="bg-inherit grow p-1 focus:outline-none disabled:bg-inherit"
 							type={type}
 							ref={inputRef}
 							disabled={dropDownList ? true : false}

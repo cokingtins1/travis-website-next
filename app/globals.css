@@ -3,28 +3,19 @@
 @tailwind utilities;
 
 
-
 :root{
-  --primary: #f1f1f1;
-  --secondary: rgba(30, 41, 59, 0.5);
-  --tertiary: rgb(51 65 85);
 
-  --bg-base: rgb(18,18,18);
-  --bg-elevated: rgb(36,36,36);
+  /* background colors */
+  --bg-base: #000000;
+  --bg-elevated: #121212;
+  --bg-hover: #2a2a2a;
 
-  --text-base: #fff;
-  --text-subdued: #a7a7a7;
-  --primary-background-base: #121212;
-  --primary-background-highlight: #1a1a1a;
-  --primary-background-press: #000;
-  
+  /* text colors */
+  --text-primary: #fff;
+  --text-secondary: #a7a7a7;
 
-  --media-filter-bar: 1024px;
-
-  --txt-size-title: 2rem;
-
-  /* --border: 1px solid #A4ADB7; */
-  --border: 1px solid #DADDE1;
+  /* --border-primary: 1px solid #A4ADB7; */
+  --border-primary: #a7a7a7;
 
   --headerHeight: 120px;
   --screenMinusHeaderHeight: calc(100dvh - (var(--headerHeight))) 
@@ -33,7 +24,7 @@
 
 html{
   background-color: var(--bg-base);
-  color: #DADDE1;
+  color: #fff;
   padding: .5rem;
 }
 

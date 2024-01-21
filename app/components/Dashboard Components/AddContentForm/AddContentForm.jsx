@@ -7,9 +7,9 @@ import BasicInfo from "./BasicInfo"
 import Files from "./Files"
 import dayjs from "dayjs"
 
-import Button from "@mui/material/Button"
 import MetaData from "./MetaData"
 import Pricing from "./Pricing"
+import { Button } from "../../UI/Button"
 
 const INITIAL_DATA = {
 	files: null,
@@ -69,11 +69,19 @@ export default function AddContentForm() {
 		alert("Form submitted")
 	}
 
-	console.log(data)
+	// console.log(data)
+	// console.log(
+	// 	"step:",
+	// 	currentStepIndex,
+	// 	"isFirstStep:",
+	// 	isFirstStep,
+	// 	"isLastStep:",
+	// 	isLastStep
+	// )
 
 	return (
 		<>
-			<div className="w-full bg-white border border-black p-4 rounded-md ">
+			<div className="w-full border border-black p-4 rounded-md ">
 				<form action="" onSubmit={handleSubmit}>
 					<div className="flex flex-col">
 						<div className="flex self-end m-1">
@@ -84,24 +92,9 @@ export default function AddContentForm() {
 						</div>
 						<div className="flex mt-4 gap-2 self-end ">
 							{!isFirstStep && (
-								<Button
-									sx={{ width: 100 }}
-									variant="contained"
-									onClick={back}
-								>
-									Back
-								</Button>
+								<Button onClick={back} type='button'>Back</Button>
 							)}
-							<Button
-								sx={{
-									width: 100,
-									backgroundColor: isLastStep
-										? "green"
-										: "default",
-								}}
-								variant="contained"
-								onClick={next}
-							>
+							<Button onClick={next}>
 								{isLastStep ? "Upload" : "Next"}
 							</Button>
 						</div>

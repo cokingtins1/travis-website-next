@@ -39,7 +39,7 @@ export default function InputType({
 			<div className="relative flex flex-col justify-center items-left my-2">
 				{label && <p className="font-semibold">{label}</p>}
 				<div
-					className={`rounded border border-slate-300 p-1 flex flex-col flex-wrap gap-2 ${
+					className={`rounded border border-border-primary p-1 flex flex-col flex-wrap gap-2 ${
 						isfocused && "border-blue-500"
 					}`}
 					onFocus={() => setIsfocused(true)}
@@ -47,10 +47,10 @@ export default function InputType({
 				>
 					<div className="flex items-center gap-1">
 						{adornment && (
-							<p className="text-slate-400">{adornment}</p>
+							<p className="text-text-secondary">{adornment}</p>
 						)}
 						<input
-							className={`${variants.width[width]} ${variants.textAlign[textAlign]} bg-none focus:outline-none`}
+							className={`${variants.width[width]} ${variants.textAlign[textAlign]} bg-inherit focus:outline-none`}
 							type={type}
 							value={inputValue}
 							onChange={(e) => {
