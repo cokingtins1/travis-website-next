@@ -9,6 +9,7 @@
   --bg-base: #000000;
   --bg-elevated: #121212;
   --bg-hover: #2a2a2a;
+  --bg-secondary: #242424;
 
   /* text colors */
   --text-primary: #fff;
@@ -25,7 +26,7 @@
 html{
   background-color: var(--bg-base);
   color: #fff;
-  padding: .5rem;
+  /* padding: .5rem; */
 }
 
 * {

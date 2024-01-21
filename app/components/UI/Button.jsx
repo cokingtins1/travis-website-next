@@ -18,9 +18,9 @@ const buttonVariants = cva(
 				link: "bg-transparent dark:bg-transparent underline-offset-4 hover:underline text-slate-900 dark:text-slate-300 hover:bg-transparent dark:hover:bg-transparent",
 			},
 			size: {
-				default: "h-10 py-2 px-4",
-				sm: "h-9 px-2 rounded-md",
-				lg: "h-11 px-8 rounded-md",
+				default: "h-10 min-w-20 px-4",
+				sm: "h-9 min-w-16 rounded-md",
+				lg: "h-11 min-w-28 rounded-md px-4",
 			},
 		},
 		defaultVariants: {
@@ -30,14 +30,16 @@ const buttonVariants = cva(
 	}
 )
 const Button = forwardRef(
-	({ className, size, variant, type = "submit", ...props }, ref) => {
+	({ className, size, variant, icon, children, ...props }, ref) => {
 		return (
 			<button
 				ref={ref}
-				type={type}
 				className={cn(buttonVariants({ variant, size, className }))}
 				{...props}
-			/>
+			>
+				{icon && <span className="mr-2">{icon}</span>}
+				{children}
+			</button>
 		)
 	}
 )

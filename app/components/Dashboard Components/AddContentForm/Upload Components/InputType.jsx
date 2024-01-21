@@ -34,13 +34,14 @@ export default function InputType({
 		onChange && onChange(inputValue)
 	}, [inputValue])
 
+
 	return (
 		<>
 			<div className="relative flex flex-col justify-center items-left my-2">
 				{label && <p className="font-semibold">{label}</p>}
 				<div
 					className={`rounded border border-border-primary p-1 flex flex-col flex-wrap gap-2 ${
-						isfocused && "border-blue-500"
+						isfocused && "border-2"
 					}`}
 					onFocus={() => setIsfocused(true)}
 					onBlur={() => setIsfocused(false)}

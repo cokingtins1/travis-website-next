@@ -3,8 +3,9 @@ import { useEffect, useRef, useState } from "react"
 export default function TagInput({
 	label = "",
 	dropDownList = false, // dropDownList is an object
+	disabled = true,
 	addFunctionality = false,
-	limit = null,
+	limit = 5,
 	value,
 	onChange,
 	type,
@@ -80,12 +81,12 @@ export default function TagInput({
 				{tagList.map((tag) => (
 					<div
 						key={tag.id}
-						className=" flex items-center gap-2 rounded bg-blue-100 text-blue-500 px-1"
+						className=" whitespace-nowrap flex items-center gap-2 rounded bg-bg-tag text-text-tag border border-border-primary px-1"
 					>
 						<p>{tag.name}</p>
 						<button
 							onClick={() => deleteTag(tag.id)}
-							className="text-slate-400"
+							className="text-text-tag"
 						>
 							x
 						</button>
@@ -111,11 +112,11 @@ export default function TagInput({
 
 	function Popper() {
 		return (
-			<div className="absolute top-full left-0 z-10 h-48 w-11/12 bg-white rounded border border-slate-300 overflow-hidden overflow-y-auto px-1 py-2">
+			<div className="absolute top-full left-0 z-10 h-48 w-11/12 bg-bg-secondary rounded border border-border-primary overflow-hidden overflow-y-auto px-1 py-2">
 				<ul>
 					{dropDownList.map((item, index) => (
 						<li
-							className="cursor-pointer hover:bg-slate-300 rounded p-1"
+							className="cursor-pointer hover:bg-slate-300 hover:text-black rounded p-1"
 							value={item}
 							onClick={() => {
 								addTag(item)
@@ -134,29 +135,29 @@ export default function TagInput({
 	return (
 		<>
 			<div
-				className="relative flex flex-col justify-center items-left my-2"
+				className="w-full relative flex flex-col justify-center items-left my-2"
 				ref={popperRef}
 			>
 				{label && <p className="font-semibold">{label}</p>}
 				<div
-					className={`rounded border border-slate-300 p-1 flex flex-col flex-wrap gap-2 ${
+					className={`rounded border border-border-primary p-1 flex flex-col flex-wrap gap-2 ${
 						isfocused && "border-blue-500"
 					}`}
 					onFocus={() => setIsfocused(true)}
 					onBlur={() => setIsfocused(false)}
 				>
-					{limitReached && (
-						<span className="text-slate-400">
+					{/* {limitReached && (
+						<span className="text-text-secondary">
 							Limit {limit} inputs
 						</span>
-					)}
-					<div className="flex items-center">
+					)} */}
+					<div className="flex">
 						{tagList.length > 0 && renderTags()}
 						<input
-							className="bg-inherit grow p-1 focus:outline-none disabled:bg-inherit"
+							className="bg-inherit w-full p-1 focus:outline-none disabled:bg-inherit"
 							type={type}
 							ref={inputRef}
-							disabled={dropDownList ? true : false}
+							disabled={disabled}
 							value={newTag}
 							onChange={(e) => setNewTag(e.target.value)}
 							onKeyDown={(e) => {
@@ -165,7 +166,7 @@ export default function TagInput({
 						/>
 						{addFunctionality && (
 							<button
-								className="text-slate-400"
+								className="text-text-secondary mr-4"
 								onClick={(e) => {
 									e.preventDefault()
 									setPopperOpen(!popperOpen)

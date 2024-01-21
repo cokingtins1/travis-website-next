@@ -5,6 +5,8 @@ import List from "@mui/material/List"
 import ListItemButton from "@mui/material/ListItemButton"
 import ListItemText from "@mui/material/ListItemText"
 import Collapse from "@mui/material/Collapse"
+import { createTheme, ThemeProvider } from "@mui/material/styles"
+import { useTheme } from "@mui/material/styles"
 
 // Icons
 import ListItemIcon from "@mui/material/ListItemIcon"
@@ -22,6 +24,7 @@ import { useState } from "react"
 import Link from "next/link"
 
 export default function SideBar() {
+	
 	const iconPrimary = "#b3b3b3"
 
 	const [open, setOpen] = useState()

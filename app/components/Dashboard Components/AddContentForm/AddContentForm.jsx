@@ -66,22 +66,13 @@ export default function AddContentForm() {
 	function handleSubmit(e) {
 		e.preventDefault()
 		if (!isLastStep) return next()
-		alert("Form submitted")
 	}
 
 	// console.log(data)
-	// console.log(
-	// 	"step:",
-	// 	currentStepIndex,
-	// 	"isFirstStep:",
-	// 	isFirstStep,
-	// 	"isLastStep:",
-	// 	isLastStep
-	// )
 
 	return (
 		<>
-			<div className="w-full border border-black p-4 rounded-md ">
+			<div className="w-full bg-bg-elevated border border-black p-4 rounded-md ">
 				<form action="" onSubmit={handleSubmit}>
 					<div className="flex flex-col">
 						<div className="flex self-end m-1">
@@ -90,11 +81,18 @@ export default function AddContentForm() {
 						<div className="h-[36rem] overflow-auto p-2">
 							{step}
 						</div>
+						<hr />
 						<div className="flex mt-4 gap-2 self-end ">
 							{!isFirstStep && (
-								<Button onClick={back} type='button'>Back</Button>
+								<Button size="lg" onClick={back} type="button">
+									Back
+								</Button>
 							)}
-							<Button onClick={next}>
+							<Button
+								size="lg"
+								type={isLastStep ? "submit" : "button"}
+								onClick={next}
+							>
 								{isLastStep ? "Upload" : "Next"}
 							</Button>
 						</div>

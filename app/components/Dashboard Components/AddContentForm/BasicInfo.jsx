@@ -2,14 +2,13 @@ import TextField from "@mui/material/TextField"
 import MenuItem from "@mui/material/MenuItem"
 import EditIcon from "@mui/icons-material/Edit"
 import { DatePicker } from "@mui/x-date-pickers/DatePicker"
-import Button from "@mui/material/Button"
+import { useTheme } from "@mui/material/styles"
 
 import FormControl from "@mui/material/FormControl"
-import InputLabel from "@mui/material/InputLabel"
-import Select from "@mui/material/Select"
 
 import beatKitImage from "@/public/beatKitImage.jpg"
 import Image from "next/image"
+import { Button } from "../../UI/Button"
 
 export default function BasicInfo({
 	title,
@@ -18,6 +17,8 @@ export default function BasicInfo({
 	description,
 	updateFields,
 }) {
+	const theme = useTheme()
+
 	const contentType = [
 		{ value: "Beat" },
 		{ value: "Drum Kit" },
@@ -28,15 +29,15 @@ export default function BasicInfo({
 		<>
 			<div className="grid grid-cols-6 gap-4">
 				<div className="col-span-2 flex items-start justify-center">
-					<div className="flex flex-col items-center ">
+					<div className="flex flex-col items-center gap-2 ">
 						<Image
 							width={250}
+							className="border rounded-lg"
 							src={beatKitImage}
 							alt="product image"
 						></Image>
-						<Button>
-							{" "}
-							<span className='mx-2'><EditIcon /> </span>
+
+						<Button type="button" size="lg" icon={<EditIcon />}>
 							Edit Picture
 						</Button>
 					</div>
@@ -86,8 +87,7 @@ export default function BasicInfo({
 						<DatePicker
 							label="Release Date"
 							value={releaseDate}
-							disableFuture
-							// onChange={(newValue) => setDate(newValue)}
+							disablePast
 							onChange={(date) => {
 								updateFields({ releaseDate: date })
 							}}
@@ -102,7 +102,9 @@ export default function BasicInfo({
 							type="text"
 							value={description}
 							onChange={(e) => {
-								updateFields({ description: e.target.value })
+								updateFields({
+									description: e.target.value,
+								})
 							}}
 						/>
 					</div>

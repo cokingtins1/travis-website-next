@@ -46,11 +46,11 @@ export default function DropDownSelect({
 
 	function Popper() {
 		return (
-			<div className="absolute top-full left-0 z-10 h-48 w-11/12 bg-slate-300 rounded border border-slate-300 overflow-hidden overflow-y-auto px-1 py-2">
+			<div className="absolute top-full left-0 z-10 h-48 w-11/12 bg-bg-secondary rounded border border-slate-300 overflow-hidden overflow-y-auto px-1 py-2">
 				<ul>
 					{dropDownList.map((item, index) => (
 						<li
-							className="cursor-pointer hover:bg-slate-300 rounded p-1"
+							className="cursor-pointer hover:bg-slate-300 hover:text-black  rounded p-1"
 							value={item}
 							onClick={() => {
 								// inputRef.current.focus()

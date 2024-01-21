@@ -18,11 +18,11 @@
 }
 
 .content{
-    background-color: var(--bg-elevated);
+    background-color: var(--bg-secondary);
     border-radius: 0.25rem;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     flex-grow: 1;
-    overflow-y: auto;
     gap: 1rem;
 }

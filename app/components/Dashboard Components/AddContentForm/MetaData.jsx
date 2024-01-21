@@ -1,4 +1,3 @@
-import Divider from "@mui/material/Divider"
 import SentimentSatisfiedAltOutlinedIcon from "@mui/icons-material/SentimentSatisfiedAltOutlined"
 import MusicNoteIcon from "@mui/icons-material/MusicNote"
 import MonitorHeartOutlinedIcon from "@mui/icons-material/MonitorHeartOutlined"
@@ -36,13 +35,14 @@ export default function MetaData({
 	})
 	return (
 		<div className="grid auto-rows-auto gap-4 pr-2">
-			<div>
+			<div className='w-full'>
 				<p className="text-xl font-bold">
 					{" "}
 					<MusicNoteIcon /> Track details
 				</p>
 				<TagInput
 					label="Tags"
+					disabled={false}
 					value={tags}
 					onChange={(newTagList) => {
 						updateFields({ tags: newTagList })
@@ -52,13 +52,14 @@ export default function MetaData({
 					label="Genre"
 					dropDownList={DropDown.Genres}
 					value={genres}
+					disabled={false}
 					addFunctionality
 					onChange={(newTagList) => {
 						updateFields({ genre: newTagList })
 					}}
 				/>
 			</div>
-			<Divider />
+			<hr />
 			<div>
 				<p className="text-xl font-bold">
 					{" "}
@@ -68,13 +69,14 @@ export default function MetaData({
 					label="Moods"
 					dropDownList={DropDown.Moods}
 					value={moods}
+					disabled={false}
 					addFunctionality
 					onChange={(newTagList) => {
 						updateFields({ genres: newTagList })
 					}}
 				/>
 			</div>
-			<Divider />
+			<hr />
 
 			<div>
 				<p className="text-xl font-bold">
@@ -93,13 +95,13 @@ export default function MetaData({
 					/>
 
 					<InputType
-						label="Moods"
+						label="BPM"
 						value={bpm}
 						onChange={(newBpm) => updateFields({ bpm: newBpm })}
 					/>
 				</div>
 			</div>
-			<Divider />
+			<hr />
 
 			<div>
 				<p className="text-xl font-bold">
@@ -116,13 +118,14 @@ export default function MetaData({
 					}}
 				/>
 			</div>
-			<Divider />
+			<hr />
+
 			<div>
 				<p className="text-xl font-bold">
 					{" "}
 					<YouTubeIcon /> Related videos
 				</p>
-				<div className='my-12'>
+				<div className="my-12">
 					<Button
 						component="label"
 						variant="contained"
@@ -134,7 +137,6 @@ export default function MetaData({
 					</Button>
 				</div>
 			</div>
-			<Divider />
 		</div>
 	)
 }

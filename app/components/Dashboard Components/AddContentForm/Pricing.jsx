@@ -4,7 +4,7 @@ export default function Pricing({ updateFields, price }) {
 	return (
 		<>
 			<div>
-				<p className="m-2 text-slate-400">Exclusive</p>
+				<p className="m-2 text-text-secondary">Exclusive</p>
 				<PricingSwitch
 					defaultChecked={price.exclusive.checked}
 					contractTitle={"Exclusive License"}
@@ -35,7 +35,7 @@ export default function Pricing({ updateFields, price }) {
 				/>
 			</div>
 			<div className="mt-4 flex flex-col gap-2">
-				<p className="m-2 text-slate-400">Regular</p>
+				<p className="m-2 text-text-secondary">Regular</p>
 				<PricingSwitch
 					defaultChecked={price.basic.checked}
 					contractTitle={"Basic License"}
@@ -72,7 +72,7 @@ export default function Pricing({ updateFields, price }) {
 				/>
 			</div>
 			<div className="mt-4 flex flex-col gap-2">
-				<p className="m-2 text-slate-400">Free</p>
+				<p className="m-2 text-text-secondary">Free</p>
 				<PricingSwitch
 					contractTitle={"Free"}
 					free

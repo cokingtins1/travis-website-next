@@ -12,7 +12,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
 import { useState } from "react"
-import InputTag from "../components/Dashboard Components/AddContentForm/Upload Components/InputTag"
+
 import SearchTag from "../components/Dashboard Components/AddContentForm/Upload Components/TagInput"
 import TagInput from "../components/Dashboard Components/AddContentForm/Upload Components/TagInput"
 

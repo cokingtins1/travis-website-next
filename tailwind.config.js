@@ -16,15 +16,18 @@ module.exports = {
 			colors: {
 				"text-primary": "#fff",
 				"text-secondary": "#a7a7a7",
-				"border-primary": "#a7a7a7",
+				"text-tag": "#fff",
+				"border-primary": "#a9a9a980",
 				"icon-primary": "#b3b3b3"
 			},
 			backgroundColor: {
-				"bg-elevated": "rgb(36,36,36)",
+				"bg-elevated": "#121212",
+				"bg-secondary": "#242424",
 				"bg-hover" : "#2a2a2a",
-				"bg-dropDown": "rgb(45,45,45)",
+				"bg-dropDown": "#2D2D2D ",
 				"bg-button": "#2a2a2a",
 				"bg-buttonHover": "#2a2a2a",
+				"bg-tag": "#90CAF9",
 
 			},
 		},
