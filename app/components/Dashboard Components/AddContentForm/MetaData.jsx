@@ -1,4 +1,6 @@
 import SentimentSatisfiedAltOutlinedIcon from "@mui/icons-material/SentimentSatisfiedAltOutlined"
+import TextField from "@mui/material/TextField"
+import MenuItem from "@mui/material/MenuItem"
 import MusicNoteIcon from "@mui/icons-material/MusicNote"
 import MonitorHeartOutlinedIcon from "@mui/icons-material/MonitorHeartOutlined"
 import KeyboardVoiceIcon from "@mui/icons-material/KeyboardVoice"
@@ -6,12 +8,12 @@ import YouTubeIcon from "@mui/icons-material/YouTube"
 import Button from "@mui/material/Button"
 import CloudUploadIcon from "@mui/icons-material/CloudUpload"
 import { styled } from "@mui/material/styles"
+import Divider from '@mui/material/Divider';
+
 
 import DropDown from "./Upload Components/DropDown.json"
 
 import TagInput from "./Upload Components/TagInput"
-import DropDownSelect from "./Upload Components/DropdownSelect"
-import InputType from "./Upload Components/InputType"
 
 export default function MetaData({
 	tags,
@@ -35,13 +37,14 @@ export default function MetaData({
 	})
 	return (
 		<div className="grid auto-rows-auto gap-4 pr-2">
-			<div className='w-full'>
+			<div className="w-full">
 				<p className="text-xl font-bold">
 					{" "}
 					<MusicNoteIcon /> Track details
 				</p>
 				<TagInput
 					label="Tags"
+					hashtag={true}
 					disabled={false}
 					value={tags}
 					onChange={(newTagList) => {
@@ -59,7 +62,8 @@ export default function MetaData({
 					}}
 				/>
 			</div>
-			<hr />
+			<Divider/>
+
 			<div>
 				<p className="text-xl font-bold">
 					{" "}
@@ -76,32 +80,64 @@ export default function MetaData({
 					}}
 				/>
 			</div>
-			<hr />
+			<Divider/>
 
-			<div>
+			<div className="flex flex-col gap-4">
 				<p className="text-xl font-bold">
 					{" "}
 					<MonitorHeartOutlinedIcon /> Key & BPM
 				</p>
 
 				<div className="flex gap-4">
-					<DropDownSelect
+					{/* <DropDownSelect
 						label="Key"
 						dropDownList={DropDown.Keys}
 						value={keys}
 						onChange={(newKey) => {
 							updateFields({ keys: newKey })
 						}}
-					/>
+					/> */}
 
-					<InputType
+					<TextField
+						sx={{ width: "200px" }}
+						size="small"
+						id="type"
+						label="Key"
+						type="text"
+						InputLabelProps={{
+							shrink: true,
+						}}
+						select
+						value={keys}
+						onChange={(e) => {
+							updateFields({ keys: e.target.value })
+						}}
+					>
+						{DropDown.Keys.map((option) => (
+							<MenuItem key={option} value={option}>
+								{option}
+							</MenuItem>
+						))}
+					</TextField>
+
+					<TextField
+						sx={{ width: "200px" }}
+						size="small"
+						id="title"
 						label="BPM"
+						type="text"
+						InputLabelProps={{
+							shrink: true,
+						}}
 						value={bpm}
-						onChange={(newBpm) => updateFields({ bpm: newBpm })}
+						onChange={(e) => {
+							updateFields({ bpm: e.target.value })
+						}}
 					/>
 				</div>
 			</div>
-			<hr />
+			<Divider/>
+
 
 			<div>
 				<p className="text-xl font-bold">
@@ -118,8 +154,7 @@ export default function MetaData({
 					}}
 				/>
 			</div>
-			<hr />
-
+			<Divider/>
 			<div>
 				<p className="text-xl font-bold">
 					{" "}

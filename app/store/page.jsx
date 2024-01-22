@@ -1,9 +1,7 @@
 import getProducts from "@/libs/getProducts"
 import FilterBar from "../components/FilterComponents/FilterBar"
 import ProductCard from "../components/ProductCard/ProcudtCard"
-import Button from "@mui/material/Button"
 import styles from "./styles.module.css"
-
 
 export default async function Store() {
 	const { products } = await getProducts()
@@ -14,8 +12,8 @@ export default async function Store() {
 				<section className={styles.heroSection}></section>
 				<section className={styles.productSection}>
 					<div className="flex items-center">
-						<div className='flex items-center h-16 border border-black p-2 '>
-							<FilterBar />
+						<div className="flex items-center h-16 border border-black p-2 ">
+							{/* <FilterBar /> */}
 						</div>
 					</div>
 

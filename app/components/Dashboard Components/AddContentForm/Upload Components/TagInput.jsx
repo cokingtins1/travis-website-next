@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react"
 
 export default function TagInput({
 	label = "",
+	hashtag = false,
 	dropDownList = false, // dropDownList is an object
 	disabled = true,
 	addFunctionality = false,
@@ -83,7 +84,7 @@ export default function TagInput({
 						key={tag.id}
 						className=" whitespace-nowrap flex items-center gap-2 rounded bg-bg-tag text-text-tag border border-border-primary px-1"
 					>
-						<p>{tag.name}</p>
+						{hashtag ? <p>{`#${tag.name}`}</p> : <p>{tag.name}</p>}
 						<button
 							onClick={() => deleteTag(tag.id)}
 							className="text-text-tag"
@@ -135,14 +136,14 @@ export default function TagInput({
 	return (
 		<>
 			<div
-				className="w-full relative flex flex-col justify-center items-left my-2"
+				className="w-full relative flex flex-col justify-center items-left my-2 "
 				ref={popperRef}
 			>
 				{label && <p className="font-semibold">{label}</p>}
 				<div
-					className={`rounded border border-border-primary p-1 flex flex-col flex-wrap gap-2 ${
-						isfocused && "border-blue-500"
-					}`}
+					className={
+						"rounded border border-border-primary p-1 flex flex-col flex-wrap gap-2 hover:border-white"
+					}
 					onFocus={() => setIsfocused(true)}
 					onBlur={() => setIsfocused(false)}
 				>

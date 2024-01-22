@@ -1,4 +1,4 @@
-import PricingSwitch from "./Upload Components/Switch"
+import PricingSwitch from "./Upload Components/PricingSwitch"
 
 export default function Pricing({ updateFields, price }) {
 	return (
@@ -41,6 +41,17 @@ export default function Pricing({ updateFields, price }) {
 					contractTitle={"Basic License"}
 					contractSubtext={"MP3"}
 					value={price.basic.price}
+					onCheckedChange={(newChecked) => {
+						updateFields({
+							price: {
+								...price,
+								basic: {
+									...price.basic,
+									checked: newChecked,
+								},
+							},
+						})
+					}}
 					onChange={(newPrice) => {
 						updateFields({
 							price: {
@@ -54,10 +65,21 @@ export default function Pricing({ updateFields, price }) {
 					}}
 				/>
 				<PricingSwitch
-					defaultChecked={price.basic.checked}
+					defaultChecked={price.premium.checked}
 					contractTitle={"Premium License"}
 					contractSubtext={"WAV, MP3"}
 					value={price.premium.price}
+					onCheckedChange={(newChecked) => {
+						updateFields({
+							price: {
+								...price,
+								premium: {
+									...price.premium,
+									checked: newChecked,
+								},
+							},
+						})
+					}}
 					onChange={(newPrice) => {
 						updateFields({
 							price: {

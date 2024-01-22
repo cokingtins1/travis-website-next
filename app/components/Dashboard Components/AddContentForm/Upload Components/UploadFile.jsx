@@ -30,11 +30,11 @@ export default function UploadFile() {
 				</div>
 			</div>
 
-			<div className='flex gap-2'>
+			<div className="flex gap-2">
 				<Button
 					component="label"
 					variant="contained"
-                    disabled
+					disabled
 					startIcon={<PlayCircleIcon />}
 					sx={{ width: "115px", height: "40px" }}
 				>

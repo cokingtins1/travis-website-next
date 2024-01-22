@@ -16,7 +16,7 @@ module.exports = {
 			colors: {
 				"text-primary": "#fff",
 				"text-secondary": "#a7a7a7",
-				"text-tag": "#fff",
+				"text-tag": "#131A20",
 				"border-primary": "#a9a9a980",
 				"icon-primary": "#b3b3b3"
 			},
