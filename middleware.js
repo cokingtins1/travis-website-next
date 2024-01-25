@@ -7,28 +7,22 @@ export async function middleware(req) {
 	const requestUrl = new URL(req.url)
 	const res = NextResponse.next()
 	const supabase = createMiddlewareClient({ req, res })
-	const user = (await supabase.auth.getUser()).data.user
+	// supabase.auth.getSession()
 
-	const path = req.nextUrl.pathname
-	const token = req.cookies.get("sb-njowjcfiaxbnflrcwcep-auth-token")
-	// console.log(token)
+	const {
+		data: { session },
+	} = await supabase.auth.getSession()
+	console.log("Session:", session)
 
-	const isPublicPath = requestUrl === "/login" || requestUrl === "/signup"
+	if (!session) {
+		return NextResponse.redirect(new URL("/login", requestUrl.origin))
+	}
 
-	// if (!user) {
-	// 	return NextResponse.redirect(new URL("/login", requestUrl.origin))
-	// } else {
-	// 	return res
-	// 	// return NextResponse.redirect(new URL("/dashboard", requestUrl.origin))
-	// }
-	// await supabase.auth.getSession()
-
-	// const user = await supabase.auth.getUser()
-	// console.log(user.data.user === null)
+	// console.log("res:", res)
 	return res
 }
 
 // Private routes?
-// export const config = {
-// 	matcher: ["/", "/login", "/signup", "/dashboard"],
-// }
+export const config = {
+	matcher: ["/dashboard"],
+}

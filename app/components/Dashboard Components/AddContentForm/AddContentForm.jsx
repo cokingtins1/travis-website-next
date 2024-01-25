@@ -73,7 +73,7 @@ export default function AddContentForm() {
 	async function handleSubmit(e) {
 		e.preventDefault()
 		if (!isLastStep) return next()
-		await addProducts(data)
+		await addProducts(JSON.parse(JSON.stringify(data)))
 	}
 
 	const [tabValue, setTabValue] = useState(0)

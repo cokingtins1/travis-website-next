@@ -1,6 +1,5 @@
 "use client"
 
-import React from "react"
 import styles from "./layout.module.css"
 import SideBar from "../components/Dashboard Components/SideBar"
 import { ThemeProvider as MuiThemeProvider } from "@mui/material/styles"
