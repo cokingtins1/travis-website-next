@@ -5,7 +5,6 @@ import Link from "next/link"
 import Image from "next/image"
 import logoImg from "@/public/Logo.png"
 import SearchComponent from "../SearchBar/SearchComponent"
-import MUISwitch from "@mui/material/Switch"
 
 
 export default function Header() {
@@ -21,7 +20,14 @@ export default function Header() {
 					/>
 					<SearchComponent />
 					<div className={styles.adminButtons}>
-						<MUISwitch/>
+						<form action='/auth/logout' method='post'>
+							<button type='submit' className={styles.iconBtn}>
+								<AccountCircle />
+								<label className={styles.label} htmlFor="">
+									Logout
+								</label>
+							</button>
+						</form>
 						<Link href={"/login"}>
 							<button className={styles.iconBtn}>
 								<AccountCircle />
@@ -45,6 +51,12 @@ export default function Header() {
 					</Link>
 					<Link href={"/sandbox"} className={styles.navLink}>
 						Sandbox
+					</Link>
+					<Link
+						href={"/test-upload-client"}
+						className={styles.navLink}
+					>
+						Test Upload Client
 					</Link>
 					<Link href={"/dashboard"} className={styles.navLink}>
 						Dashboard

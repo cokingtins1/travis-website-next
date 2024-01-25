@@ -8,8 +8,7 @@ import YouTubeIcon from "@mui/icons-material/YouTube"
 import Button from "@mui/material/Button"
 import CloudUploadIcon from "@mui/icons-material/CloudUpload"
 import { styled } from "@mui/material/styles"
-import Divider from '@mui/material/Divider';
-
+import Divider from "@mui/material/Divider"
 
 import DropDown from "./Upload Components/DropDown.json"
 
@@ -38,7 +37,7 @@ export default function MetaData({
 	return (
 		<div className="grid auto-rows-auto gap-4 pr-2">
 			<div className="w-full">
-				<p className="text-xl font-bold">
+				<p className="text-lg font-bold">
 					{" "}
 					<MusicNoteIcon /> Track details
 				</p>
@@ -62,10 +61,10 @@ export default function MetaData({
 					}}
 				/>
 			</div>
-			<Divider/>
+			<Divider />
 
 			<div>
-				<p className="text-xl font-bold">
+				<p className="text-lg font-bold">
 					{" "}
 					<SentimentSatisfiedAltOutlinedIcon /> Moods
 				</p>
@@ -80,10 +79,10 @@ export default function MetaData({
 					}}
 				/>
 			</div>
-			<Divider/>
+			<Divider />
 
 			<div className="flex flex-col gap-4">
-				<p className="text-xl font-bold">
+				<p className="text-lg font-bold">
 					{" "}
 					<MonitorHeartOutlinedIcon /> Key & BPM
 				</p>
@@ -136,11 +135,10 @@ export default function MetaData({
 					/>
 				</div>
 			</div>
-			<Divider/>
-
+			<Divider />
 
 			<div>
-				<p className="text-xl font-bold">
+				<p className="text-lg font-bold">
 					{" "}
 					<KeyboardVoiceIcon /> Instruments & Vocals
 				</p>
@@ -154,9 +152,9 @@ export default function MetaData({
 					}}
 				/>
 			</div>
-			<Divider/>
+			<Divider />
 			<div>
-				<p className="text-xl font-bold">
+				<p className="text-lg font-bold">
 					{" "}
 					<YouTubeIcon /> Related videos
 				</p>

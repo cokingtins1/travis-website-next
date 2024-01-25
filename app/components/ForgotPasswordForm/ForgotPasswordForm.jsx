@@ -12,10 +12,6 @@ import Alert from "@mui/material/Alert"
 import { useState } from "react"
 
 export default function ForgotPasswordForm() {
-	const [message, setMessage] = useState("")
-	const { resetPassword } = useAuth()
-	const router = useRouter()
-
 	const formik = useFormik({
 		initialValues: {
 			email: "",
@@ -25,17 +21,16 @@ export default function ForgotPasswordForm() {
 				.email("Invalid Email")
 				.required("A valid email is required"),
 		}),
-		onSubmit: async () => {
-			await resetPassword(formik.values.email)
-			setMessage("Check your email for further instructions")
-		},
 	})
 
 	return (
 		<>
 			{" "}
-			{message && <Alert severity="success">{message}</Alert>}
-			<form className={styles.loginForm} onSubmit={formik.handleSubmit}>
+			<form
+				action="/auth/reset-password"
+				method="post"
+				className={styles.loginForm}
+			>
 				<TextField
 					fullWidth
 					id="email"

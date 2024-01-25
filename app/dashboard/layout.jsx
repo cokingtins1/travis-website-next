@@ -3,20 +3,18 @@
 import React from "react"
 import styles from "./layout.module.css"
 import SideBar from "../components/Dashboard Components/SideBar"
-import { LocalizationProvider } from "@mui/x-date-pickers"
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
+import { ThemeProvider as MuiThemeProvider } from "@mui/material/styles"
+import theme from "@/libs/contexts/MuiThemContext"
 
 export default function Layout({ children }) {
 	return (
-		<main className={styles.main}>
-			<section className={styles.sideBar}>
-				<SideBar />
-			</section>
-			<section className={styles.content}>
-				<LocalizationProvider dateAdapter={AdapterDayjs}>
-					{children}
-				</LocalizationProvider>
-			</section>
-		</main>
+		<MuiThemeProvider theme={theme}>
+			<main className={styles.main}>
+				<section className={styles.sideBar}>
+					<SideBar />
+				</section>
+				<section className={styles.content}>{children}</section>
+			</main>
+		</MuiThemeProvider>
 	)
 }

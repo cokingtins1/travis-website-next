@@ -2,9 +2,13 @@ import Link from "next/link"
 
 import styles from "./page.module.css"
 import DummyProductCard from "@/app/components/DummyComponents/DummyProductCard"
-import { Button } from '../components/UI/Button'
+import { Button } from "../components/UI/Button"
+// import { getProducts } from "@/libs/supabase/getProducts"
 
-export default function Page() {
+export default async function Page() {
+	// const { products } = getProducts()
+	// console.log(products)
+
 	return (
 		<>
 			<section className={styles.addContent}>
@@ -16,6 +20,13 @@ export default function Page() {
 			</section>
 
 			<section>
+				{/* {products && (
+					<div>
+						{products.map((product) => (
+							<p>{product.title}</p>
+						))}
+					</div>
+				)} */}
 				<ul className={styles.productGrid}>
 					<DummyProductCard />
 					<DummyProductCard />

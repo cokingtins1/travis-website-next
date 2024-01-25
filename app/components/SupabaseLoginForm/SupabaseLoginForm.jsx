@@ -1,18 +1,23 @@
-"use client"
-
 import styles from "./styles.module.css"
 import TextField from "@mui/material/TextField"
 import Link from "next/link"
 import Button from "@mui/material/Button"
-import createFormik from "@/libs/firebase/createForm"
-import { signup } from "@/libs/supabase/SupabaseUserContext"
+import createFormik from "@/libs/supabase/createSupaFormik"
 
-export default function SignUpForm() {
-	const formik = createFormik("signup", signup)
+export default function SupabaseLoginForm() {
+	const formik = createFormik("login")
 
 	return (
 		<>
-			<form className={styles.loginForm} onSubmit={formik.handleSubmit}>
+			<form
+				action="/auth/login"
+				method="post"
+				className={styles.loginForm}
+				onSubmit={(e) => {
+					e.preventDefault()
+					formik.submitForm(formik.values)
+				}}
+			>
 				<TextField
 					fullWidth
 					id="email"
@@ -40,33 +45,22 @@ export default function SignUpForm() {
 						formik.touched.password && formik.errors.password
 					}
 				/>
-				<TextField
-					fullWidth
-					id="passVerify"
-					name="passVerify"
-					label="verify password"
-					type="password"
-					value={formik.values.passVerify}
-					onChange={formik.handleChange}
-					onBlur={formik.handleBlur}
-					error={Boolean(
-						formik.touched.passVerify && formik.errors.passVerify
-					)}
-					helperText={
-						formik.touched.passVerify && formik.errors.passVerify
-					}
-				/>
+
+				{formik.status && <p className='text-rose-500'>{formik.status.message}</p>}
 
 				<Button type="submit" variant="outlined">
-					Sign Up
+					Log In
 				</Button>
 			</form>
-
 			<div className="flex gap-4 align-middle">
-				<p>Already have an account</p>
-				<Link href={"/login"}>
-					{" "}
-					<u className="text-blue-700">Login</u>
+				<p>Need an account?</p>
+				<Link href={"/signup"}>
+					<u className="text-blue-700">Sign Up</u>
+				</Link>
+			</div>
+			<div className="flex gap-4 align-middle">
+				<Link href={"/forgot-password"}>
+					<u className="text-blue-700">Forgot Password?</u>
 				</Link>
 			</div>
 		</>

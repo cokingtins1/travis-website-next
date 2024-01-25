@@ -2,13 +2,15 @@ import { useFormik } from "formik"
 import { useRouter } from "next/navigation"
 import * as Yup from "yup"
 
-export default function createFormik(formType, onSubmitCallback) {
+export default function createFormik(formType) {
 	const router = useRouter()
 	const form = useFormik({
 		initialValues: {
 			email: "",
-			...(formType === "signup" || ("login" && { password: "" })),
-			...(formType === "signup" && { passVerify: "" }),
+			...(formType === "signup" || formType === "login"
+				? { password: "" }
+				: {}),
+			...(formType === "signup" ? { passVerify: "" } : {}),
 		},
 		validationSchema: Yup.object({
 			email: Yup.string()
@@ -25,25 +27,28 @@ export default function createFormik(formType, onSubmitCallback) {
 					.required("Please validate your password"),
 			}),
 		}),
-		onSubmit: async () => {
-			
-			console.log('submitting form')
-			try {
-				// Call the provided onSubmitCallback with form values
-				if (formType === "signup" || formType === "login") {
-					await onSubmitCallback(
-						form.values.email,
-						form.values.password
-					)
-					router.push("/dashboard")
-				}
 
-				if (formType === "resetPassword") {
-					await onSubmitCallback(form.values.email)
-					router.push('/store')
+		onSubmit: async (values, { resetForm, setSubmitting }) => {
+			try {
+				const res = await fetch(`/auth/${formType}`, {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify(values),
+				})
+				if (res.ok) {
+					form.setStatus(null)
+					setSubmitting(true)
+					resetForm()
+					router.push("/")
+				} else {
+					form.setStatus({ message: "Invalid email or password" })
 				}
 			} catch (error) {
-				console.error("Submission failed:", error)
+				console.error("Error:", error)
+			} finally {
+				setSubmitting(false)
 			}
 		},
 	})

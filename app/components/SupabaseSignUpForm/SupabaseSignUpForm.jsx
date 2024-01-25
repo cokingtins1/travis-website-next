@@ -1,18 +1,23 @@
-"use client"
-
 import styles from "./styles.module.css"
 import TextField from "@mui/material/TextField"
 import Link from "next/link"
 import Button from "@mui/material/Button"
-import createFormik from "@/libs/firebase/createForm"
-import { signup } from "@/libs/supabase/SupabaseUserContext"
+import createFormik from "@/libs/supabase/createSupaFormik"
 
-export default function SignUpForm() {
-	const formik = createFormik("signup", signup)
+export default function SupabaseSignUpForm() {
+	const formik = createFormik("signup")
 
 	return (
 		<>
-			<form className={styles.loginForm} onSubmit={formik.handleSubmit}>
+			<form
+				action="/auth/sign-up"
+				method="post"
+				className={styles.loginForm}
+				onSubmit={(e) => {
+					e.preventDefault()
+					formik.submitForm(formik.values)
+				}}
+			>
 				<TextField
 					fullWidth
 					id="email"
@@ -57,7 +62,15 @@ export default function SignUpForm() {
 					}
 				/>
 
-				<Button type="submit" variant="outlined">
+				<Button
+					disabled={
+						!formik.values.email ||
+						!formik.values.password ||
+						!formik.values.passVerify
+					}
+					type="submit"
+					variant="outlined"
+				>
 					Sign Up
 				</Button>
 			</form>

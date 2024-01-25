@@ -1,4 +1,4 @@
-import { initializeApp, getApps } from 'firebase/app'
+import { initializeApp, getApps } from "firebase/app"
 
 export const createFirebaseApp = () => {
 	const clientCredentials = {
@@ -16,6 +16,3 @@ export const createFirebaseApp = () => {
 		return app
 	}
 }
-
-
-

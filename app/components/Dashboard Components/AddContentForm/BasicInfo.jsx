@@ -2,28 +2,35 @@ import TextField from "@mui/material/TextField"
 import MenuItem from "@mui/material/MenuItem"
 import EditIcon from "@mui/icons-material/Edit"
 import { DatePicker } from "@mui/x-date-pickers/DatePicker"
-import { useTheme } from "@mui/material/styles"
 
 import FormControl from "@mui/material/FormControl"
 
-import beatKitImage from "@/public/beatKitImage.jpg"
 import Image from "next/image"
 import { Button } from "../../UI/Button"
+import { useState } from "react"
 
 export default function BasicInfo({
+	image,
 	title,
 	type,
 	releaseDate,
 	description,
 	updateFields,
 }) {
-	const theme = useTheme()
+	const [selectedImage, setSelectedImage] = useState(null)
 
 	const contentType = [
 		{ value: "Beat" },
 		{ value: "Drum Kit" },
 		{ value: "Melody" },
 	]
+
+	function handleUpload(e) {
+		const file = e.target.files[0]
+
+		if (file == null) return
+		setSelectedImage(file)
+	}
 
 	return (
 		<>
@@ -32,13 +39,30 @@ export default function BasicInfo({
 					<div className="flex flex-col items-center gap-2 ">
 						<Image
 							width={250}
+							height={250}
 							className="border rounded-lg"
-							src={beatKitImage}
+							src={
+								selectedImage
+									? URL.createObjectURL(selectedImage)
+									: image
+							}
 							alt="product image"
-						></Image>
+							onChange={() => {
+								updateFields({ image: selectedImage })
+							}}
+						/>
 
 						<Button type="button" size="lg" icon={<EditIcon />}>
-							Edit Picture
+							<label className="cursor-pointer">
+								{" "}
+								Edit Picture
+								<input
+									className="opacity-0 absolute left-[-9999px]"
+									type="file"
+									name="myImage"
+									onChange={handleUpload}
+								/>
+							</label>
 						</Button>
 					</div>
 				</div>

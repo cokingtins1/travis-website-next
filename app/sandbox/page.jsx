@@ -27,13 +27,32 @@ export default function Page() {
 	// console.log("Value:", value, "Type:", typeof(value), typeof(dayjs().format("DD/MM/YYYY")))
 	// console.log(value)
 
+	const [file, setFile] = useState()
+
+	async function onSubmit(e) {
+		e.preventDefault()
+
+		if (!file) return
+		try {
+			const data = new FormData()
+			data.set("file", file)
+
+			const res = await fetch("/api/upload", {
+				method: "POST",
+				body: data,
+			})
+
+			if (!res.ok) throw new Error(await res.text())
+		} catch (error) {
+			console.log(error)
+		}
+	}
+
 	return (
 		<>
 			<div className="flex flex-col items-center justify-center gap-4 mt-12">
-				{/* <InputTag /> */}
-				{/* <TagInput dropDownList={DropDown.Genre} addFunctionality limit={2} /> */}
 				<div className="grid grid-cols-2 auto-rows-auto items-center gap-y-2">
-					<span>default</span>
+					{/* <span>default</span>
 					<Button
 						onClick={() => {
 							console.log("clicked")
@@ -51,7 +70,16 @@ export default function Page() {
 					<span>ghost</span>
 					<Button variant="ghost">Click Me</Button>
 					<span>link</span>
-					<Button variant="link">Click Me</Button>
+					<Button variant="link">Click Me</Button> */}
+
+					<form onSubmit={onSubmit}>
+						<input
+							type="file"
+							name="file"
+							onChange={(e) => setFile(e.target.files[0])}
+						/>
+						<input type="submit" value="Upload" />
+					</form>
 				</div>
 			</div>
 		</>

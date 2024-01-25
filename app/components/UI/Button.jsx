@@ -16,11 +16,13 @@ const buttonVariants = cva(
 				subtle: "bg-slate-100 text-slate-900 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-100",
 				ghost: "bg-transparent dark:bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 dark:text-slate-100 dark:hover:text-slate-100 data-[state=open]:bg-transparent dark:data-[state=open]:bg-transparent",
 				link: "bg-transparent dark:bg-transparent underline-offset-4 hover:underline text-slate-900 dark:text-slate-300 hover:bg-transparent dark:hover:bg-transparent",
+				circle:"rounded-full bg-white text-black hover:bg-slate-700 dark:bg-slate-50 dark:text-slate-900",
 			},
 			size: {
 				default: "h-10 min-w-20 px-4",
 				sm: "h-9 min-w-16 rounded-md",
 				lg: "h-11 min-w-28 rounded-md px-4",
+				circle: "w-10 h-10"
 			},
 		},
 		defaultVariants: {

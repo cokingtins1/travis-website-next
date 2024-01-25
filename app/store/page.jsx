@@ -1,10 +1,10 @@
-import getProducts from "@/libs/getProducts"
+import getProducts from "@/libs/supabase/getProducts"
 import FilterBar from "../components/FilterComponents/FilterBar"
 import ProductCard from "../components/ProductCard/ProcudtCard"
 import styles from "./styles.module.css"
 
 export default async function Store() {
-	const { products } = await getProducts()
+	// const { products } = await getProducts()
 
 	return (
 		<>
@@ -19,7 +19,7 @@ export default async function Store() {
 
 					<section>
 						<ul className={styles.productGrid}>
-							<ProductCard products={products} />
+							{/* <ProductCard products={products} /> */}
 						</ul>
 					</section>
 				</section>

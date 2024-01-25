@@ -9,22 +9,25 @@ import dayjs from "dayjs"
 import Tabs from "@mui/material/Tabs"
 import Tab from "@mui/material/Tab"
 import Divider from "@mui/material/Divider"
+import beatKitImage from "@/public/beatKitImage.jpg"
 
 import MetaData from "./MetaData"
 import Pricing from "./Pricing"
 import { Button } from "../../UI/Button"
+import { addProducts } from "@/libs/supabase/getProducts"
 
 const INITIAL_DATA = {
 	files: null,
+	image: beatKitImage,
 	title: "",
 	type: "",
 	releaseDate: dayjs(),
 	description: "",
-	tags: "",
-	genres: "",
-	moods: "",
+	tags: [],
+	genres: [],
+	moods: [],
 	keys: "None",
-	bpm: "",
+	bpm: 0,
 	instruments: "",
 	price: {
 		exclusive: {
@@ -67,14 +70,15 @@ export default function AddContentForm() {
 		<Pricing {...data} updateFields={updateFields} />,
 	])
 
-	function handleSubmit(e) {
+	async function handleSubmit(e) {
 		e.preventDefault()
 		if (!isLastStep) return next()
+		await addProducts(data)
 	}
 
-	const [value, setValue] = useState(0)
-	const handleChange = (event, newValue) => {
-		setValue(newValue)
+	const [tabValue, setTabValue] = useState(0)
+	const handleChange = (newValue) => {
+		setTabValue(newValue)
 	}
 	const indices = [
 		{ index: 0, value: "Upload Files" },
@@ -91,19 +95,20 @@ export default function AddContentForm() {
 				<form action="" onSubmit={handleSubmit}>
 					<div className="flex flex-col">
 						<div>
-							<Tabs onChange={handleChange} value={value}>
+							<Tabs onChange={handleChange} value={tabValue}>
 								{indices.map((step) => (
 									<Tab
+										key={step.index}
 										label={step.value}
 										onClick={() => {
-											setValue(step.index)
+											setTabValue(step.index)
 											goTo(step.index)
 										}}
 									/>
 								))}
 							</Tabs>
 						</div>
-						<div className="h-[36rem] overflow-auto p-2 mt-4">
+						<div className="h-[32rem] overflow-auto p-2 mt-4">
 							{step}
 						</div>
 						<Divider />
@@ -113,7 +118,7 @@ export default function AddContentForm() {
 									size="lg"
 									onClick={() => {
 										back()
-										setValue(currentStepIndex - 1)
+										setTabValue(currentStepIndex - 1)
 									}}
 									type="button"
 								>
@@ -123,10 +128,10 @@ export default function AddContentForm() {
 							<Button
 								size="lg"
 								type={isLastStep ? "submit" : "button"}
-								onClick={() => {
-									next()
+								onClick={(e) => {
+									handleSubmit(e)
 									!isLastStep &&
-										setValue(currentStepIndex + 1)
+										setTabValue(currentStepIndex + 1)
 								}}
 							>
 								{isLastStep ? "Upload" : "Next"}

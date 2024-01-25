@@ -5,7 +5,7 @@ import TextField from "@mui/material/TextField"
 import Button from "@mui/material/Button"
 import Link from "next/link"
 import { useAuth } from "@/libs/contexts/UserContext"
-import createFormik from "@/libs/createForm"
+import createFormik from "@/libs/firebase/createForm"
 
 export default function LoginForm() {
 	const { login } = useAuth()
