@@ -25,7 +25,6 @@ export default function Page() {
 	// const [value, setValue] = useState(dayjs().format("DD/MM/YYYY"))
 	// const [value, setValue] = useState(dayjs())
 	// console.log("Value:", value, "Type:", typeof(value), typeof(dayjs().format("DD/MM/YYYY")))
-	// console.log(value)
 
 	const [file, setFile] = useState()
 

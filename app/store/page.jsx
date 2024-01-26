@@ -13,6 +13,7 @@ export default async function Store() {
 				<section className={styles.productSection}>
 					<div className="flex items-center">
 						<div className="flex items-center h-16 border border-black p-2 ">
+							Hello Store
 							{/* <FilterBar /> */}
 						</div>
 					</div>

@@ -1,5 +1,6 @@
 import { useFormik } from "formik"
 import { useRouter } from "next/navigation"
+
 import * as Yup from "yup"
 
 export default function createFormik(formType) {
@@ -41,7 +42,10 @@ export default function createFormik(formType) {
 					form.setStatus(null)
 					setSubmitting(true)
 					resetForm()
-					router.push("/")
+					// router.refresh() <- doesn't work for some reason
+					// console.log("res:", res)
+					window.location.reload()
+					// router.push("/test-upload-client")
 				} else {
 					form.setStatus({ message: "Invalid email or password" })
 				}

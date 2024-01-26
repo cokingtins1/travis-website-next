@@ -46,7 +46,9 @@ export default function SupabaseLoginForm() {
 					}
 				/>
 
-				{formik.status && <p className='text-rose-500'>{formik.status.message}</p>}
+				{formik.status && (
+					<p className="text-rose-500">{formik.status.message}</p>
+				)}
 
 				<Button type="submit" variant="outlined">
 					Log In

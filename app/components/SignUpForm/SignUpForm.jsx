@@ -5,7 +5,7 @@ import TextField from "@mui/material/TextField"
 import Link from "next/link"
 import Button from "@mui/material/Button"
 import createFormik from "@/libs/firebase/createForm"
-import { signup } from "@/libs/supabase/SupabaseUserContext"
+import { signup } from "@/libs/supabase/supabase-context"
 
 export default function SignUpForm() {
 	const formik = createFormik("signup", signup)

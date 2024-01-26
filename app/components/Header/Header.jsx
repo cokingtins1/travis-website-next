@@ -6,7 +6,6 @@ import Image from "next/image"
 import logoImg from "@/public/Logo.png"
 import SearchComponent from "../SearchBar/SearchComponent"
 
-
 export default function Header() {
 	return (
 		<>
@@ -20,8 +19,8 @@ export default function Header() {
 					/>
 					<SearchComponent />
 					<div className={styles.adminButtons}>
-						<form action='/auth/logout' method='post'>
-							<button type='submit' className={styles.iconBtn}>
+						<form action="/auth/logout" method="post">
+							<button type="submit" className={styles.iconBtn}>
 								<AccountCircle />
 								<label className={styles.label} htmlFor="">
 									Logout
@@ -57,6 +56,12 @@ export default function Header() {
 						className={styles.navLink}
 					>
 						Test Upload Client
+					</Link>
+					<Link
+						href={"/server-data-fetch"}
+						className={styles.navLink}
+					>
+						Server Fetch
 					</Link>
 					<Link href={"/dashboard"} className={styles.navLink}>
 						Dashboard

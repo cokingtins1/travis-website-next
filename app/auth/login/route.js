@@ -1,5 +1,4 @@
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs"
-import { redirect } from "next/dist/server/api-utils"
 import { cookies } from "next/headers"
 import { NextResponse } from "next/server"
 
@@ -22,9 +21,12 @@ export async function POST(request) {
 		const user = (await supabase.auth.getUser()).data.user
 
 		if (user) {
-			return NextResponse.json({
-				status: 201,
-			})
+			return NextResponse.redirect(
+				`${requestUrl.origin}/test-upload-client`,
+				{
+					status: 301,
+				}
+			)
 		} else {
 			return NextResponse.json(
 				{ error: "failed to authenticate" },
@@ -33,5 +35,9 @@ export async function POST(request) {
 		}
 	} catch (error) {
 		console.log(error)
+		return NextResponse.json(
+			{ error: "An error occurred during authentication" },
+			{ status: 500 }
+		)
 	}
 }
