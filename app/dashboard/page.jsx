@@ -6,11 +6,12 @@ import { Button } from "../components/UI/Button"
 
 import { createServerActionClient } from "@supabase/auth-helpers-nextjs"
 import { cookies } from "next/headers"
+import ProductMeta from "../components/ProductMeta/ProductMeta"
 
 export default async function Page() {
 	const supabase = createServerActionClient({ cookies })
 
-	const { data } = await supabase.from("products").select()
+	const { data: products } = await supabase.from("products").select()
 
 	return (
 		<>
@@ -25,8 +26,12 @@ export default async function Page() {
 
 			<section>
 				<ul className={styles.productGrid}>
-					{data.map((product, index) => (
-						<DummyProductCard key={index} title={product.title} />
+					{products.map((product, index) => (
+						<DummyProductCard
+							key={index}
+							title={product.title}
+							id={product.id}
+						/>
 					))}
 					{/* <DummyProductCard />
 					<DummyProductCard />

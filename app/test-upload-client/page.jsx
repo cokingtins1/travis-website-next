@@ -11,7 +11,6 @@ export default function Page() {
 	const { supabase, session, currentUser } = useSupabase()
 	const [products, setProducts] = useState()
 
-	console.log(currentUser)
 
 	// useEffect(() => {
 	// 	const getData = async () => {

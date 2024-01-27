@@ -38,6 +38,7 @@ export default function createFormik(formType) {
 					},
 					body: JSON.stringify(values),
 				})
+				
 				if (res.ok) {
 					form.setStatus(null)
 					setSubmitting(true)

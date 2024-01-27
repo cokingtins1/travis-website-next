@@ -1,9 +1,8 @@
 import { createServerActionClient } from "@supabase/auth-helpers-nextjs"
 import { cookies } from "next/headers"
 
-const supabase = createServerActionClient({ cookies })
-
 export async function useSession() {
+	const supabase = createServerActionClient({ cookies })
 	const {
 		data: { session },
 	} = await supabase.auth.getSession()
@@ -16,5 +15,5 @@ export async function useSession() {
 		id = userId
 	}
 
-	return { session, id }
+	return { supabase, session, id }
 }

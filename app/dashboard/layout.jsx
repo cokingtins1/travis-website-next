@@ -5,6 +5,7 @@ import SideBar from "../components/Dashboard Components/SideBar"
 import { ThemeProvider as MuiThemeProvider } from "@mui/material/styles"
 import theme from "@/libs/contexts/MuiThemContext"
 
+
 export default function Layout({ children }) {
 	return (
 		<MuiThemeProvider theme={theme}>

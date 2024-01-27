@@ -39,22 +39,20 @@ export async function POST(request) {
 		const user = (await supabase.auth.getUser()).data.user
 
 		if (user) {
-			return NextResponse.redirect(
-				`${requestUrl.origin}/test-upload-client`,
-				{
-					status: 301,
-				}
+			return NextResponse.json(
+				{ redirectUrl: `${requestUrl.origin}/dashboard` },
+				{ message: "Successful authentication" },
+				{ status: 200 }
 			)
 		} else {
 			return NextResponse.json(
-				{ error: "failed to authenticate" },
+				{ message: "Failed to authenticate" },
 				{ status: 401 }
 			)
 		}
 	} catch (error) {
-		console.log(error)
 		return NextResponse.json(
-			{ error: "An error occurred during authentication" },
+			{ message: `${error} An error occurred during authentication` },
 			{ status: 500 }
 		)
 	}

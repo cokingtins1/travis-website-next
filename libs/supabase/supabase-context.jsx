@@ -11,7 +11,6 @@ export default function SupabaseContext({ children }) {
 	const router = useRouter()
 	const [supabase] = useState(() => createClientComponentClient())
 	const [session, setSession] = useState(null)
-	const [currentUser, setCurrentUser] = useState(null)
 
 	const clientSignUp = async () => {
 		await supabase.auth.signUp({
@@ -37,56 +36,17 @@ export default function SupabaseContext({ children }) {
 		router.refresh()
 	}
 
-	// useEffect(() => {
-	// 	const {
-	// 		data: { subscription },
-	// 	} = supabase.auth.onAuthStateChange(() => {
-	// 		setSession(
-	// 			supabase.auth.getSession().then((response) => {
-	// 				setSession(response.data.session)
-	// 			})
-	// 		)
-	// 		setCurrentUser(session.user.id)
-	// 		router.refresh()
-	// 	})
-
-	// 	return () => {
-	// 		subscription.unsubscribe()
-	// 	}
-	// }, [supabase, router])
-
 	useEffect(() => {
 		const {
 			data: { subscription },
-		} = supabase.auth.onAuthStateChange((event, session) => {
-			if (event === "SIGNED_OUT") {
-				setSession(null)
-			} else if (session) {
-				setSession(session)
-			}
+		} = supabase.auth.onAuthStateChange(() => {
+			router.refresh()
 		})
 
 		return () => {
 			subscription.unsubscribe()
 		}
 	}, [])
-
-	// supabase.auth.onAuthStateChange((event, session) => {
-	// 	if (event === "INITIAL_SESSION") {
-	// 		console.log(event)
-	// 		console.log(session.user.id)
-	// 	} else if (event === "SIGNED_IN") {
-	// 		console.log(event)
-	// 	} else if (event === "SIGNED_OUT") {
-	// 		console.log(event)
-	// 	} else if (event === "PASSWORD_RECOVERY") {
-	// 		console.log(event)
-	// 	} else if (event === "TOKEN_REFRESHED") {
-	// 		console.log(event)
-	// 	} else if (event === "USER_UPDATED") {
-	// 		console.log(event)
-	// 	}
-	// })
 
 	const values = {
 		supabase,
