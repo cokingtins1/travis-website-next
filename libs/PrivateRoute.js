@@ -1,12 +1,24 @@
-import { useAuth } from "@/libs/contexts/UserContext"
-import { redirect } from "next/navigation"
+// "use server"
 
-export default function PrivateRoute({ component: Component, ...rest }) {
-	const { currentUser } = useAuth()
+// // import { useAuth } from "@/libs/contexts/UserContext"
+// import { redirect } from "next/navigation"
+// import { cookies } from "next/headers"
+// import { createServerActionClient } from "@supabase/auth-helpers-nextjs"
 
-	if (!currentUser) {
-		redirect("/login")
-	}
 
-	return <Component {...rest} />
-}
+
+// export default async function PrivateRoute({ component: Component, ...rest }) {
+// 	// const { currentUser } = useAuth()
+
+// 	const supabase = createServerActionClient({ cookies })
+
+// 	const {
+// 		data: { session },
+// 	} = await supabase.auth.getSession()
+
+// 	if (!session) {
+// 		redirect("/login")
+// 	}
+
+// 	return <Component {...rest} />
+// }

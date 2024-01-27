@@ -3,16 +3,18 @@ import { cookies } from "next/headers"
 
 const supabase = createServerActionClient({ cookies })
 
-export async function getSession() {
+export async function useSession() {
 	const {
 		data: { session },
 	} = await supabase.auth.getSession()
 
+	let id
 	if (session) {
-		return true
-	} else {
-		return false
+		const {
+			user: { id: userId },
+		} = session
+		id = userId
 	}
-}
 
-export { supabase }
+	return { session, id }
+}

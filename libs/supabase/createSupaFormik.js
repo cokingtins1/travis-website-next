@@ -42,10 +42,7 @@ export default function createFormik(formType) {
 					form.setStatus(null)
 					setSubmitting(true)
 					resetForm()
-					// router.refresh() <- doesn't work for some reason
-					// console.log("res:", res)
-					window.location.reload()
-					// router.push("/test-upload-client")
+					router.refresh()
 				} else {
 					form.setStatus({ message: "Invalid email or password" })
 				}

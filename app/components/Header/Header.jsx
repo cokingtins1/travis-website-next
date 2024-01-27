@@ -5,8 +5,11 @@ import Link from "next/link"
 import Image from "next/image"
 import logoImg from "@/public/Logo.png"
 import SearchComponent from "../SearchBar/SearchComponent"
+import { useSession } from "@/libs/supabase/useSession"
 
-export default function Header() {
+export default async function Header() {
+	const { session } = await useSession()
+
 	return (
 		<>
 			<header className={styles.headerWrapper}>
@@ -19,22 +22,28 @@ export default function Header() {
 					/>
 					<SearchComponent />
 					<div className={styles.adminButtons}>
-						<form action="/auth/logout" method="post">
-							<button type="submit" className={styles.iconBtn}>
-								<AccountCircle />
-								<label className={styles.label} htmlFor="">
-									Logout
-								</label>
-							</button>
-						</form>
-						<Link href={"/login"}>
-							<button className={styles.iconBtn}>
-								<AccountCircle />
-								<label className={styles.label} htmlFor="">
-									Login
-								</label>
-							</button>
-						</Link>
+						{session ? (
+							<form action="/auth/logout" method="post">
+								<button
+									type="submit"
+									className={styles.iconBtn}
+								>
+									<AccountCircle />
+									<label className={styles.label} htmlFor="">
+										Logout
+									</label>
+								</button>
+							</form>
+						) : (
+							<Link href={"/login"}>
+								<button className={styles.iconBtn}>
+									<AccountCircle />
+									<label className={styles.label} htmlFor="">
+										Login
+									</label>
+								</button>
+							</Link>
+						)}
 						<button className={styles.iconBtn}>
 							<ShoppingCartIcon />
 							<label className={styles.label}>Cart</label>
