@@ -19,5 +19,15 @@ export default async function Page({ params: { id } }) {
 		notFound()
 	}
 
-	return <ProductMeta product={product} />
+	return (
+		<>
+			<main className="max-w-[1200px] grid grid-cols-12">
+				<div className="col-span-4">
+					<ProductMeta product={product} />
+				</div>
+
+				<div className="col-span-8">this is the main section</div>
+			</main>
+		</>
+	)
 }

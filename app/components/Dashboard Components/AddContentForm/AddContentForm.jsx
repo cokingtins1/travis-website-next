@@ -14,7 +14,7 @@ import beatKitImage from "@/public/beatKitImage.jpg"
 import MetaData from "./MetaData"
 import Pricing from "./Pricing"
 import { Button } from "../../UI/Button"
-import { addProducts } from "@/libs/supabase/getProducts"
+import { addProducts } from "@/libs/supabase/addProducts"
 
 const INITIAL_DATA = {
 	files: null,
@@ -28,7 +28,7 @@ const INITIAL_DATA = {
 	moods: [],
 	keys: "None",
 	bpm: 0,
-	instruments: "",
+	instruments: [],
 	price: {
 		exclusive: {
 			checked: true,
@@ -74,6 +74,7 @@ export default function AddContentForm() {
 		e.preventDefault()
 		if (!isLastStep) return next()
 		await addProducts(JSON.parse(JSON.stringify(data)))
+		console.log(JSON.parse(JSON.stringify(data)))
 	}
 
 	const [tabValue, setTabValue] = useState(0)
@@ -86,8 +87,6 @@ export default function AddContentForm() {
 		{ index: 2, value: "Meta Data" },
 		{ index: 3, value: "Pricing" },
 	]
-
-	// console.log(data)
 
 	return (
 		<>

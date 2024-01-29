@@ -57,7 +57,7 @@ export default function MetaData({
 					disabled={false}
 					addFunctionality
 					onChange={(newTagList) => {
-						updateFields({ genre: newTagList })
+						updateFields({ genres: newTagList })
 					}}
 				/>
 			</div>
@@ -75,7 +75,7 @@ export default function MetaData({
 					disabled={false}
 					addFunctionality
 					onChange={(newTagList) => {
-						updateFields({ genres: newTagList })
+						updateFields({ moods: newTagList })
 					}}
 				/>
 			</div>

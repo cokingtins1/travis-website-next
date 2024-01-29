@@ -1,6 +1,5 @@
-import connectMongoDB from "@/libs/mongodb"
-import Product from "@/models/store"
 import { NextResponse } from "next/server"
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 
 // export async function POST(req) {
 // 	const { productName, cost } = await req.json()
@@ -9,13 +8,12 @@ import { NextResponse } from "next/server"
 // 	return NextResponse.json({ message: "Product Created" }, { status: 201 })
 // }
 
-export async function GET() {
-	await connectMongoDB()
-	const products = await Product.find()
-	return ('this is the response', NextResponse.json({products}))
+export async function GET(req) {
+	const res = req.json()
+	console.log(res)
+
+	return "this is the response", NextResponse.json({ products })
 }
-
-
 
 // export async function DELETE(req){
 //     const id = req.nextUrl.searchParams.get('id')
@@ -28,5 +26,3 @@ export async function GET() {
 //     const result = await Product.findById('65900d76e82f15967b7b0131')
 // 	return NextResponse.json({message: 'you did it'})
 // }
-
-

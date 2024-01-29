@@ -33,14 +33,6 @@ export default async function Page() {
 							id={product.id}
 						/>
 					))}
-					{/* <DummyProductCard />
-					<DummyProductCard />
-					<DummyProductCard />
-					<DummyProductCard />
-					<DummyProductCard />
-					<DummyProductCard />
-					<DummyProductCard />
-					<DummyProductCard /> */}
 				</ul>
 			</section>
 		</>

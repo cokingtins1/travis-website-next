@@ -1,10 +1,12 @@
-import getProducts from "@/libs/supabase/getProducts"
+import getProducts from "@/libs/supabase/addProducts"
 import FilterBar from "../components/FilterComponents/FilterBar"
 import ProductCard from "../components/ProductCard/ProcudtCard"
 import styles from "./styles.module.css"
+import supabaseClient from "@/libs/supabase/config/supabaseClient"
+// import { useSession } from "@/libs/supabase/useSession"
 
 export default async function Store() {
-	// const { products } = await getProducts()
+	const { data: products } = await supabaseClient.from("products").select("*")
 
 	return (
 		<>
@@ -20,7 +22,9 @@ export default async function Store() {
 
 					<section>
 						<ul className={styles.productGrid}>
-							{/* <ProductCard products={products} /> */}
+							{products.map((product, index) => (
+								<ProductCard key={index} product={product} />
+							))}
 						</ul>
 					</section>
 				</section>

@@ -16,7 +16,7 @@ export default function RootLayout({ children }) {
 			<body className={inter.className}>
 				<SupabaseContext>
 					<Header />
-					{children}
+					<main className=" bg-slate-700 mx-[12rem]">{children}</main>
 				</SupabaseContext>
 			</body>
 		</html>

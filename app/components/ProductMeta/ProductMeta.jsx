@@ -1,3 +1,5 @@
+"use client"
+
 import styles from "./styles.module.css"
 import beatKitImage from "@/public/beatKitImage.jpg"
 import Image from "next/image"
@@ -7,61 +9,72 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder"
 import IosShareIcon from "@mui/icons-material/IosShare"
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart"
 
+import { ThemeProvider as MuiThemeProvider } from "@mui/material/styles"
+import theme from "@/libs/contexts/MuiThemContext"
+
 export default function ProductMeta({ product }) {
 	return (
 		<>
-			<div className={styles.wrapper}>
-				<div className={styles.imageCont}>
-					<Image
-						src={beatKitImage}
-						alt="product image"
-						style={{ borderRadius: ".5rem" }}
-					></Image>
-				</div>
-				<h1 className="text-2xl text-center">{product.title}</h1>
+			<MuiThemeProvider theme={theme}>
+				<div className="bg-bg-elevated rounded-xl p-4">
+					<div className="flex flex-col justify-center items-center gap-4">
+						<Image
+							src={beatKitImage}
+							alt="product image"
+							width={200}
+						></Image>
+						<h1 className="text-2xl text-center">
+							{product.title}
+						</h1>
+					</div>
 
-				<div className={styles.iconCont}>
-					<button></button>
+					<div className={styles.metaInfo}>
+						<div className={styles.iconCont}>
+							<button></button>
 
-					<IconButton>
-						<FavoriteBorderIcon />
-					</IconButton>
-					<IconButton>
-						<IosShareIcon />
-					</IconButton>
-					<IconButton>
-						<ShoppingCartIcon />
-					</IconButton>
-				</div>
+							<IconButton>
+								<FavoriteBorderIcon />
+							</IconButton>
+							<IconButton>
+								<IosShareIcon />
+							</IconButton>
+							<IconButton>
+								<ShoppingCartIcon />
+							</IconButton>
+						</div>
 
-				<Divider />
-				<div className={styles.productInfo}>
-					<h3 className="text-sm">INFORMATION</h3>
-					<p>
-						<span>Published</span>
-						<span>December 28, 2023</span>
-					</p>
-					<p>
-						<span>BPM</span>
-						<span>69</span>
-					</p>
-					<p>
-						<span>Plays</span>
-						<span>420</span>
-					</p>
-				</div>
+						<Divider />
+						<div className={styles.productInfo}>
+							<h3 className="">INFORMATION</h3>
+							<p>
+								<span>Published</span>
+								<span>{product.release_date_long}</span>
+							</p>
+							<p>
+								<span>BPM</span>
+								<span>{product.bpm}</span>
+							</p>
+							<p>
+								<span>Plays</span>
+								<span>420</span>
+							</p>
+						</div>
 
-				<Divider />
-				<div className={styles.productAbout}>
-					<h3 className="text-sm">ABOUT</h3>
-					<p>
-						<span>
-							Disco pop type beat | Funky dance pop type beat
-						</span>
-					</p>
+						<Divider />
+						<div className={styles.productAbout}>
+							<h3 className="text-sm">TAGS</h3>
+							<div className="flex gap-2 flex-wrap">
+								{product.tags.map((tag) => (
+									<p className="bg-bg-secondary text-sm px-4 py-1 rounded-2xl whitespace-nowrap">
+										{`#${tag}`}
+									</p>
+								))}
+							</div>
+						</div>
+						<Divider />
+					</div>
 				</div>
-				<Divider />
-			</div>
+			</MuiThemeProvider>
 		</>
 	)
 }

@@ -1,10 +1,12 @@
-import connectMongoDB from "@/libs/mongodb"
-import Product from "@/models/store"
+import supabaseClient from "@/libs/supabase/config/supabaseClient"
 import { NextResponse } from "next/server"
 
-export async function GET(req, {params}) {
-    const {id} = params
-	await connectMongoDB()
-	const product = await Product.findOne({ _id: id })
+export async function GET(req, { params }) {
+	const { id } = params
+	const { data: product } = await supabaseClient
+		.from("products")
+		.select("*")
+		.match({ id })
+		.single()
 	return NextResponse.json({ product }, { status: 200 })
 }

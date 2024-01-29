@@ -4,6 +4,16 @@
     padding: 1rem;
 }
 
+.metaInfo > * {
+    color: var(--text-secondary);
+}
+
+.metaInfo h3 {
+    color: var(--text-third);
+    font-size: 0.75rem; /* 12px */
+    line-height: 1rem; /* 16px */
+}
+
 .iconCont{
     display: flex;
     justify-content: center;
@@ -17,6 +27,7 @@
     margin: 1rem 0;
 }
 
-.productAbout{
+.productAbout > * {
+    display: flex;
     margin: 1rem 0;
 } 

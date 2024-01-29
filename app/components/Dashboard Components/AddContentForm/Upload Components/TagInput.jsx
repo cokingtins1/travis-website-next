@@ -70,7 +70,7 @@ export default function TagInput({
 		}
 		if (e.key === "Backspace" && !inputString) {
 			e.preventDefault()
-			deleteLastTag(inputString)
+			deleteLastTag()
 		}
 
 		return
