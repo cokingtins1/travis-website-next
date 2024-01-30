@@ -1,9 +1,8 @@
-.main{
-max-width: 1200px;
-margin: 0 auto;
-}
+/* .main{
+    max-width: 1200px;
+} */
 
-.productSection{
+.filterSection{
     display: flex;
     justify-content: center;
     margin: 1rem;
@@ -14,7 +13,7 @@ margin: 0 auto;
 
 .productGrid{
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
     gap: 1rem;
 }
 

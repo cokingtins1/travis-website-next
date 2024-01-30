@@ -20,7 +20,7 @@ export default function TagInput({
 	const popperRef = useRef(null)
 
 	function addTag(tag) {
-		if (checkLimit()) return
+		// if (checkLimit()) return
 
 		if (tagList.some((t) => t.name === tag)) return
 
@@ -32,20 +32,20 @@ export default function TagInput({
 	}
 
 	// Updates state of limitReached immediately so alert can render real-time
-	useEffect(() => {
-		checkLimit()
-		onChange && onChange(tagList)
-	}, [tagList])
+	// useEffect(() => {
+	// 	checkLimit()
+	// 	onChange && onChange(tagList)
+	// }, [tagList, onChange])
 
-	function checkLimit() {
-		if (tagList.length === limit) {
-			setLimitReached(true)
-			return true
-		} else {
-			setLimitReached(false)
-			return false
-		}
-	}
+	// function checkLimit() {
+	// 	if (tagList.length === limit) {
+	// 		setLimitReached(true)
+	// 		return true
+	// 	} else {
+	// 		setLimitReached(false)
+	// 		return false
+	// 	}
+	// }
 
 	function deleteTag(tagId) {
 		setTagList((currentTags) => {

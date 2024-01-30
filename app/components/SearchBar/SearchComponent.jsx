@@ -52,7 +52,7 @@ export default function SearchComponent() {
 
 	return (
 		<>
-			<div ref={anchorRef}>
+			<div className='w-full' ref={anchorRef}>
 				<SearchBar posts={posts} query={query} setQuery={setQuery} />
 				{/* <div ref={anchorRef}></div> */}
 				{query.length > 0 && (

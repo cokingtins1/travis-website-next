@@ -1,16 +1,18 @@
-import CustomDivider from "@/app/components/MUI/Divider"
-import PricingButton from "@/app/components/Pricing Component/PricingButton"
+import PricingSection from "@/app/components/Pricing Component/PricingButton"
 import ProductMeta from "@/app/components/ProductMeta/ProductMeta"
-import { Button } from "@/app/components/UI/Button"
-import supabaseClient from "@/libs/supabase/config/supabaseClient"
+import { getProductById } from "@/libs/supabase/supabaseQuery"
 import { notFound } from "next/navigation"
+// import supabaseClient from "@/libs/supabase/config/supabaseClient"
+
+// export async function generateStaticParams() {
+// 	const { data: products } = await supabaseClient
+// 		.from("products")
+// 		.select("id")
+// 	return products ?? []
+// }
 
 export default async function Page({ params: { id } }) {
-	const { data: product } = await supabaseClient
-		.from("products")
-		.select("*")
-		.match({ id })
-		.single()
+	const product = await getProductById(id)
 
 	if (!product) {
 		notFound()
@@ -24,26 +26,7 @@ export default async function Page({ params: { id } }) {
 				</div>
 
 				<div className="col-span-9 bg-bg-elevated">
-					<div className='flex flex-col gap-4 p-4'>
-						<div className="flex justify-between items-center ">
-							<h1>Liscensing</h1>
-							<div className="flex gap-4">
-								<div>
-									<p>TOTAL:</p>
-									<h2>$29.99</h2>
-								</div>
-								<Button>Add to Cart</Button>
-							</div>
-						</div>
-						<CustomDivider />
-						<div>
-							<PricingButton product={product} />
-							<PricingButton product={product} />
-							<PricingButton product={product} />
-							<PricingButton product={product} />
-							<PricingButton product={product} />
-						</div>
-					</div>
+					<PricingSection price={product.price} />
 				</div>
 			</main>
 		</>

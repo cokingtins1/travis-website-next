@@ -17,18 +17,20 @@ module.exports = {
 				"text-primary": "#fff",
 				"text-secondary": "#a7a7a7",
 				"text-tag": "#131A20",
+				"bg-base": "#000000",
 				"border-primary": "#a9a9a980",
-				"icon-primary": "#b3b3b3"
+				"border-btn-select": "#005FF8",
+				"icon-primary": "#b3b3b3",
 			},
 			backgroundColor: {
 				"bg-elevated": "#121212",
 				"bg-secondary": "#242424",
-				"bg-hover" : "#2a2a2a",
+				"bg-hover": "#2a2a2a",
 				"bg-dropDown": "#2D2D2D ",
 				"bg-button": "#2a2a2a",
+				"bg-btn-select": "#081B39",
 				"bg-buttonHover": "#2a2a2a",
 				"bg-tag": "#90CAF9",
-
 			},
 		},
 	},

@@ -32,8 +32,7 @@ export default function InputType({
 
 	useEffect(() => {
 		onChange && onChange(inputValue)
-	}, [inputValue])
-
+	}, [inputValue, onChange])
 
 	return (
 		<>

@@ -19,7 +19,7 @@ export default function PricingSwitch({
 
 	useEffect(() => {
 		onChange && onChange(inputValue)
-	}, [inputValue])
+	}, [inputValue, onChange])
 
 	return (
 		<div className="flex justify-between items-center rounded-lg border border-border-primary p-2">

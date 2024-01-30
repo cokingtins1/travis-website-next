@@ -28,7 +28,7 @@ export default function DropDownSelect({
 
 	useEffect(() => {
 		onChange && onChange(dropDownValue)
-	}, [dropDownValue])
+	}, [dropDownValue, onChange])
 
 	// Click away listenter for dropdown
 	useEffect(() => {

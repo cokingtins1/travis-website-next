@@ -1,27 +1,28 @@
 "use client"
 
-import { createContext, useContext, useState } from "react"
+import { createTheme } from "@mui/material/styles"
+import { ThemeProvider as MuiThemeProvider } from "@mui/material/styles"
 
-
-const ThemeContext = createContext()
-
-export function useTheme(){
-	return useContext(ThemeContext)
-}
+const theme = createTheme({
+	components: {
+		MuiTextField: {
+			styleOverrides: {
+				root: {},
+			},
+		},
+		MuiDivider: {
+			styleOverrides: {
+				root: {
+					// backgroundColor:'#FF0000'
+				},
+			},
+		},
+	},
+	palette: {
+		mode: "dark",
+	},
+})
 
 export default function ThemeProvider({ children }) {
-	const [theme, setTheme] = useState(null)
-
-	const btnColor = ''
-
-	function toggleTheme() {
-		setTheme((curr) => (curr === "light" ? "dark" : "light"))
-	}
-
-	return (
-		<ThemeContext.Provider value={{ theme, toggleTheme }}>
-			{children}
-		</ThemeContext.Provider>
-	)
+	return <MuiThemeProvider theme={theme}>{children}</MuiThemeProvider>
 }
-

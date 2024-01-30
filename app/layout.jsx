@@ -2,6 +2,7 @@ import { Inter } from "next/font/google"
 import "./globals.css"
 import Header from "./components/Header/Header"
 import SupabaseContext from "@/libs/supabase/supabase-context"
+import ThemeProvider from "@/libs/contexts/ThemeContext"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -16,9 +17,13 @@ export default function RootLayout({ children }) {
 			<body className={inter.className}>
 				<SupabaseContext>
 					<Header />
-					<main className=" bg-slate-700 mx-[12rem]">{children}</main>
+					<main className=" mx-auto max-w-[1424px]">
+						<ThemeProvider>{children}</ThemeProvider>
+					</main>
 				</SupabaseContext>
 			</body>
 		</html>
 	)
 }
+
+// bg-slate-700 mx-[12rem]

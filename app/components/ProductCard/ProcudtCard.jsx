@@ -1,17 +1,24 @@
 import Image from "next/image"
 import beatKitImage from "@/public/beatKitImage.jpg"
 import Link from "next/link"
+import Divider from "@mui/material/Divider"
+import { getProductCosting } from "@/libs/supabase/supabaseQuery"
 
 export default async function ProductCard({ product }) {
+	const fromPrice = await getProductCosting(product.id)
+
 	return (
 		<>
-			<li className="flex flex-1 flex-col">
-				<Link href={`/store/${product.id}`}>
+			<Link href={`/store/${product.id}`}>
+				<li className="border border-bg-base hover:bg-bg-elevated hover:border-border-primary rounded-lg flex flex-1 flex-col p-4">
 					<Image src={beatKitImage} alt="product image"></Image>
-				</Link>
-				<p className="product-title">{product.title}</p>
-				<p className="cost">$5.99</p>
-			</li>
+					<p className="product-title">{product.title}</p>
+					<Divider />
+					<p className="text-sm text-text-secondary">
+						From ${fromPrice && fromPrice}
+					</p>
+				</li>
+			</Link>
 		</>
 	)
 }

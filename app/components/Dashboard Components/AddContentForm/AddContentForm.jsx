@@ -30,10 +30,6 @@ const INITIAL_DATA = {
 	bpm: 0,
 	instruments: [],
 	price: {
-		exclusive: {
-			checked: true,
-			price: 250,
-		},
 		basic: {
 			checked: true,
 			price: 30,
@@ -41,6 +37,10 @@ const INITIAL_DATA = {
 		premium: {
 			checked: true,
 			price: 50,
+		},
+		exclusive: {
+			checked: true,
+			price: 250,
 		},
 	},
 }
@@ -64,10 +64,10 @@ export default function AddContentForm() {
 		next,
 		goTo,
 	} = useMultipleStepForm([
-		<Files {...data} updateFields={updateFields} />,
-		<BasicInfo {...data} updateFields={updateFields} />,
-		<MetaData {...data} updateFields={updateFields} />,
-		<Pricing {...data} updateFields={updateFields} />,
+		<Files key="files" {...data} updateFields={updateFields} />,
+		<BasicInfo key="basicInfo" {...data} updateFields={updateFields} />,
+		<MetaData key="metaData" {...data} updateFields={updateFields} />,
+		<Pricing key="pricing" {...data} updateFields={updateFields} />,
 	])
 
 	async function handleSubmit(e) {

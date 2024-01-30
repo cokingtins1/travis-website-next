@@ -4,7 +4,6 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart"
 import Link from "next/link"
 import Image from "next/image"
 import logoImg from "@/public/Logo.png"
-import SearchComponent from "../SearchBar/SearchComponent"
 import { useSession } from "@/libs/supabase/useSession"
 
 export default async function Header() {
@@ -20,7 +19,7 @@ export default async function Header() {
 						className="flex justify-start"
 						width={50}
 					/>
-					<SearchComponent />
+					<div></div>
 					<div className={styles.adminButtons}>
 						{session ? (
 							<form action="/auth/logout" method="post">
