@@ -60,10 +60,10 @@ export default async function Header() {
 						Sandbox
 					</Link>
 					<Link
-						href={"/test-upload-client"}
+						href={"/store-server"}
 						className={styles.navLink}
 					>
-						Test Upload Client
+						store-server
 					</Link>
 					<Link
 						href={"/server-data-fetch"}

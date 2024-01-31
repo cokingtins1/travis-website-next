@@ -1,41 +1,47 @@
-import TextField from "@mui/material/TextField"
-import Autocomplete from "@mui/material/Autocomplete"
-import parse from "autosuggest-highlight/parse"
-import match from "autosuggest-highlight/match"
+// "use client"
 
-export default function FilterSection() {
+// import { useState } from "react"
+import FilterDropDown from "../UI/FilterDropDown"
+// import { useSearchParams } from "next/navigation"
+
+
+export default function FilterSection({ genres, moods, instruments }) {
+
+	// const searchParams = useSearchParams()
+	// console.log(searchParams.get('moods'))
+
+	// const [filterValues, setFilterValues] = useState([])
+
+	// function updateFilters(filters) {
+	// 	setFilterValues((prev) => {
+	// 		return [...prev, filters]
+	// 	})
+	// }
+
 	return (
-		<Autocomplete
-			id="highlights-demo"
-			sx={{ width: 300 }}
-			options={top100Films}
-			getOptionLabel={(option) => option.title}
-			renderInput={(params) => (
-				<TextField {...params} label="Highlights" margin="normal" />
-			)}
-			renderOption={(props, option, { inputValue }) => {
-				const matches = match(option.title, inputValue, {
-					insideWords: true,
-				})
-				const parts = parse(option.title, matches)
-
-				return (
-					<li {...props}>
-						<div>
-							{parts.map((part, index) => (
-								<span
-									key={index}
-									style={{
-										fontWeight: part.highlight ? 700 : 400,
-									}}
-								>
-									{part.text}
-								</span>
-							))}
-						</div>
-					</li>
-				)
-			}}
-		/>
+		<div className="w-full flex justify-start items-center gap-4 bg-bg-elevated p-4">
+			{/* {filterValues.map((filter, index) => (
+				<span key={index}>{filter}</span>
+			) )} */}
+			<FilterDropDown
+				// updateFilters={updateFilters}
+				label="GENRE"
+				items={genres}
+				type={"genres"}
+				
+			/>
+			<FilterDropDown
+				// updateFilters={updateFilters}
+				label="MOODS"
+				items={moods}
+				type={"moods"}
+			/>
+			<FilterDropDown
+				// updateFilters={updateFilters}
+				label="INSTRUMENTS"
+				items={instruments}
+				type={"instruments"}
+			/>
+		</div>
 	)
 }

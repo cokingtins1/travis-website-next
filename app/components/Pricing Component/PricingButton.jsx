@@ -47,9 +47,9 @@ export default function PricingSection({ price }) {
 				key={index}
 				id={index}
 				value={price}
-				className={`w-80 h-20 flex items-center border rounded-xl  ${
+				className={`w-80 h-20 flex items-center border rounded-xl hover:bg-bg-hover  ${
 					selected === index
-						? "border-border-btn-select bg-bg-btn-select"
+						? "border-border-btn-select bg-bg-btn-select hover:none "
 						: "border-border-primary"
 				}  p-4`}
 				onClick={() => {

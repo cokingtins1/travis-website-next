@@ -88,15 +88,6 @@ export default function MetaData({
 				</p>
 
 				<div className="flex gap-4">
-					{/* <DropDownSelect
-						label="Key"
-						dropDownList={DropDown.Keys}
-						value={keys}
-						onChange={(newKey) => {
-							updateFields({ keys: newKey })
-						}}
-					/> */}
-
 					<TextField
 						sx={{ width: "200px" }}
 						size="small"

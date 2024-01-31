@@ -15,7 +15,7 @@ export async function getProductById(id) {
 	return product
 }
 
-export async function getProductCosting(id) {
+export async function getStartingPrice(id) {
 	const { data: price } = await supabaseClient
 		.from("products")
 		.select("price")
@@ -55,6 +55,26 @@ export async function getUniqueTags() {
 
 	if (tags) {
 		return tags
+	}
+	return null
+}
+
+export async function getUniqueGenres() {
+	const { data: genres } = await supabaseClient.rpc("get_unique_genres")
+
+	if (genres) {
+		return genres
+	}
+	return null
+}
+
+export async function getAllColVals(columnName) {
+	const { data } = await supabaseClient.from("products").select(columnName)
+
+	if (data) {
+		return data.reduce((acc, obj) => {
+			return acc.concat(obj[columnName])
+		}, [])
 	}
 	return null
 }

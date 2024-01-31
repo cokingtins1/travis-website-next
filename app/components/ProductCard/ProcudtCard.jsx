@@ -2,10 +2,10 @@ import Image from "next/image"
 import beatKitImage from "@/public/beatKitImage.jpg"
 import Link from "next/link"
 import Divider from "@mui/material/Divider"
-import { getProductCosting } from "@/libs/supabase/supabaseQuery"
+import { getStartingPrice } from "@/libs/supabase/supabaseQuery"
 
 export default async function ProductCard({ product }) {
-	const fromPrice = await getProductCosting(product.id)
+	const fromPrice = await getStartingPrice(product.id)
 
 	return (
 		<>

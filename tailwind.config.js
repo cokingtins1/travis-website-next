@@ -23,6 +23,8 @@ module.exports = {
 				"icon-primary": "#b3b3b3",
 			},
 			backgroundColor: {
+				"bg-accent-blue": "#007FFF",
+				"bg-accent-red": "#FF033E",
 				"bg-elevated": "#121212",
 				"bg-secondary": "#242424",
 				"bg-hover": "#2a2a2a",

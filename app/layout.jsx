@@ -17,7 +17,7 @@ export default function RootLayout({ children }) {
 			<body className={inter.className}>
 				<SupabaseContext>
 					<Header />
-					<main className=" mx-auto max-w-[1424px]">
+					<main className=" mx-auto max-w-[1440px]">
 						<ThemeProvider>{children}</ThemeProvider>
 					</main>
 				</SupabaseContext>
