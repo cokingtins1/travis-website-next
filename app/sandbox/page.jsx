@@ -1,105 +1,108 @@
 "use client"
 
-import beatKitImage from "@/public/beatKitImage.jpg"
-import Link from "next/link"
-import Image from "next/image"
-import getPosts from "@/libs/getPosts"
-import SearchComponent from "../components/SearchBar/SearchComponent"
-import AddContentForm from "../components/Dashboard Components/AddContentForm/AddContentForm"
-
-import dayjs from "dayjs"
-import { DatePicker } from "@mui/x-date-pickers/DatePicker"
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
-import { useState } from "react"
-
-import SearchTag from "../components/Dashboard Components/AddContentForm/Upload Components/TagInput"
-import TagInput from "../components/Dashboard Components/AddContentForm/Upload Components/TagInput"
-
-import DropDownSelect from "@/app/components/Dashboard Components/AddContentForm/Upload Components/DropdownSelect"
-import { Button } from "../components/UI/Button"
-import InputType from "../components/Dashboard Components/AddContentForm/Upload Components/InputType"
-import PricingSwitch from "../components/Dashboard Components/AddContentForm/Upload Components/PricingSwitch"
+import { styled } from "@mui/material/styles"
+import Button from "@mui/material/Button"
+import { Button as MyButton } from "@/app/components/UI/Button"
+import CloudUploadIcon from "@mui/icons-material/CloudUpload"
+import { useSupabase } from "@/libs/supabase/supabase-context"
+import { useEffect, useState } from "react"
 
 export default function Page() {
-	// const [value, setValue] = useState(dayjs().format("DD/MM/YYYY"))
-	// const [value, setValue] = useState(dayjs())
-	// console.log("Value:", value, "Type:", typeof(value), typeof(dayjs().format("DD/MM/YYYY")))
-
-	const [file, setFile] = useState()
-
-	async function onSubmit(e) {
-		e.preventDefault()
-
-		if (!file) return
-		try {
-			const data = new FormData()
-			data.set("file", file)
-
-			const res = await fetch("/api/upload", {
-				method: "POST",
-				body: data,
-			})
-
-			if (!res.ok) throw new Error(await res.text())
-		} catch (error) {
-			console.log(error)
-		}
+	const DummyData = {
+		file_MP3: null,
+		file_WAV: null,
+		file_STEM: null,
+		image: null,
+		title: "The Coolest Beat Known to Man",
+		type: "Beat",
+		releaseDate: new Date(),
+		description: "This is the description",
+		tags: ["cool", "nice", "swag"],
+		genres: ["R&B", "Hip Hop", "Rap"],
+		moods: ["angry", "moody", "complicated"],
+		keys: "BM",
+		bpm: 175,
+		instruments: ["Drums", "Guitar"],
+		price: {
+			basic: {
+				checked: true,
+				price: 30,
+			},
+			premium: {
+				checked: true,
+				price: 50,
+			},
+			exclusive: {
+				checked: true,
+				price: 250,
+			},
+		},
 	}
 
+	const [data, setData] = useState(DummyData)
+	const [fileName, setFileName] = useState("")
+
+	function updateFields(fields) {
+		setData((prev) => {
+			return { ...prev, ...fields }
+		})
+	}
+
+	function handleSubmit(e) {
+		e.preventDefault()
+		let reader = new FileReader()
+		let file = e.target.files[0]
+
+		// fetch("/api/upload", {
+		// 	method: "POST",
+		// 	body: formData,
+		// })
+		// 	.then((response) => response.json())
+		// 	.then((data) => {
+		// 		// Handle the response from the server
+		// 		console.log(data)
+		// 	})
+		// 	.catch((error) => {
+		// 		// Handle any errors
+		// 		console.error(error)
+		// 	})
+	}
+
+	const VisuallyHiddenInput = styled("input")({
+		clip: "rect(0 0 0 0)",
+		clipPath: "inset(50%)",
+		height: 1,
+		overflow: "hidden",
+		position: "absolute",
+		bottom: 0,
+		left: 0,
+		whiteSpace: "nowrap",
+		width: 1,
+	})
 	return (
 		<>
-			<div className="flex flex-col items-center justify-center gap-4 mt-12">
-				<div className="grid grid-cols-2 auto-rows-auto items-center gap-y-2">
-					{/* <span>default</span>
+			<div className="flex justify-center items-center">
+				<form onSubmit={(e) => handleSubmit(e)}>
 					<Button
-						onClick={() => {
-							console.log("clicked")
-						}}
-						variant="default"
+						component="label"
+						variant="contained"
+						startIcon={<CloudUploadIcon />}
+						sx={{ width: "115px", height: "40px" }}
 					>
-						Click Me
-					</Button>
-					<span>destrictive</span>
-					<Button variant="destructive">Click Me</Button>
-					<span>outline</span>
-					<Button variant="outline">Click Me</Button>
-					<span>subtle</span>
-					<Button variant="subtle">Click Me</Button>
-					<span>ghost</span>
-					<Button variant="ghost">Click Me</Button>
-					<span>link</span>
-					<Button variant="link">Click Me</Button> */}
-
-					<form onSubmit={onSubmit}>
-						<input
+						Upload
+						<VisuallyHiddenInput
+							// disabled={uploading}
 							type="file"
-							name="file"
-							onChange={(e) => setFile(e.target.files[0])}
 						/>
-						<input type="submit" value="Upload" />
-					</form>
-				</div>
+					</Button>
+					<button
+						className="bg-white text-black p-4 rounded"
+						type="submit"
+					>
+						Submit Form
+					</button>
+				</form>
 			</div>
 		</>
 	)
 }
-
-{
-	/* <LocalizationProvider dateAdapter={AdapterDayjs}>
-{/* <DatePicker
-	// defaultValue={dayjs('2022-04-17')}
-	value={dayjs(value).format("DD/MM/YYYY")}
-	onChange={(newValue) =>
-		setValue(dayjs(newValue).format("DD/MM/YYYY"))
-	}
-/> */
-}
-
-{
-	/* <DatePicker
-	value={value}
-	onChange={(newValue) => setValue(newValue)}
-/> */
-}
-// </LocalizationProvider> */}

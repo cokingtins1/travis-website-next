@@ -1,12 +1,8 @@
-// "use client"
 
 // import { useState } from "react"
-import FilterDropDown from "../UI/FilterDropDown"
-// import { useSearchParams } from "next/navigation"
-
+import FilterDropDown from "../../UI/FilterDropDown"
 
 export default function FilterSection({ genres, moods, instruments }) {
-
 	// const searchParams = useSearchParams()
 	// console.log(searchParams.get('moods'))
 
@@ -18,6 +14,8 @@ export default function FilterSection({ genres, moods, instruments }) {
 	// 	})
 	// }
 
+	const test = ["balls", "big balls", "even bigger balls"]
+
 	return (
 		<div className="w-full flex justify-start items-center gap-4 bg-bg-elevated p-4">
 			{/* {filterValues.map((filter, index) => (
@@ -28,7 +26,6 @@ export default function FilterSection({ genres, moods, instruments }) {
 				label="GENRE"
 				items={genres}
 				type={"genres"}
-				
 			/>
 			<FilterDropDown
 				// updateFilters={updateFilters}
@@ -41,6 +38,13 @@ export default function FilterSection({ genres, moods, instruments }) {
 				label="INSTRUMENTS"
 				items={instruments}
 				type={"instruments"}
+			/>
+
+			<FilterDropDown
+				// updateFilters={updateFilters}
+				label="BALLS"
+				items={test}
+				type={"test"}
 			/>
 		</div>
 	)

@@ -2,58 +2,25 @@
 
 import TextField from "@mui/material/TextField"
 import MenuItem from "@mui/material/MenuItem"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import Link from "next/link"
-import { useSearchParams } from "next/navigation"
-import { useRouter } from "next/navigation"
+import { usePathname, useSearchParams } from "next/navigation"
 
-export default function FilterDropDown({ label, items, type }) {
+export default function FilterDropDown({ label, items }) {
 	const [value, setValue] = useState("")
-	const [query, setQuery] = useState("")
-	const router = useRouter()
 
+	const pathname = usePathname()
 	const searchParams = useSearchParams()
 
-	const [genreQuery, setGenreQuery] = useState(
-		searchParams.get("genres") || ""
+	const createQueryString = useCallback(
+		(name, value) => {
+			const params = new URLSearchParams(searchParams)
+			params.set(name, value)
+
+			return params.toString()
+		},
+		[searchParams]
 	)
-	const [moodQuery, setMoodQuery] = useState(searchParams.get("moods") || "")
-	const [instrumentQuery, setInstrumentQuery] = useState(
-		searchParams.get("instruments") || ""
-	)
-
-	// const [genreQuery, setGenreQuery] = useState("")
-	// const [moodQuery, setMoodQuery] = useState("")
-	// const [instrumentQuery, setInstrumentQuery] = useState("")
-
-
-	// console.log("allQueries:", allQueries)
-
-	function updateQuery(newQuery) {
-		if (type === "genres") {
-			setGenreQuery(newQuery)
-		} else if (type === "moods") {
-			setMoodQuery(newQuery)
-		} else if (type === "instruments") {
-			setInstrumentQuery(newQuery)
-		}
-	}
-
-	console.log(genreQuery)
-
-	useEffect(() => {
-		// window.history.pushState(
-		// 	null,
-		// 	"",
-		// 	`?genres=${genreQuery}&moods=${moodQuery}&instruments=${instrumentQuery}`
-		// )
-		router.push(`?genres=${genreQuery}&moods=${moodQuery}&instruments=${instrumentQuery}`, {scroll: false})
-	}, [genreQuery, moodQuery, instrumentQuery])
-
-	// console.log(query)
-
-	// const genreSearch = searchParams.get("moods")
-	// console.log("genreSearch params:", genreSearch)
 
 	// items will be array of all values in column
 
@@ -84,23 +51,19 @@ export default function FilterDropDown({ label, items, type }) {
 					value={value}
 					onChange={(e) => {
 						const newValue = e.target.value
-						// updateQuery(newValue)
 						setValue(newValue)
 						// updateFilters(e.target.value)
 					}}
 				>
 					{/* <div className="h-[200px]"> */}
 					{unique.map((item, index) => (
-						<MenuItem
-							key={index}
-							value={item}
-							onClick={() => updateQuery(item)}
-						>
+						<MenuItem key={index} value={item}>
 							<Link
-								href={{
-									pathname: "store",
-									query: { [label.toLowerCase()]: item },
-								}}
+								href={
+									pathname +
+									"?" +
+									createQueryString(label.toLowerCase(), item)
+								}
 							>
 								{`${item} (${getOccurrence(items, item)}) `}
 							</Link>

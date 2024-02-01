@@ -1,88 +1,121 @@
-import SearchComponent from "../components/SearchBar/SearchComponent"
-import {
-	getAllColVals,
-	getAllProducts,
-	getUniqueTags,
-} from "@/libs/supabase/supabaseQuery"
-import { notFound } from "next/navigation"
-import Divider from "@mui/material/Divider"
-import { Button } from "../components/UI/Button"
-import NewProductCard from "../components/ProductCard/NewProductCard"
+"use client"
 
-import TextField from "@mui/material/TextField"
-import MenuItem from "@mui/material/MenuItem"
-import Link from "next/link"
+import { styled } from "@mui/material/styles"
+import Button from "@mui/material/Button"
+import { Button as MyButton } from "@/app/components/UI/Button"
+import CloudUploadIcon from "@mui/icons-material/CloudUpload"
+import { useSupabase } from "@/libs/supabase/supabase-context"
+import { useEffect, useState } from "react"
 
-export default async function Store({ searchParams }) {
-	const products = await getAllProducts()
-	const tags = await getUniqueTags()
-	const genres = await getAllColVals("genres")
-	const moods = await getAllColVals("moods")
-	const instruments = await getAllColVals("instruments")
+export default function Page() {
+	const [userId, setUserId] = useState("")
+	const [user, setUser] = useState(null)
+	const [media, setMedia] = useState([])
+	const [uploading, setUploading] = useState(false)
 
-	if (!products) {
-		notFound()
+	const { supabase } = useSupabase()
+
+	async function getUser() {
+		try {
+			const {
+				data: { user },
+			} = await supabase.auth.getUser()
+			if (user !== null) {
+				setUser(user)
+				setUserId(user.id)
+			} else {
+				setUserId("")
+			}
+		} catch (e) {}
 	}
 
+	async function uploadImage(e) {
+		try {
+			setUploading(true)
+			const file = e.target.files[0]
+			const fileExt = file.name.split(".").pop()
+			const fileName = `${crypto.randomUUID()}.${fileExt}`
+			console.log("File:", file)
+			console.log("File Extension:", fileExt)
+			console.log("File Name:", fileName)
+
+			if (!user) {
+				throw new Error("user not authenticated for file upload")
+			}
+
+			const filePath = `user_uploads/${userId}/${fileName}`
+
+			const { error } = await supabase.storage
+				.from("files")
+				.upload(filePath, file)
+
+			if (error) {
+				throw error
+			}
+		} catch (err) {
+			console.error(err)
+		} finally {
+			setUploading(false)
+		}
+	}
+
+	async function testSupabase() {
+		const { data: buckets } = await supabase.storage.listBuckets()
+		console.log(buckets)
+	}
+
+	async function getMedia() {
+		const { data, error } = await supabase.storage
+			.from("uploads")
+			.list(userId + "/", {
+				limit: 10,
+				offset: 0,
+				sortBy: {
+					column: "name",
+					order: "asc",
+				},
+			})
+
+		if (data) {
+			setMedia(data)
+		} else {
+			console.log(71, error)
+		}
+	}
+
+	useEffect(() => {
+		getUser()
+		// getMedia()
+	}, [])
+
+	const VisuallyHiddenInput = styled("input")({
+		clip: "rect(0 0 0 0)",
+		clipPath: "inset(50%)",
+		height: 1,
+		overflow: "hidden",
+		position: "absolute",
+		bottom: 0,
+		left: 0,
+		whiteSpace: "nowrap",
+		width: 1,
+	})
 	return (
 		<>
-			<main className="flex flex-col justify-center items-center w-full">
-				<header className="my-4">
-					<SearchComponent />
-				</header>
-				<div className="flex flex-col justify-center items-center w-full ">
-					{/* Filter Section */}
-					<div className="flex flex-col items-center gap-2 my-4">
-						<div className="flex gap-4">
-							{tags.map((tag, index) => {
-								return <Button key={index}>{tag}</Button>
-							})}
-							<Divider />
-						</div>
-						<div className="w-full flex justify-start items-center gap-4 bg-bg-elevated p-4">
-							<div className="flex flex-col gap-1">
-								<label className="w-[160px] font-bold text-sm text-text-secondary">
-									{label}
-								</label>
-								<Link href={"/"}>
-									<TextField
-										fullWidth
-										size="small"
-										id={label}
-										type="text"
-										InputLabelProps={{
-											shrink: true,
-										}}
-										select
-										defaultValue=""
-									>
-										{/* <div className="h-[200px]"> */}
-										{unique.map((item, index) => (
-											<MenuItem key={index} value={item}>
-												{`${item} (${getOccurrence(
-													items,
-													item
-												)}) `}
-											</MenuItem>
-										))}
-										{/* </div> */}
-									</TextField>
-								</Link>
-							</div>
-						</div>
-					</div>
-					{/* Filter Section */}
+			<Button
+				component="label"
+				variant="contained"
+				startIcon={<CloudUploadIcon />}
+				sx={{ width: "115px", height: "40px" }}
+			>
+				Upload
+				<VisuallyHiddenInput
+					onChange={uploadImage}
+					disabled={uploading}
+					type="file"
+				/>
+			</Button>
 
-					{/* PRODUCT SECTION */}
-					<section className="w-full">
-						<ul className="grid sm:grid-cols-2 gap-x-4 grid-cols-1 ">
-							{products.map((product, index) => (
-								<NewProductCard key={index} product={product} />
-							))}
-						</ul>
-					</section>
-				</div>
-			</main>
+			{media && media}
 		</>
 	)
 }

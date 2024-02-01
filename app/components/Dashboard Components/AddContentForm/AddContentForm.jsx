@@ -1,6 +1,6 @@
 "use client"
 // AddContentForm.jsx
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 import useMultipleStepForm from "./useMultipleStepForm"
 import BasicInfo from "./BasicInfo"
@@ -17,7 +17,14 @@ import { Button } from "../../UI/Button"
 import { addProducts } from "@/libs/supabase/addProducts"
 
 const INITIAL_DATA = {
-	files: null,
+	file_MP3: {
+		fileName: "",
+		file: null,
+		src: "",
+		size: 0,
+	},
+	file_WAV: null,
+	file_STEM: null,
 	image: beatKitImage,
 	title: "",
 	type: "",
@@ -87,6 +94,10 @@ export default function AddContentForm() {
 		{ index: 2, value: "Meta Data" },
 		{ index: 3, value: "Pricing" },
 	]
+
+	useEffect(() => {
+		console.log("file_MP3:", data.file_MP3)
+	}, [data.file_MP3])
 
 	return (
 		<>
