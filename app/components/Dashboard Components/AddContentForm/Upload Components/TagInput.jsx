@@ -10,6 +10,7 @@ export default function TagInput({
 	value,
 	onChange,
 	type,
+	name,
 }) {
 	const [tagList, setTagList] = useState(value || [])
 	const [newTag, setNewTag] = useState("")
@@ -32,10 +33,9 @@ export default function TagInput({
 	}
 
 	// Updates state of limitReached immediately so alert can render real-time
-	// useEffect(() => {
-	// 	checkLimit()
-	// 	onChange && onChange(tagList)
-	// }, [tagList, onChange])
+	useEffect(() => {
+		onChange && onChange(tagList)
+	}, [tagList])
 
 	// function checkLimit() {
 	// 	if (tagList.length === limit) {
@@ -155,6 +155,7 @@ export default function TagInput({
 					<div className="flex">
 						{tagList.length > 0 && renderTags()}
 						<input
+							name={name}
 							className="bg-inherit w-full p-1 focus:outline-none disabled:bg-inherit"
 							type={type}
 							ref={inputRef}

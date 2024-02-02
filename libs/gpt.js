@@ -8,17 +8,11 @@ import { Button as MyButton } from "@/app/components/UI/Button"
 
 import { useEffect, useState } from "react"
 
-export default function UploadFile({
-	fileProps,
-	fileNameProps,
-	fileSizeProps,
-	fileSrcProps,
-	updateFields,
-}) {
-	const [file, setFile] = useState(fileProps)
-	const [fileName, setFileName] = useState(fileNameProps)
-	const [size, setSize] = useState(fileSizeProps)
-	const [src, setSrc] = useState(fileSrcProps)
+export default function UploadFile({ fileData, updateFields }) {
+	const [file, setFile] = useState(fileData.file)
+	const [fileName, setFileName] = useState(fileData.fileName)
+	const [size, setSize] = useState(fileData.size)
+	const [src, setSrc] = useState(fileData.src)
 
 	function handleChange(e) {
 		let reader = new FileReader()
@@ -27,14 +21,20 @@ export default function UploadFile({
 		if (newFile) {
 			// console.log("newFile.name:", newFile.name, "fileName:", fileName)
 			reader.onloadend = () => setFileName(newFile.name)
-			reader.readAsDataURL(newFile)
-			updateFields({
-				MP3_file: newFile,
-				MP3_fileName: newFile.name,
-				MP3_fileSize: newFile.size,
-			})
-			// if (newFile.name !== fileName) {
-			// }
+			if (newFile.name !== fileName) {
+				reader.readAsDataURL(newFile)
+				setFile(newFile)
+				setSrc(reader.result)
+				setSize(newFile.size)
+				updateFields({
+					file_MP3: {
+						file: newFile,
+						fileName: newFile.name,
+						size: newFile.size,
+					},
+				})
+			}
+			// console.log("file:", file, "fileName:", fileName)
 		}
 	}
 
@@ -53,17 +53,14 @@ export default function UploadFile({
 	// }
 
 	// useEffect(() => {
-	// 	if (file && fileName && src) {
-	// 		updateFields({
-	// 			fileData: {
-	// 				fileName: fileName,
-	// 				file: file,
-	// 				src: src,
-	// 				size: size,
-	// 			},
-	// 		})
-	// 	}
-	// }, [fileName, file, src, updateFields])
+	// 	// This useEffect will run after each render when file changes
+	// 	updateFields({
+	// 		fileProps: file,
+	// 		fileNameProps: fileName,
+	// 		fileSizeProps: size,
+	// 		fileSrcProps: src,
+	// 	})
+	// }, [file, fileName, size, src])
 
 	const VisuallyHiddenInput = styled("input")({
 		clip: "rect(0 0 0 0)",
@@ -87,12 +84,12 @@ export default function UploadFile({
 					<div>
 						<p className="font-semibold">Un-tagged audio</p>
 						<p className="text-sm text-text-secondary">
-							{!fileProps ? (
+							{!file ? (
 								<span>Upload .mp3 or .wav files only</span>
 							) : (
 								<span>
-									{fileNameProps} &#8226;{" "}
-									{Math.round(fileSizeProps * 10e-6)}MB{" "}
+									{fileName} &#8226;{" "}
+									{Math.round(size * 10e-6)}MB{" "}
 								</span>
 							)}
 						</p>
@@ -103,7 +100,7 @@ export default function UploadFile({
 					<Button
 						component="label"
 						variant="contained"
-						disabled={!fileProps}
+						disabled={!file}
 						startIcon={<PlayCircleIcon />}
 						sx={{ width: "115px", height: "40px" }}
 					>
@@ -113,14 +110,11 @@ export default function UploadFile({
 					<Button
 						component="label"
 						variant="contained"
-						startIcon={
-							!fileProps ? <CloudUploadIcon /> : <CachedIcon />
-						}
+						startIcon={!file ? <CloudUploadIcon /> : <CachedIcon />}
 						sx={{ width: "115px", height: "40px" }}
 					>
-						{!fileProps ? "Upload" : "Replace"}
+						{!file ? "Upload" : "Replace"}
 						<VisuallyHiddenInput
-							name="file"
 							onChange={(e) => {
 								// handleSubmit(e)
 								handleChange(e)
@@ -129,6 +123,28 @@ export default function UploadFile({
 						/>
 					</Button>
 				</div>
+			</div>
+		</>
+	)
+}
+
+
+// **********************
+
+import UploadFile from "./Upload Components/UploadFile"
+import UploadFolder from "./Upload Components/UploadFolder"
+
+export default function Files({
+
+	file_MP3,
+	updateFields,
+}) {
+	return (
+		<>
+			<div className="flex flex-col gap-4">
+
+				<UploadFile fileData={file_MP3} updateFields={updateFields} />
+				{/* <UploadFolder /> */}
 			</div>
 		</>
 	)
