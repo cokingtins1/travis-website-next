@@ -42,6 +42,7 @@ export default function MetaData({
 					<MusicNoteIcon /> Track details
 				</p>
 				<TagInput
+					name="tags"
 					label="Tags"
 					hashtag={true}
 					disabled={false}
@@ -51,6 +52,7 @@ export default function MetaData({
 					}}
 				/>
 				<TagInput
+					name="genres"
 					label="Genre"
 					dropDownList={DropDown.Genres}
 					value={genres}
@@ -69,6 +71,7 @@ export default function MetaData({
 					<SentimentSatisfiedAltOutlinedIcon /> Moods
 				</p>
 				<TagInput
+					name="moods"
 					label="Moods"
 					dropDownList={DropDown.Moods}
 					value={moods}
@@ -89,6 +92,7 @@ export default function MetaData({
 
 				<div className="flex gap-4">
 					<TextField
+						name="keys"
 						sx={{ width: "200px" }}
 						size="small"
 						id="type"
@@ -111,6 +115,7 @@ export default function MetaData({
 					</TextField>
 
 					<TextField
+						name="bpm"
 						sx={{ width: "200px" }}
 						size="small"
 						id="title"
@@ -134,6 +139,7 @@ export default function MetaData({
 					<KeyboardVoiceIcon /> Instruments & Vocals
 				</p>
 				<TagInput
+					name="instruments"
 					label="Instruments"
 					value={instruments}
 					dropDownList={DropDown.Instruments}

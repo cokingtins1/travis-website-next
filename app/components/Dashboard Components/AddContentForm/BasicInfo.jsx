@@ -38,6 +38,7 @@ export default function BasicInfo({
 				<div className="col-span-2 flex items-start justify-center">
 					<div className="flex flex-col items-center gap-2 ">
 						<Image
+							id="productImage"
 							width={250}
 							height={250}
 							className="border rounded-lg"
@@ -69,6 +70,7 @@ export default function BasicInfo({
 				<FormControl className="col-span-4">
 					<div className="grid grid-cols-2 grid-rows-5 gap-x-4 gap-y-4">
 						<TextField
+							name="title"
 							className="col-span-2"
 							fullWidth
 							size="small"
@@ -84,6 +86,7 @@ export default function BasicInfo({
 							}}
 						/>
 						<TextField
+							name="type"
 							fullWidth
 							size="medium"
 							id="type"
@@ -109,6 +112,7 @@ export default function BasicInfo({
 						</TextField>
 
 						<DatePicker
+							name="releaseDate"
 							label="Release Date"
 							value={releaseDate}
 							disablePast
@@ -117,6 +121,7 @@ export default function BasicInfo({
 							}}
 						/>
 						<TextField
+							name="description"
 							className="col-span-2 row-span-3"
 							fullWidth
 							multiline

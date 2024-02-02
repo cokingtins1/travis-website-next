@@ -1,4 +1,4 @@
-import MUISwitch from "@mui/material/Switch"
+import Switch from "@mui/material/Switch"
 import InputLabel from "@mui/material/InputLabel"
 
 import TextField from "@mui/material/TextField"
@@ -11,8 +11,9 @@ export default function PricingSwitch({
 	contractSubtext,
 	value,
 	onChange,
-	free = false,
 	onCheckedChange,
+	nameSwitch,
+	namePrice,
 }) {
 	const [inputValue, setInputValue] = useState(value || "")
 	const [isChecked, setIsChecked] = useState(defaultChecked)
@@ -23,9 +24,15 @@ export default function PricingSwitch({
 
 	return (
 		<div className="flex justify-between items-center rounded-lg border border-border-primary p-2">
+			{!isChecked && (
+				// Hidden input for Switch value (render only if the switch is checked)
+				<input type="hidden" name={nameSwitch} value={isChecked} />
+			)}
 			<div className="flex gap-2">
 				<span className="flex items-center p-2">
-					<MUISwitch
+					<Switch
+						name={nameSwitch}
+						value={isChecked}
 						checked={isChecked}
 						onChange={() => {
 							const newChecked = !isChecked
@@ -41,30 +48,28 @@ export default function PricingSwitch({
 					</p>
 				</div>
 			</div>
-			{free || (
-				<div className="flex items-center gap-2">
-					<InputLabel htmlFor="outlined-adornment-password">
-						Price:
-					</InputLabel>
-					<TextField
-						size="small"
-						type="number"
-						id="outlined-start-adornment"
-						sx={{ m: 1, width: "100px" }}
-						InputProps={{
-							startAdornment: (
-								<InputAdornment position="start">
-									$
-								</InputAdornment>
-							),
-						}}
-						value={value}
-						onChange={(e) => {
-							setInputValue(e.target.value)
-						}}
-					/>
-				</div>
-			)}
+
+			<div className="flex items-center gap-2">
+				<InputLabel htmlFor="outlined-adornment-password">
+					Price:
+				</InputLabel>
+				<TextField
+					name={namePrice}
+					size="small"
+					type="number"
+					id="outlined-start-adornment"
+					sx={{ m: 1, width: "100px" }}
+					InputProps={{
+						startAdornment: (
+							<InputAdornment position="start">$</InputAdornment>
+						),
+					}}
+					value={inputValue}
+					onChange={(e) => {
+						setInputValue(e.target.value)
+					}}
+				/>
+			</div>
 		</div>
 	)
 }

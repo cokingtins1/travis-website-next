@@ -1,6 +1,6 @@
 "use client"
 // AddContentForm.jsx
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 
 import useMultipleStepForm from "./useMultipleStepForm"
 import BasicInfo from "./BasicInfo"
@@ -15,16 +15,30 @@ import MetaData from "./MetaData"
 import Pricing from "./Pricing"
 import { Button } from "../../UI/Button"
 import { addProducts } from "@/libs/supabase/addProducts"
+import NewFiles from "./Upload Components/NewFiles"
 
 const INITIAL_DATA = {
-	file_MP3: {
-		fileName: "",
-		file: null,
-		src: "",
-		size: 0,
-	},
-	file_WAV: null,
-	file_STEM: null,
+	// file_MP3: {
+	// 	file: null,
+	// 	fileName: "",
+	// 	src: "",
+	// 	size: 0,
+	// },
+	MP3_file: null,
+	MP3_fileName: null,
+	MP3_fileSize: "hellooooo",
+	MP3_fileSrc: null,
+
+	WAV_file: null,
+	WAV_fileName: null,
+	WAV_fileSize: null,
+	WAV_fileSrc: null,
+
+	STEM_file: null,
+	STEM_fileName: null,
+	STEM_fileSize: null,
+	STEM_fileSrc: null,
+
 	image: beatKitImage,
 	title: "",
 	type: "",
@@ -36,24 +50,32 @@ const INITIAL_DATA = {
 	keys: "None",
 	bpm: 0,
 	instruments: [],
-	price: {
-		basic: {
-			checked: true,
-			price: 30,
-		},
-		premium: {
-			checked: true,
-			price: 50,
-		},
-		exclusive: {
-			checked: true,
-			price: 250,
-		},
-	},
+	basic: true,
+	basicPrice: 30,
+	premium: true,
+	premiumPrice: 50,
+	exclusive: true,
+	exclusivePrice: 250,
+	free: false,
+	// price: {
+	// 	basic: {
+	// 		checked: true,
+	// 		price: 30,
+	// 	},
+	// 	premium: {
+	// 		checked: true,
+	// 		price: 50,
+	// 	},
+	// 	exclusive: {
+	// 		checked: true,
+	// 		price: 250,
+	// 	},
+	// },
 }
 
 export default function AddContentForm() {
 	const [data, setData] = useState(INITIAL_DATA)
+	const formRef = useRef(null)
 
 	function updateFields(fields) {
 		setData((prev) => {
@@ -80,8 +102,16 @@ export default function AddContentForm() {
 	async function handleSubmit(e) {
 		e.preventDefault()
 		if (!isLastStep) return next()
-		await addProducts(JSON.parse(JSON.stringify(data)))
-		console.log(JSON.parse(JSON.stringify(data)))
+
+		console.log(formRef.current)
+		const formData = new FormData(formRef.current)
+		for (const item of formData) {
+			console.log(item[0], item[1])
+		}
+		// await addProducts(JSON.parse(JSON.stringify(data)))
+		// console.log("data before server:", data)
+		// await addProducts(data)
+		// console.log(JSON.parse(JSON.stringify(data)))
 	}
 
 	const [tabValue, setTabValue] = useState(0)
@@ -95,14 +125,40 @@ export default function AddContentForm() {
 		{ index: 3, value: "Pricing" },
 	]
 
-	useEffect(() => {
-		console.log("file_MP3:", data.file_MP3)
-	}, [data.file_MP3])
+	// console.log("form data", data)
+
+	// useEffect(() => {
+	// 	console.log("MP3_file:", data.MP3_file)
+	// }, [data])
 
 	return (
 		<>
+			<div className="hidden">
+				<form ref={formRef} action="">
+					<Files key="files" {...data} updateFields={updateFields} />
+					,
+					<BasicInfo
+						key="basicInfo"
+						{...data}
+						updateFields={updateFields}
+					/>
+					,
+					<MetaData
+						key="metaData"
+						{...data}
+						updateFields={updateFields}
+					/>
+					,
+					<Pricing
+						key="pricing"
+						{...data}
+						updateFields={updateFields}
+					/>
+					,
+				</form>
+			</div>
 			<div className="w-full bg-bg-elevated border border-black p-4 rounded-md ">
-				<form action="" onSubmit={handleSubmit}>
+				<form>
 					<div className="flex flex-col">
 						<div>
 							<Tabs onChange={handleChange} value={tabValue}>

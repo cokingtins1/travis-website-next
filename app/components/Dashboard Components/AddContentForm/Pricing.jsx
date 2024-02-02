@@ -1,35 +1,37 @@
 import PricingSwitch from "./Upload Components/PricingSwitch"
+import Switch from "@mui/material/Switch"
+import { useState } from "react"
 
-export default function Pricing({ updateFields, price }) {
+export default function Pricing({
+	updateFields,
+	basic,
+	basicPrice,
+	premium,
+	premiumPrice,
+	exclusive,
+	exclusivePrice,
+	free,
+}) {
+	const [freeChecked, setFreeChecked] = useState(free)
 	return (
 		<>
 			<div>
 				<p className="m-2 text-text-secondary">Exclusive</p>
 				<PricingSwitch
-					defaultChecked={price.exclusive.checked}
+					nameSwitch="exclusive"
+					namePrice="exclusivePrice"
+					defaultChecked={exclusive}
 					contractTitle={"Exclusive License"}
 					contractSubtext={"WAV, MP3, STEMS"}
-					value={price.exclusive.price}
+					value={exclusivePrice}
 					onCheckedChange={(newChecked) => {
 						updateFields({
-							price: {
-								...price,
-								exclusive: {
-									...price.exclusive,
-									checked: newChecked,
-								},
-							},
+							exclusive: newChecked,
 						})
 					}}
 					onChange={(newPrice) => {
 						updateFields({
-							price: {
-								...price,
-								exclusive: {
-									...price.exclusive,
-									price: newPrice,
-								},
-							},
+							exclusivePrice: newPrice,
 						})
 					}}
 				/>
@@ -37,72 +39,56 @@ export default function Pricing({ updateFields, price }) {
 			<div className="mt-4 flex flex-col gap-2">
 				<p className="m-2 text-text-secondary">Regular</p>
 				<PricingSwitch
-					defaultChecked={price.basic.checked}
+					nameSwitch="basic"
+					namePrice="basicPrice"
+					defaultChecked={basic}
 					contractTitle={"Basic License"}
 					contractSubtext={"MP3"}
-					value={price.basic.price}
+					value={basicPrice}
 					onCheckedChange={(newChecked) => {
 						updateFields({
-							price: {
-								...price,
-								basic: {
-									...price.basic,
-									checked: newChecked,
-								},
-							},
+							basic: newChecked,
 						})
 					}}
 					onChange={(newPrice) => {
 						updateFields({
-							price: {
-								...price,
-								basic: {
-									...price.basic,
-									price: newPrice,
-								},
-							},
+							basicPrice: newPrice,
 						})
 					}}
 				/>
 				<PricingSwitch
-					defaultChecked={price.premium.checked}
+					nameSwitch="premium"
+					namePrice="premiumPrice"
+					defaultChecked={premium}
 					contractTitle={"Premium License"}
 					contractSubtext={"WAV, MP3"}
-					value={price.premium.price}
+					value={premiumPrice}
 					onCheckedChange={(newChecked) => {
 						updateFields({
-							price: {
-								...price,
-								premium: {
-									...price.premium,
-									checked: newChecked,
-								},
-							},
+							premium: newChecked,
 						})
 					}}
 					onChange={(newPrice) => {
 						updateFields({
-							price: {
-								...price,
-								premium: {
-									...price.premium,
-									price: newPrice,
-								},
-							},
+							premiumPrice: newPrice,
 						})
 					}}
 				/>
 			</div>
 			<div className="mt-4 flex flex-col gap-2">
 				<p className="m-2 text-text-secondary">Free</p>
-				<PricingSwitch
-					contractTitle={"Free"}
-					free
-					contractSubtext={"Tagged MP3"}
-					value={price.basic}
-					onChange={(newPrice) => {
+				{!freeChecked && (
+					// Hidden input for Switch value (render only if the switch is checked)
+					<input type="hidden" name="free" value={freeChecked} />
+				)}
+				<Switch
+					name="free"
+					checked={freeChecked}
+					value={freeChecked}
+					onChange={() => {
+						setFreeChecked(!freeChecked)
 						updateFields({
-							price: { ...price, basic: newPrice },
+							free: false,
 						})
 					}}
 				/>
