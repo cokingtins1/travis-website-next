@@ -2,68 +2,65 @@ import { styled } from "@mui/material/styles"
 import Button from "@mui/material/Button"
 import CloudUploadIcon from "@mui/icons-material/CloudUpload"
 import MusicNoteIcon from "@mui/icons-material/MusicNote"
-import PlayCircleIcon from "@mui/icons-material/PlayCircle"
+import FolderIcon from "@mui/icons-material/Folder"
 import CachedIcon from "@mui/icons-material/Cached"
-import { Button as MyButton } from "@/app/components/UI/Button"
-
-import { useEffect, useState } from "react"
+import { useState } from "react"
+import PlayAudioButton from "@/app/components/UI/PlayAudioButton"
 
 export default function UploadFile({
 	fileProps,
 	fileNameProps,
 	fileSizeProps,
-	fileSrcProps,
 	updateFields,
+	type,
 }) {
-	const [file, setFile] = useState(fileProps)
-	const [fileName, setFileName] = useState(fileNameProps)
-	const [size, setSize] = useState(fileSizeProps)
-	const [src, setSrc] = useState(fileSrcProps)
+	const [error, setError] = useState("")
+	const [audioSrc, setAudioSrc] = useState("")
+
+	let typeExt
+	let fileType
+	switch (type) {
+		case "MP3":
+			typeExt = ".mp3"
+			fileType = "audio/mpeg"
+			break
+		case "WAV":
+			typeExt = ".wav"
+			fileType = "audio/wav"
+			break
+		case "STEM":
+			typeExt = ".zip or .rar"
+			fileType = "application/x-zip-compressed"
+			break
+	}
 
 	function handleChange(e) {
-		let reader = new FileReader()
+		if (e.target.files[0].type !== fileType) {
+			setError(`Please upload files of type ${typeExt}`)
+			return
+		}
+		setError("")
 		let newFile = e.target.files[0]
 
 		if (newFile) {
-			// console.log("newFile.name:", newFile.name, "fileName:", fileName)
-			reader.onloadend = () => setFileName(newFile.name)
-			reader.readAsDataURL(newFile)
+			setAudioSrc(URL.createObjectURL(newFile))
 			updateFields({
-				MP3_file: newFile,
-				MP3_fileName: newFile.name,
-				MP3_fileSize: newFile.size,
+				file: newFile,
+				fileName: newFile.name,
+				fileSize: newFile.size,
+				title: newFile.name.split(".")[0],
 			})
-			// if (newFile.name !== fileName) {
-			// }
 		}
 	}
 
-	// async function handleSubmit(e) {
-	// 	e.preventDefault()
-	// 	const file = e.target.files[0]
-	// 	const fileData = new FormData()
-	// 	fileData.set("file", file)
-
-	// 	try {
-	// 		const res = await fetch("/api/upload", {
-	// 			method: "POST",
-	// 			body: fileData,
-	// 		})
-	// 	} catch (error) {}
-	// }
-
-	// useEffect(() => {
-	// 	if (file && fileName && src) {
-	// 		updateFields({
-	// 			fileData: {
-	// 				fileName: fileName,
-	// 				file: file,
-	// 				src: src,
-	// 				size: size,
-	// 			},
-	// 		})
+	// function sortFiles(e){
+	// 	const selectedFiles = e.target.files
+	// 	if (selectedFiles.length === 0){
+	// 		return
 	// 	}
-	// }, [fileName, file, src, updateFields])
+	// 	const sortedFiles = Array.from(selectedFiles).sort((a, b) => a.name.localeCompare(b.name))
+
+	// }
 
 	const VisuallyHiddenInput = styled("input")({
 		clip: "rect(0 0 0 0)",
@@ -82,13 +79,27 @@ export default function UploadFile({
 			<div className="flex justify-between items-center rounded-lg border border-border-primary p-2">
 				<div className="flex gap-2">
 					<span className="flex items-center rounded-full border border-border-primary p-2">
-						<MusicNoteIcon sx={{ fontSize: 40 }} />
+						{type === "STEM" ? (
+							<FolderIcon sx={{ fontSize: 40 }} />
+						) : (
+							<MusicNoteIcon sx={{ fontSize: 40 }} />
+						)}
 					</span>
 					<div>
-						<p className="font-semibold">Un-tagged audio</p>
+						<p className="font-semibold">
+							{type === "STEM"
+								? "Track Stems"
+								: "Un-tagged audio"}
+						</p>
 						<p className="text-sm text-text-secondary">
 							{!fileProps ? (
-								<span>Upload .mp3 or .wav files only</span>
+								error ? (
+									<span className="text-text-error">
+										{error}
+									</span>
+								) : (
+									<span>Upload {typeExt} files only</span>
+								)
 							) : (
 								<span>
 									{fileNameProps} &#8226;{" "}
@@ -100,15 +111,11 @@ export default function UploadFile({
 				</div>
 
 				<div className="flex gap-2">
-					<Button
-						component="label"
-						variant="contained"
+					<PlayAudioButton
+						audioSrc={audioSrc}
 						disabled={!fileProps}
-						startIcon={<PlayCircleIcon />}
-						sx={{ width: "115px", height: "40px" }}
-					>
-						Play
-					</Button>
+						fileType={fileType}
+					/>
 
 					<Button
 						component="label"
@@ -122,7 +129,6 @@ export default function UploadFile({
 						<VisuallyHiddenInput
 							name="file"
 							onChange={(e) => {
-								// handleSubmit(e)
 								handleChange(e)
 							}}
 							type="file"

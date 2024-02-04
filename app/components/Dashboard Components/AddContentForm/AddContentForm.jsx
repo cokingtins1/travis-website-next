@@ -1,6 +1,6 @@
 "use client"
 // AddContentForm.jsx
-import { useEffect, useState, useRef } from "react"
+import { useState, useEffect } from "react"
 
 import useMultipleStepForm from "./useMultipleStepForm"
 import BasicInfo from "./BasicInfo"
@@ -15,31 +15,22 @@ import MetaData from "./MetaData"
 import Pricing from "./Pricing"
 import { Button } from "../../UI/Button"
 import { addProducts } from "@/libs/supabase/addProducts"
-import NewFiles from "./Upload Components/NewFiles"
+import { processForm } from "@/libs/supabase/processForm"
 
 const INITIAL_DATA = {
-	// file_MP3: {
-	// 	file: null,
-	// 	fileName: "",
-	// 	src: "",
-	// 	size: 0,
-	// },
 	MP3_file: null,
 	MP3_fileName: null,
-	MP3_fileSize: "hellooooo",
-	MP3_fileSrc: null,
+	MP3_fileSize: null,
 
 	WAV_file: null,
 	WAV_fileName: null,
 	WAV_fileSize: null,
-	WAV_fileSrc: null,
 
 	STEM_file: null,
 	STEM_fileName: null,
 	STEM_fileSize: null,
-	STEM_fileSrc: null,
 
-	image: beatKitImage,
+	productImage: beatKitImage,
 	title: "",
 	type: "",
 	releaseDate: dayjs(),
@@ -50,6 +41,7 @@ const INITIAL_DATA = {
 	keys: "None",
 	bpm: 0,
 	instruments: [],
+
 	basic: true,
 	basicPrice: 30,
 	premium: true,
@@ -57,25 +49,10 @@ const INITIAL_DATA = {
 	exclusive: true,
 	exclusivePrice: 250,
 	free: false,
-	// price: {
-	// 	basic: {
-	// 		checked: true,
-	// 		price: 30,
-	// 	},
-	// 	premium: {
-	// 		checked: true,
-	// 		price: 50,
-	// 	},
-	// 	exclusive: {
-	// 		checked: true,
-	// 		price: 250,
-	// 	},
-	// },
 }
 
 export default function AddContentForm() {
 	const [data, setData] = useState(INITIAL_DATA)
-	const formRef = useRef(null)
 
 	function updateFields(fields) {
 		setData((prev) => {
@@ -103,11 +80,50 @@ export default function AddContentForm() {
 		e.preventDefault()
 		if (!isLastStep) return next()
 
-		console.log(formRef.current)
-		const formData = new FormData(formRef.current)
-		for (const item of formData) {
-			console.log(item[0], item[1])
+		const uploadID = crypto.randomUUID()
+
+		const fileFormData = new FormData()
+		const JSONFormData = {}
+
+		fileFormData.set("upload_id", uploadID)
+		JSONFormData["upload_id"] = uploadID
+
+		for (const key in data) {
+			if (data.hasOwnProperty(key)) {
+				const value = data[key]
+				if (value instanceof File) {
+					fileFormData.append(key, value)
+				} else {
+					JSONFormData[key] = value
+				}
+			}
 		}
+
+		// try {
+		// 	const res = await fetch("/api/uploadFile", {
+		// 		method: "POST",
+		// 		body: fileFormData,
+		// 	})
+		// 	if (!res.ok) throw new Error(await res.text())
+		// } catch (error) {
+		// 	console.log(error)
+		// }
+		try {
+			const res = await fetch("/api/uploadData", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify(JSONFormData),
+			})
+			if (!res.ok) throw new Error(await res.text())
+		} catch (error) {
+			console.log(error)
+		}
+
+		// console.log(formRef.current)
+		// const formData = new FormData(formRef.current)
+		// for (const item of formData) {
+		// 	console.log(item[0], item[1])
+		// }
 		// await addProducts(JSON.parse(JSON.stringify(data)))
 		// console.log("data before server:", data)
 		// await addProducts(data)
@@ -125,38 +141,16 @@ export default function AddContentForm() {
 		{ index: 3, value: "Pricing" },
 	]
 
-	// console.log("form data", data)
-
+	// console.log(data)
 	// useEffect(() => {
-	// 	console.log("MP3_file:", data.MP3_file)
-	// }, [data])
+	// 	console.log(
+	// 		"MP3_file:",
+	// 		data.MP3_file || data.WAV_file || data.STEM_file
+	// 	)
+	// }, [data.MP3_file, data.WAV_file, data.STEM_file])
 
 	return (
 		<>
-			<div className="hidden">
-				<form ref={formRef} action="">
-					<Files key="files" {...data} updateFields={updateFields} />
-					,
-					<BasicInfo
-						key="basicInfo"
-						{...data}
-						updateFields={updateFields}
-					/>
-					,
-					<MetaData
-						key="metaData"
-						{...data}
-						updateFields={updateFields}
-					/>
-					,
-					<Pricing
-						key="pricing"
-						{...data}
-						updateFields={updateFields}
-					/>
-					,
-				</form>
-			</div>
 			<div className="w-full bg-bg-elevated border border-black p-4 rounded-md ">
 				<form>
 					<div className="flex flex-col">

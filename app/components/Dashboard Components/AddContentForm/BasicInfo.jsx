@@ -2,22 +2,36 @@ import TextField from "@mui/material/TextField"
 import MenuItem from "@mui/material/MenuItem"
 import EditIcon from "@mui/icons-material/Edit"
 import { DatePicker } from "@mui/x-date-pickers/DatePicker"
+import { styled } from "@mui/material/styles"
+import Button from "@mui/material/Button"
 
 import FormControl from "@mui/material/FormControl"
 
 import Image from "next/image"
-import { Button } from "../../UI/Button"
+// import { Button } from "../../UI/Button"
 import { useState } from "react"
 
 export default function BasicInfo({
-	image,
+	productImage,
 	title,
 	type,
 	releaseDate,
 	description,
 	updateFields,
 }) {
-	const [selectedImage, setSelectedImage] = useState(null)
+	const [imageErr, setImageErr] = useState("")
+
+	const VisuallyHiddenInput = styled("input")({
+		clip: "rect(0 0 0 0)",
+		clipPath: "inset(50%)",
+		height: 1,
+		overflow: "hidden",
+		position: "absolute",
+		bottom: 0,
+		left: 0,
+		whiteSpace: "nowrap",
+		width: 1,
+	})
 
 	const contentType = [
 		{ value: "Beat" },
@@ -25,11 +39,22 @@ export default function BasicInfo({
 		{ value: "Melody" },
 	]
 
-	function handleUpload(e) {
+	function handleChange(e) {
 		const file = e.target.files[0]
+		const fileIsImage = file.type.split("/")[0] === "image"
 
-		if (file == null) return
-		setSelectedImage(file)
+		if (!fileIsImage) {
+			setImageErr("Please select a valid image file type")
+			return
+		} else {
+			setImageErr("")
+		}
+
+		if (file) {
+			updateFields({
+				productImage: URL.createObjectURL(file),
+			})
+		}
 	}
 
 	return (
@@ -42,29 +67,36 @@ export default function BasicInfo({
 							width={250}
 							height={250}
 							className="border rounded-lg"
-							src={
-								selectedImage
-									? URL.createObjectURL(selectedImage)
-									: image
-							}
+							src={productImage}
 							alt="product image"
-							onChange={() => {
-								updateFields({ image: selectedImage })
-							}}
 						/>
 
-						<Button type="button" size="lg" icon={<EditIcon />}>
+						<Button
+							type="button"
+							size="lg"
+							sx={{
+								color: "#a7a7a7",
+								"&:hover": { backgroundColor: "#2a2a2a" },
+							}}
+							startIcon={<EditIcon />}
+						>
 							<label className="cursor-pointer">
 								{" "}
 								Edit Picture
-								<input
-									className="opacity-0 absolute left-[-9999px]"
+								<VisuallyHiddenInput
+									name="file"
+									onChange={(e) => {
+										handleChange(e)
+									}}
 									type="file"
-									name="myImage"
-									onChange={handleUpload}
 								/>
 							</label>
 						</Button>
+						{imageErr && (
+							<span className="text-sm text-text-error">
+								{imageErr}
+							</span>
+						)}
 					</div>
 				</div>
 				<FormControl className="col-span-4">

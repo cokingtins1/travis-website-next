@@ -77,21 +77,27 @@ export default function Pricing({
 			</div>
 			<div className="mt-4 flex flex-col gap-2">
 				<p className="m-2 text-text-secondary">Free</p>
-				{!freeChecked && (
-					// Hidden input for Switch value (render only if the switch is checked)
-					<input type="hidden" name="free" value={freeChecked} />
-				)}
-				<Switch
-					name="free"
-					checked={freeChecked}
-					value={freeChecked}
-					onChange={() => {
-						setFreeChecked(!freeChecked)
-						updateFields({
-							free: false,
-						})
-					}}
-				/>
+				<div className="flex items-center rounded-lg border border-border-primary p-2">
+					<span className="flex items-center p-2">
+						<Switch
+							name="free"
+							checked={freeChecked}
+							value={freeChecked}
+							onChange={() => {
+								setFreeChecked(!freeChecked)
+								updateFields({
+									free: !freeChecked,
+								})
+							}}
+						/>
+					</span>
+					<div>
+						<p className="font-semibold">Free</p>
+						<p className="text-sm text-text-secondary">
+							Tagged MP3
+						</p>
+					</div>
+				</div>
 			</div>
 		</>
 	)
