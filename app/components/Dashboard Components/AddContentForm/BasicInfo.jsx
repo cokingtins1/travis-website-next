@@ -13,6 +13,7 @@ import { useState } from "react"
 
 export default function BasicInfo({
 	productImage,
+	productImageSrc,
 	title,
 	type,
 	releaseDate,
@@ -52,7 +53,8 @@ export default function BasicInfo({
 
 		if (file) {
 			updateFields({
-				productImage: URL.createObjectURL(file),
+				productImage: file,
+				productImageSrc: URL.createObjectURL(file),
 			})
 		}
 	}
@@ -67,7 +69,7 @@ export default function BasicInfo({
 							width={250}
 							height={250}
 							className="border rounded-lg"
-							src={productImage}
+							src={productImageSrc}
 							alt="product image"
 						/>
 

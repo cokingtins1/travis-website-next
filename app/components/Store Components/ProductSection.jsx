@@ -4,7 +4,7 @@ import FilterSection from "./FilterComponents/FilterSection"
 import Divider from "@mui/material/Divider"
 
 export default function ProductSection({
-	products,
+	productData,
 	tags,
 	genres,
 	moods,
@@ -31,7 +31,7 @@ export default function ProductSection({
 				</div>
 				<section className="w-full">
 					<ul className="grid sm:grid-cols-2 gap-x-4 grid-cols-1 ">
-						{products?.map((product, index) => (
+						{productData?.map((product, index) => (
 							<NewProductCard key={index} product={product} />
 						))}
 					</ul>

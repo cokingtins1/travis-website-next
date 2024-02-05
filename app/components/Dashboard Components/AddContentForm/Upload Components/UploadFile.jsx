@@ -4,8 +4,10 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload"
 import MusicNoteIcon from "@mui/icons-material/MusicNote"
 import FolderIcon from "@mui/icons-material/Folder"
 import CachedIcon from "@mui/icons-material/Cached"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import PlayAudioButton from "@/app/components/UI/PlayAudioButton"
+import { useFormik } from "formik"
+import * as Yup from "yup"
 
 export default function UploadFile({
 	fileProps,
@@ -16,6 +18,31 @@ export default function UploadFile({
 }) {
 	const [error, setError] = useState("")
 	const [audioSrc, setAudioSrc] = useState("")
+
+	// const formik = useFormik({
+	// 	initialValues: {
+	// 		file: "",
+	// 	},
+	// 	validationSchema: Yup.object({
+	// 		file: Yup.mixed().required("File is required"),
+	// 		// .test(
+	// 		// 	"FILE_TYPE",
+	// 		// 	"Invalid file type",
+	// 		// 	(value) => value && ["audio/mpeg"].includes(value.type)
+	// 		// ),
+	// 	}),
+	// 	onSubmit: () => {
+	// 		console.log("submitting")
+
+	// 		setAudioSrc(URL.createObjectURL(formik.values.file))
+	// 		updateFields({
+	// 			file: formik.values.file,
+	// 			fileName: formik.values.file.name,
+	// 			fileSize: formik.values.file.size,
+	// 			title: formik.values.file.name.split(".")[0],
+	// 		})
+	// 	},
+	// })
 
 	let typeExt
 	let fileType
@@ -41,7 +68,6 @@ export default function UploadFile({
 		}
 		setError("")
 		let newFile = e.target.files[0]
-
 		if (newFile) {
 			setAudioSrc(URL.createObjectURL(newFile))
 			updateFields({
@@ -52,6 +78,10 @@ export default function UploadFile({
 			})
 		}
 	}
+
+	// useEffect(() => {
+	// 	console.log("formik.values.file", formik.values.file)
+	// }, [formik.values.file])
 
 	// function sortFiles(e){
 	// 	const selectedFiles = e.target.files
@@ -111,6 +141,7 @@ export default function UploadFile({
 				</div>
 
 				<div className="flex gap-2">
+					{/* {formik.errors.file && <p>{formik.errors.file}</p>} */}
 					<PlayAudioButton
 						audioSrc={audioSrc}
 						disabled={!fileProps}
@@ -127,11 +158,20 @@ export default function UploadFile({
 					>
 						{!fileProps ? "Upload" : "Replace"}
 						<VisuallyHiddenInput
+							id="file"
 							name="file"
+							type="file"
+							// onSubmit={() => {
+							// 	console.log("submitting onSubmit")
+							// 	formik.handleSubmit
+							// }}
 							onChange={(e) => {
+								// formik.setFieldValue(
+								// 	"file",
+								// 	e.currentTarget.files[0]
+								// )
 								handleChange(e)
 							}}
-							type="file"
 						/>
 					</Button>
 				</div>

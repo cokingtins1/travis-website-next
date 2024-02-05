@@ -7,15 +7,18 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder"
 import IosShareIcon from "@mui/icons-material/IosShare"
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart"
 
-export default function ProductMeta({ product }) {
+export default function ProductMeta({ product, imageSrc }) {
+	
+
 	return (
 		<>
 			<div className="bg-bg-elevated rounded-xl p-4">
 				<div className="flex flex-col justify-center items-center gap-4">
 					<Image
-						src={beatKitImage}
+						src={imageSrc ? imageSrc : beatKitImage}
 						alt="product image"
 						width={200}
+						height={300}
 					></Image>
 					<h1 className="text-2xl text-center">{product.title}</h1>
 				</div>

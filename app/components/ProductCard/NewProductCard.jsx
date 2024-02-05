@@ -4,11 +4,12 @@ import Link from "next/link"
 import Divider from "@mui/material/Divider"
 import IconButton from "@mui/material/IconButton"
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder"
-import { getStartingPrice } from "@/libs/supabase/supabaseQuery"
+import { getImageSrc, getStartingPrice } from "@/libs/supabase/supabaseQuery"
 import AddToCartBtn from "../UI/AddToCartBtn"
 
 export default async function NewProductCard({ product }) {
 	const startingPrice = await getStartingPrice(product.id)
+	const imageSrc = await getImageSrc(product.upload_id)
 
 	return (
 		<>
@@ -18,8 +19,9 @@ export default async function NewProductCard({ product }) {
 						<div className="flex gap-4">
 							<figure className="relative flex flex-col items-center">
 								<Image
-									src={beatKitImage}
+									src={imageSrc ? imageSrc : beatKitImage}
 									width={90}
+									height={90}
 									alt="product image"
 								/>
 								<figcaption className="absolute bottom-0 text-xs bg-bg-secondary rounded p-1">

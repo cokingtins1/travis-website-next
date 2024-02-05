@@ -1,6 +1,6 @@
 "use client"
 // AddContentForm.jsx
-import { useState, useEffect } from "react"
+import { useState } from "react"
 
 import useMultipleStepForm from "./useMultipleStepForm"
 import BasicInfo from "./BasicInfo"
@@ -14,8 +14,6 @@ import beatKitImage from "@/public/beatKitImage.jpg"
 import MetaData from "./MetaData"
 import Pricing from "./Pricing"
 import { Button } from "../../UI/Button"
-import { addProducts } from "@/libs/supabase/addProducts"
-import { processForm } from "@/libs/supabase/processForm"
 
 const INITIAL_DATA = {
 	MP3_file: null,
@@ -31,6 +29,7 @@ const INITIAL_DATA = {
 	STEM_fileSize: null,
 
 	productImage: beatKitImage,
+	productImageSrc: beatKitImage,
 	title: "",
 	type: "",
 	releaseDate: dayjs(),
@@ -53,10 +52,28 @@ const INITIAL_DATA = {
 
 export default function AddContentForm() {
 	const [data, setData] = useState(INITIAL_DATA)
+	const [tabValue, setTabValue] = useState(0)
+
+	const [fileLoading, setFileLoading] = useState(false)
+	const [dataLoading, setDataLoading] = useState(false)
+	const [error, setError] = useState([])
+
+	const indices = [
+		{ index: 0, value: "Upload Files" },
+		{ index: 1, value: "Basic Info" },
+		{ index: 2, value: "Meta Data" },
+		{ index: 3, value: "Pricing" },
+	]
 
 	function updateFields(fields) {
 		setData((prev) => {
 			return { ...prev, ...fields }
+		})
+	}
+
+	function addError(error) {
+		setError((prev) => {
+			return [...prev, error]
 		})
 	}
 
@@ -99,55 +116,44 @@ export default function AddContentForm() {
 			}
 		}
 
-		// try {
-		// 	const res = await fetch("/api/uploadFile", {
-		// 		method: "POST",
-		// 		body: fileFormData,
-		// 	})
-		// 	if (!res.ok) throw new Error(await res.text())
-		// } catch (error) {
-		// 	console.log(error)
-		// }
 		try {
+			setFileLoading(true)
+			const res = await fetch("/api/uploadFile", {
+				method: "POST",
+				body: fileFormData,
+			})
+
+			if (res.ok) {
+				setFileLoading(false)
+				console.log(await res.json())
+			} else {
+				addError("There was an error uploading the files")
+				setFileLoading(false)
+				throw new Error("There was an error uploading the files")
+			}
+		} catch (error) {
+			console.log(error)
+		}
+
+		try {
+			setDataLoading(true)
 			const res = await fetch("/api/uploadData", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify(JSONFormData),
 			})
-			if (!res.ok) throw new Error(await res.text())
+			if (res.ok) {
+				setDataLoading(false)
+				console.log(await res.json())
+			} else {
+				addError("There was an error uploading the product data")
+				setDataLoading(false)
+				throw new Error("There was an error uploading the product data")
+			}
 		} catch (error) {
 			console.log(error)
 		}
-
-		// console.log(formRef.current)
-		// const formData = new FormData(formRef.current)
-		// for (const item of formData) {
-		// 	console.log(item[0], item[1])
-		// }
-		// await addProducts(JSON.parse(JSON.stringify(data)))
-		// console.log("data before server:", data)
-		// await addProducts(data)
-		// console.log(JSON.parse(JSON.stringify(data)))
 	}
-
-	const [tabValue, setTabValue] = useState(0)
-	const handleChange = (newValue) => {
-		setTabValue(newValue)
-	}
-	const indices = [
-		{ index: 0, value: "Upload Files" },
-		{ index: 1, value: "Basic Info" },
-		{ index: 2, value: "Meta Data" },
-		{ index: 3, value: "Pricing" },
-	]
-
-	// console.log(data)
-	// useEffect(() => {
-	// 	console.log(
-	// 		"MP3_file:",
-	// 		data.MP3_file || data.WAV_file || data.STEM_file
-	// 	)
-	// }, [data.MP3_file, data.WAV_file, data.STEM_file])
 
 	return (
 		<>
@@ -155,7 +161,12 @@ export default function AddContentForm() {
 				<form>
 					<div className="flex flex-col">
 						<div>
-							<Tabs onChange={handleChange} value={tabValue}>
+							<Tabs
+								onChange={(e) => {
+									setTabValue(e.target.value)
+								}}
+								value={tabValue}
+							>
 								{indices.map((step) => (
 									<Tab
 										key={step.index}
@@ -172,7 +183,15 @@ export default function AddContentForm() {
 							{step}
 						</div>
 						<Divider />
-						<div className="flex mt-4 gap-2 self-end ">
+						<div className="flex mt-4 gap-2 self-end items-center ">
+							{error && (
+								<p className="text-text-error">{error}</p>
+							)}
+							{(fileLoading || dataLoading) && (
+								<p className="text-text-secondary italic">
+									Uploading files...
+								</p>
+							)}
 							{!isFirstStep && (
 								<Button
 									size="lg"
@@ -187,6 +206,7 @@ export default function AddContentForm() {
 							)}
 							<Button
 								size="lg"
+								disabled={fileLoading || dataLoading}
 								type={isLastStep ? "submit" : "button"}
 								onClick={(e) => {
 									handleSubmit(e)

@@ -31,14 +31,21 @@ export async function POST(req) {
 				keys: formData.keys,
 				bpm: formData.bpm,
 				instruments: formData.instruments.map((tag) => tag.name),
-				price: formData.price,
+				basic: formData.basic,
+				basic_price: formData.basicPrice,
+				premium: formData.premium,
+				premium_price: formData.premiumPrice,
+				exclusive: formData.exclusive,
+				exclusive_price: formData.exclusivePrice,
+				free: formData.free,
 			})
 		} catch (error) {
 			console.log(error)
 		}
 	}
 
-	console.log("JSON data from server:", formData)
-
-	return NextResponse.json({ success: true })
+	return NextResponse.json(
+		{ message: "Product was uploaded susccessfully" },
+		{ status: 201 }
+	)
 }

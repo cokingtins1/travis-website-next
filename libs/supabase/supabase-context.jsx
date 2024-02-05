@@ -12,6 +12,9 @@ export default function SupabaseContext({ children }) {
 	const [supabase] = useState(() => createClientComponentClient())
 	const [session, setSession] = useState(null)
 
+	const productFileURL =
+		"https://njowjcfiaxbnflrcwcep.supabase.co/storage/v1/object/public/all_products/"
+
 	const clientSignUp = async () => {
 		await supabase.auth.signUp({
 			email,
@@ -49,6 +52,7 @@ export default function SupabaseContext({ children }) {
 	}, [])
 
 	const values = {
+		productFileURL,
 		supabase,
 		session,
 		clientSignUp,

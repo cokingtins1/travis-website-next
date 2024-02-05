@@ -1,10 +1,28 @@
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
+import { cookies } from "next/headers"
+import { cache } from "react"
+
 import supabaseClient from "@/libs/supabase/config/supabaseClient"
 
-export async function getAllProducts() {
+export const createServerClient = cache(() => {
+	const cookieStore = cookies()
+	return createServerComponentClient({ cookies: () => cookieStore })
+})
+
+export async function getProductFilesById(id) {
+	const supabase = createServerClient()
+	supabase.auth.getUser()
+	const { data: productsFiles } = await supabase.storage.from("").select()
+
+	return productsFiles
+}
+
+export async function getAllProductData() {
 	const { data: products } = await supabaseClient.from("products").select()
 
 	return products
 }
+
 export async function getProductById(id) {
 	const { data: product } = await supabaseClient
 		.from("products")
@@ -18,33 +36,36 @@ export async function getProductById(id) {
 export async function getStartingPrice(id) {
 	const { data: price } = await supabaseClient
 		.from("products")
-		.select("price")
+		.select("basic_price, premium_price, exclusive_price")
 		.match({ id })
-		.single()
 
-	// Need to make this better...
 	if (price) {
-		const {
-			price: {
-				basic: { checked: basicChecked, price: basicPrice },
-				premium: { checked: premiumChecked, price: premiumPrice },
-				exclusive: { checked: exclusiveChecked, price: exclusivePrice },
-			},
-		} = price
-
-		const basic = price.price.basic.checked ? price.price.basic.price : 0
-		const premium = price.price.premium.checked
-			? price.price.premium.price
-			: 0
-		const exclusive = price.price.exclusive.checked
-			? price.price.exclusive.price
-			: 0
-
-		const priceArray = [basic, premium, exclusive].filter(
-			(value) => value !== 0
+		const pricingArray = [].concat(
+			...price.map((price) => Object.values(price))
 		)
 
-		return Math.min(...priceArray)
+		const sortedPrices = pricingArray.sort((a, b) => a - b)
+		return sortedPrices[0]
+	}
+	return
+}
+
+export async function getImageSrc(upload_id) {
+	const supabase = createServerClient()
+	const productFileURL =
+	"https://njowjcfiaxbnflrcwcep.supabase.co/storage/v1/object/public/all_products"
+
+	const { data } = await supabase.storage
+		.from(`all_products`)
+		.list(`${upload_id}/productImage`, {
+			offset: 0,
+		})
+
+	if (data.length > 0) {
+		const imageData = data[0]
+		const src = `${productFileURL}/${upload_id}/productImage/${imageData.name}`
+
+		return src
 	}
 
 	return null
