@@ -39,7 +39,9 @@ export default async function NewProductCard({ product }) {
 									))}
 								</p>
 								<p className="text-sm text-text-secondary">
-									tag1 tag2 tag3
+									{product.tags.map((g, index) => (
+										<span key={index}>{g} </span>
+									))}
 								</p>
 							</div>
 						</div>

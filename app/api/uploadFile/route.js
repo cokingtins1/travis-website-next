@@ -13,30 +13,9 @@ export async function POST(req) {
 
 	const supabase = createServerClient()
 
-	const productFileURL =
-		"https://njowjcfiaxbnflrcwcep.supabase.co/storage/v1/object/public/all_products"
-
-	const {
-		data: { user },
-	} = await supabase.auth.getUser()
-
-	const userId = user.id
 	const upload_id = formData.get("upload_id")
 
 	async function uploadFile(path, file) {
-		try {
-			const { error } = await supabase.storage
-				.from("files")
-				.upload(path, file)
-			if (error) {
-				throw error
-			}
-		} catch (error) {
-			console.log(error)
-		}
-	}
-
-	async function uploadImage(path, file) {
 		try {
 			const { error } = await supabase.storage
 				.from("all_products")
@@ -58,10 +37,10 @@ export async function POST(req) {
 			if (value.type === "application/x-zip-compressed") {
 				return NextResponse.json({ success: true })
 			} else if (value.type.split("/")[0] == "image") {
-				const imagePath = `${upload_id}/productImage/${value.name}`
-				await uploadImage(imagePath, value)
+				const imagePath = `${upload_id}/${key}/${value.name}`
+				await uploadFile(imagePath, value)
 			} else {
-				const filePath = `users/${userId}/uploads/${upload_id}/${key}/${value.name}`
+				const filePath = `${upload_id}/${key}/${value.name}`
 				await uploadFile(filePath, value)
 			}
 		}

@@ -160,7 +160,7 @@ export default function BasicInfo({
 							fullWidth
 							multiline
 							rows={5}
-							id="title"
+							id="description"
 							label="Description (optional)"
 							type="text"
 							value={description}

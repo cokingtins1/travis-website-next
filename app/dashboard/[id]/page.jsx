@@ -1,6 +1,8 @@
-import ProductMeta from "@/app/components/ProductMeta/ProductMeta"
 import { useSession } from "@/libs/supabase/useSession"
 import { notFound, redirect } from "next/navigation"
+import FileEdit from "@/app/components/Dashboard Components/Edit Content/FileEdit"
+import { getImageSrc } from "@/libs/supabase/supabaseQuery"
+import InfoEdit from "@/app/components/Dashboard Components/Edit Content/InfoEdit"
 
 export default async function Page({ params: { id } }) {
 	const { session, supabase } = await useSession()
@@ -19,14 +21,41 @@ export default async function Page({ params: { id } }) {
 		notFound()
 	}
 
+	const { data: [MP3_file] = [] } = await supabase.storage
+		.from("all_products")
+		.list(`${product.upload_id}/MP3_file`, {
+			limit: 1,
+			offset: 0,
+		})
+
+	const { data: [WAV_file] = [] } = await supabase.storage
+		.from("all_products")
+		.list(`${product.upload_id}/WAV_file`, {
+			limit: 1,
+			offset: 0,
+		})
+
+	const { data: [STEM_file] = [] } = await supabase.storage
+		.from("all_products")
+		.list(`${product.upload_id}/STEM_file`, {
+			limit: 1,
+			offset: 0,
+		})
+
+	const productImage = await getImageSrc(product.upload_id)
+
+	const productFiles = { MP3_file, WAV_file, STEM_file, productImage }
+
 	return (
 		<>
-			<main className="max-w-[1200px] grid grid-cols-12">
+			<main className="max-w-[1200px] grid grid-cols-12 gap-4 p-4">
 				<div className="col-span-4">
-					<ProductMeta product={product} />
+					<FileEdit productFiles={productFiles} />
 				</div>
 
-				<div className="col-span-8">this is the main section</div>
+				<div className="col-span-8">
+					<InfoEdit product={product} />
+				</div>
 			</main>
 		</>
 	)

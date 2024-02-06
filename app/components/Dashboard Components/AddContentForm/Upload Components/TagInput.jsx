@@ -12,7 +12,11 @@ export default function TagInput({
 	type,
 	name,
 }) {
-	const [tagList, setTagList] = useState(value || [])
+	const [tagList, setTagList] = useState(
+		value
+			? value.map((tag) => ({ name: tag, id: crypto.randomUUID() }))
+			: []
+	)
 	const [newTag, setNewTag] = useState("")
 	const [isfocused, setIsfocused] = useState(false)
 	const [popperOpen, setPopperOpen] = useState(false)
@@ -79,13 +83,14 @@ export default function TagInput({
 	function renderTags() {
 		return (
 			<div className="flex gap-2">
-				{tagList.map((tag) => (
+				{tagList.map((tag, index) => (
 					<div
 						key={tag.id}
 						className=" whitespace-nowrap flex items-center gap-2 rounded bg-bg-tag text-text-tag border border-border-primary px-1"
 					>
 						{hashtag ? <p>{`#${tag.name}`}</p> : <p>{tag.name}</p>}
 						<button
+							key={index}
 							onClick={() => deleteTag(tag.id)}
 							className="text-text-tag"
 						>

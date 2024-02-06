@@ -12,7 +12,6 @@ export default function ProductSection({
 }) {
 	// const { tags, genres, moods, instruments } = filters
 
-
 	return (
 		<>
 			<div className="flex flex-col justify-center items-center w-full ">

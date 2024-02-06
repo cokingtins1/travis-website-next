@@ -4,13 +4,15 @@ import Divider from "@mui/material/Divider"
 import { useState } from "react"
 import { Button } from "../UI/Button"
 
-export default function PricingSection({ price }) {
+export default function PricingSection({ pricing }) {
 	const [selected, setSelected] = useState(null)
 	const [cartTotal, setCartTotal] = useState("0.00")
 
-	if (!price) {
+	if (!pricing) {
 		return null
 	}
+
+	
 
 	function getFileType(name) {
 		let fileType
@@ -31,15 +33,18 @@ export default function PricingSection({ price }) {
 		return fileType
 	}
 
-	const renderedPricing = price
-		? Object.keys(price).map((key, index) => {
-				const item = price[key]
+	console.log("pricing", pricing)
 
-				if (item.checked) {
-					return PricingButton(index, key, item.price)
-				}
-		  })
-		: null
+	const renderedPricing = () => {
+		console.log("pricing.basic", pricing.basic)
+		if (pricing.basic == true) {
+			PricingButton(1, "basic", pricing.basic_price)
+		}
+
+		// if (item.checked) {
+		// 	return PricingButton(index, key, item.price)
+		// }
+	}
 
 	function PricingButton(index, name = key, price) {
 		return (
@@ -82,7 +87,7 @@ export default function PricingSection({ price }) {
 					</div>
 				</div>
 				<Divider />
-				<div className="flex gap-4 flex-wrap">{renderedPricing}</div>
+				<div className="flex gap-4 flex-wrap">{PricingButton(1, 'basic', pricing.basic_price)}</div>
 			</div>
 		</>
 	)

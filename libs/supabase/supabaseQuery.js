@@ -50,10 +50,21 @@ export async function getStartingPrice(id) {
 	return
 }
 
+export async function getPricingById(id) {
+	const { data: price } = await supabaseClient
+		.from("products")
+		.select(
+			"basic, basic_price, premium, premium_price, exclusive, exclusive_price"
+		)
+		.match({ id })
+
+		return price[0]
+}
+
 export async function getImageSrc(upload_id) {
 	const supabase = createServerClient()
 	const productFileURL =
-	"https://njowjcfiaxbnflrcwcep.supabase.co/storage/v1/object/public/all_products"
+		"https://njowjcfiaxbnflrcwcep.supabase.co/storage/v1/object/public/all_products"
 
 	const { data } = await supabase.storage
 		.from(`all_products`)

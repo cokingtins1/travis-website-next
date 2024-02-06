@@ -1,0 +1,13 @@
+.main{
+    max-width: 1200px;
+    margin: 1rem auto;
+    display: flex;
+    justify-content: center;
+    display: grid;
+    grid-template-columns: 30% 70%;
+    gap: 1rem;
+    }
+
+    .productSection{
+        border: 1px solid black;
+    }

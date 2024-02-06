@@ -1,11 +1,16 @@
 import PricingSection from "@/app/components/Pricing Component/PricingButton"
 import ProductMeta from "@/app/components/ProductMeta/ProductMeta"
-import { getImageSrc, getProductById } from "@/libs/supabase/supabaseQuery"
+import {
+	getImageSrc,
+	getPricingById,
+	getProductById,
+} from "@/libs/supabase/supabaseQuery"
 import { notFound } from "next/navigation"
 
 export default async function Page({ params: { id } }) {
 	const product = await getProductById(id)
 	const imageSrc = await getImageSrc(product.upload_id)
+	const pricing = await getPricingById(id)
 
 	if (!product) {
 		notFound()
@@ -19,7 +24,7 @@ export default async function Page({ params: { id } }) {
 				</div>
 
 				<div className="col-span-9 bg-bg-elevated">
-					<PricingSection price={product.price} />
+					<PricingSection pricing={pricing} />
 				</div>
 			</main>
 		</>
