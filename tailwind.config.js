@@ -25,6 +25,7 @@ module.exports = {
 			},
 			backgroundColor: {
 				"bg-accent-blue": "#007FFF",
+				"bg-disabled": "#929292",
 				"bg-accent-red": "#FF033E",
 				"bg-elevated": "#121212",
 				"bg-secondary": "#242424",

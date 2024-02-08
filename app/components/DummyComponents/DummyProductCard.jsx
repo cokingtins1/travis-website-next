@@ -1,15 +1,22 @@
 import Image from "next/image"
 import beatKitImage from "@/public/beatKitImage.jpg"
 import Link from "next/link"
+import { getImageSrc } from "@/libs/supabase/supabaseQuery"
 
-export default function DummyProductCard({ title, id }) {
+export default async function DashboardProductCard({ product }) {
+	const imageSrc = await getImageSrc(product.upload_id)
+
 	return (
-		<li className="flex flex-1 flex-col rounded hover:bg-bg-hover p-2">
-			<Link href={`/dashboard/${id}`}>
-				<Image src={beatKitImage} alt="product image"></Image>
+		<li className="flex flex-1 flex-col items-center justify-center rounded hover:bg-bg-hover p-2">
+			<Link href={`/dashboard/${product.id}`} className='flex'>
+				<Image
+					src={imageSrc ? imageSrc : beatKitImage}
+					width={90}
+					height={90}
+					alt="product image"
+				/>
 			</Link>
-			<p className="product-title">{title}</p>
-			<p className="text-text-secondary">$9.99</p>
+			<p className="product-title">{product.title}</p>
 		</li>
 	)
 }

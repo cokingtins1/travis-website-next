@@ -125,7 +125,6 @@ export default function AddContentForm() {
 
 			if (res.ok) {
 				setFileLoading(false)
-				console.log(await res.json())
 			} else {
 				addError("There was an error uploading the files")
 				setFileLoading(false)
@@ -157,6 +156,7 @@ export default function AddContentForm() {
 
 	return (
 		<>
+		{/* Put the form in an action... use server -> action={uploadData} */}
 			<div className="w-full bg-bg-elevated border border-black p-4 rounded-md ">
 				<form>
 					<div className="flex flex-col">

@@ -1,12 +1,14 @@
 import Link from "next/link"
 
 import styles from "./page.module.css"
-import DummyProductCard from "@/app/components/DummyComponents/DummyProductCard"
 import { Button } from "../components/UI/Button"
+import Divider from '@mui/material/Divider';
+
 
 import { createServerActionClient } from "@supabase/auth-helpers-nextjs"
 import { cookies } from "next/headers"
 import ProductMeta from "../components/ProductMeta/ProductMeta"
+import DashboardProductCard from "../components/Dashboard Components/DashboardProductCard"
 
 export default async function Page() {
 	const supabase = createServerActionClient({ cookies })
@@ -25,12 +27,23 @@ export default async function Page() {
 			</section>
 
 			<section>
-				<ul className={styles.productGrid}>
+				<div
+					className="grid px-8"
+					style={{ gridTemplateColumns: "2% 36% 24% 20% 18%" }}
+				>
+					<p className='text-text-secondary text-sm'>#</p>
+					<p className='text-text-secondary text-sm'>Track Name</p>
+					<p className='text-text-secondary text-sm'>Date Added</p>
+					<p className='text-text-secondary text-sm'>Files</p>
+					<p className='text-text-secondary text-sm'>Files</p>
+				</div>
+				<Divider variant='middle'/>
+				<ul className="flex flex-col justify-center items-start">
 					{products.map((product, index) => (
-						<DummyProductCard
+						<DashboardProductCard
 							key={index}
-							title={product.title}
-							id={product.id}
+							index={index}
+							product={product}
 						/>
 					))}
 				</ul>

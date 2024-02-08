@@ -7,7 +7,7 @@
 
 .productGrid{
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+    grid-template-columns: 2% 36% 24% 20% 18%;
     gap: 1rem;
     padding: 1rem;
 

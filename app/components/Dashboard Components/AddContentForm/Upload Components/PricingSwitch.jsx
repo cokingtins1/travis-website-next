@@ -14,6 +14,8 @@ export default function PricingSwitch({
 	onCheckedChange,
 	nameSwitch,
 	namePrice,
+	disabled = false,
+	width,
 }) {
 	const [inputValue, setInputValue] = useState(value || "")
 	const [isChecked, setIsChecked] = useState(defaultChecked)
@@ -23,10 +25,15 @@ export default function PricingSwitch({
 	}, [inputValue])
 
 	return (
-		<div className="flex justify-between items-center rounded-lg border border-border-primary p-2">
+		<div
+			className={`flex justify-between items-center rounded-lg border border-border-primary p-2 ${
+				width && width
+			}`}
+		>
 			<div className="flex gap-2">
 				<span className="flex items-center p-2">
 					<Switch
+						disabled={disabled}
 						name={nameSwitch}
 						value={isChecked}
 						checked={isChecked}
@@ -51,6 +58,7 @@ export default function PricingSwitch({
 				</InputLabel>
 				<TextField
 					name={namePrice}
+					disabled={disabled}
 					size="small"
 					type="number"
 					id="outlined-start-adornment"

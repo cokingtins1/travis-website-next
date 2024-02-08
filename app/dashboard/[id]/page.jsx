@@ -48,14 +48,8 @@ export default async function Page({ params: { id } }) {
 
 	return (
 		<>
-			<main className="max-w-[1200px] grid grid-cols-12 gap-4 p-4">
-				<div className="col-span-4">
-					<FileEdit productFiles={productFiles} />
-				</div>
-
-				<div className="col-span-8">
-					<InfoEdit product={product} />
-				</div>
+			<main>
+				<InfoEdit product={product} productFiles={productFiles} />
 			</main>
 		</>
 	)

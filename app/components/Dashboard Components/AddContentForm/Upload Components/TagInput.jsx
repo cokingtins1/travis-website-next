@@ -86,10 +86,13 @@ export default function TagInput({
 				{tagList.map((tag, index) => (
 					<div
 						key={tag.id}
-						className=" whitespace-nowrap flex items-center gap-2 rounded bg-bg-tag text-text-tag border border-border-primary px-1"
+						className={`whitespace-nowrap flex items-center gap-2 rounded   border-border-primary px-1 ${
+							disabled ? "bg-bg-disabled" : "bg-bg-tag"
+						} ${disabled ? "text-slate-300" : "text-text-tag"}`}
 					>
 						{hashtag ? <p>{`#${tag.name}`}</p> : <p>{tag.name}</p>}
 						<button
+							disabled={disabled}
 							key={index}
 							onClick={() => deleteTag(tag.id)}
 							className="text-text-tag"
@@ -146,9 +149,9 @@ export default function TagInput({
 			>
 				{label && <p className="font-semibold">{label}</p>}
 				<div
-					className={
-						"rounded border border-border-primary p-1 flex flex-col flex-wrap gap-2 hover:border-white"
-					}
+					className={`rounded border border-border-primary p-1 flex flex-col flex-wrap gap-2 ${
+						disabled ? "" : "hover:border-white"
+					} `}
 					onFocus={() => setIsfocused(true)}
 					onBlur={() => setIsfocused(false)}
 				>
@@ -173,6 +176,7 @@ export default function TagInput({
 						/>
 						{addFunctionality && (
 							<button
+								disabled={disabled}
 								className="text-text-secondary mr-4"
 								onClick={(e) => {
 									e.preventDefault()
