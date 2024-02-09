@@ -2,21 +2,52 @@
 
 import Divider from "@mui/material/Divider"
 import { useState } from "react"
-import { Button } from "../../UI/Button"
 import Accordion from "@mui/material/Accordion"
-import AccordionActions from "@mui/material/AccordionActions"
+import Button from "@mui/material/Button"
 import AccordionSummary from "@mui/material/AccordionSummary"
 import AccordionDetails from "@mui/material/AccordionDetails"
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 import UsageTerms from "./UsageTerms"
+import { addToCart } from "@/app/actions/addToCart"
+import { useLocalStorage } from "../../CustomHooks/useLocalStorage"
 
-export default function PricingSection({ pricing }) {
-	const [selected, setSelected] = useState("")
-	const [cartTotal, setCartTotal] = useState(() => formatCurrency(0))
+export default function PricingSection({ pricing, product }) {
+	const SESSION_STORAGE_KEY = "SHOPPING_CART"
+
+	const [selected, setSelected] = useLocalStorage("SELECTED_PRODUCT", "")
+
+	const [cartTotal, setCartTotal] = useLocalStorage("CART_TOTAL", () =>
+		formatCurrency(0)
+	)
+
+	const [shoppingCart, setShoppingCart] = useLocalStorage(
+		"SHOPPING_CART",
+		loadCart()
+	)
+
+	function addToCart(newItem) {
+		setShoppingCart((prevItems) => {
+			const updatedItems = Array.isArray(prevItems)
+				? [...prevItems, newItem]
+				: [newItem]
+			return updatedItems
+		})
+	}
+
+	function loadCart() {
+		const cart = localStorage.getItem(SESSION_STORAGE_KEY)
+		return JSON.parse(cart) || []
+	}
 
 	if (!pricing) {
 		return null
 	}
+
+	const [selectedProduct, setSelectedProduct] = useState({
+		id: product.upload_id,
+		type: null,
+		price: null,
+	})
 
 	function formatCurrency(amount) {
 		return new Intl.NumberFormat("en-US", {
@@ -47,6 +78,7 @@ export default function PricingSection({ pricing }) {
 	function PricingButton(name, price) {
 		return (
 			<button
+				type="button"
 				value={price}
 				className={`flex items-center border rounded-xl p-4 flex-1 ${
 					selected === name
@@ -55,6 +87,10 @@ export default function PricingSection({ pricing }) {
 				}  `}
 				onClick={() => {
 					setSelected(name)
+					setSelectedProduct((prev) => {
+						return { ...prev, type: name, price: price }
+					})
+
 					setCartTotal(() => formatCurrency(price))
 				}}
 			>
@@ -72,27 +108,49 @@ export default function PricingSection({ pricing }) {
 	return (
 		<>
 			<div className="flex flex-col gap-4 p-4 bg-bg-elevated rounded-xl">
-				<div className="flex justify-between items-center ">
-					<p className='text-xl'>Liscensing</p>
-					<div className="flex gap-4">
-						<div>
-							<p className="text-sm text-text-secondary text-end">
-								TOTAL:
-							</p>
-							<h2>{`${cartTotal}`}</h2>
+				<form>
+					<div className="flex justify-between items-center ">
+						<p className="text-xl">Liscensing</p>
+
+						<div className="flex gap-4">
+							{selected && <p>{`${selected} ${cartTotal}`}</p>}
+							<div>
+								<p className="text-sm text-text-secondary text-end">
+									TOTAL:
+								</p>
+								<h2>{`${cartTotal}`}</h2>
+							</div>
+							<Button
+								onClick={() =>
+									addToCart({
+										id: product.upload_id,
+										type: selectedProduct.type,
+										price: selectedProduct.price,
+									})
+								}
+								type="button"
+							>
+								Add to Cart
+							</Button>
+							<input
+								className="hidden"
+								type="text"
+								name="cart"
+								id="cart"
+								defaultValue={JSON.stringify(selectedProduct)}
+							/>
 						</div>
-						<Button>Add to Cart</Button>
 					</div>
-				</div>
-				<Divider />
-				<div className="flex gap-4">
-					{pricing.basic &&
-						PricingButton("basic", pricing.basic_price)}
-					{pricing.premium &&
-						PricingButton("premium", pricing.premium_price)}
-					{pricing.exclusive &&
-						PricingButton("exclusive", pricing.exclusive_price)}
-				</div>
+					<Divider />
+					<div className="flex gap-4">
+						{pricing.basic &&
+							PricingButton("basic", pricing.basic_price)}
+						{pricing.premium &&
+							PricingButton("premium", pricing.premium_price)}
+						{pricing.exclusive &&
+							PricingButton("exclusive", pricing.exclusive_price)}
+					</div>
+				</form>
 				<Divider />
 				<div>
 					<Accordion sx={{ boxShadow: "none" }}>

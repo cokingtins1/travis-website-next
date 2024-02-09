@@ -1,13 +1,17 @@
 import styles from "./styles.module.css"
 import AccountCircle from "@mui/icons-material/AccountCircle"
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart"
 import Link from "next/link"
 import Image from "next/image"
 import logoImg from "@/public/Logo.png"
 import { useSession } from "@/libs/supabase/useSession"
+import dynamic from "next/dynamic"
 
 export default async function Header() {
 	const { session } = await useSession()
+
+	const DynamicShoppingCart = dynamic(() => import("./ShoppingCart"), {
+		ssr: false,
+	})
 
 	return (
 		<>
@@ -43,10 +47,9 @@ export default async function Header() {
 								</button>
 							</Link>
 						)}
-						<button className={styles.iconBtn}>
-							<ShoppingCartIcon />
-							<label className={styles.label}>Cart</label>
-						</button>
+						<Link href={"/checkout"}>
+							<DynamicShoppingCart />
+						</Link>
 					</div>
 				</div>
 				<nav className={styles.navWrapper}>
@@ -59,10 +62,7 @@ export default async function Header() {
 					<Link href={"/sandbox"} className={styles.navLink}>
 						Sandbox
 					</Link>
-					<Link
-						href={"/store-server"}
-						className={styles.navLink}
-					>
+					<Link href={"/store-server"} className={styles.navLink}>
 						store-server
 					</Link>
 					<Link

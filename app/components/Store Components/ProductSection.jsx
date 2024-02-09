@@ -2,6 +2,8 @@ import NewProductCard from "../ProductCard/NewProductCard"
 import { Button } from "../UI/Button"
 import FilterSection from "./FilterComponents/FilterSection"
 import Divider from "@mui/material/Divider"
+import { Suspense } from "react"
+import Skeleton from "@mui/material/Skeleton"
 
 export default function ProductSection({
 	productData,
