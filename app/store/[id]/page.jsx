@@ -58,7 +58,11 @@ export default async function Page({ params: { id } }) {
 				<section
 					className={`grid content-start col-span-8 px-10 gap-4 ${mediaPricing.lg} `}
 				>
-					<DynamicPricing pricing={pricing} product={product} />
+					<DynamicPricing
+						pricing={pricing}
+						product={product}
+						imageSrc={imageSrc}
+					/>
 					<section>
 						<Comments />
 					</section>

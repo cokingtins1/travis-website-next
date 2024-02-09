@@ -5,6 +5,7 @@ import SupabaseContext from "@/libs/supabase/supabase-context"
 import ThemeProvider from "@/libs/contexts/ThemeContext"
 import { ToastContainer, toast } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
+import { ShoppingCartProvider } from '@/libs/contexts/CartContext'
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -18,10 +19,12 @@ export default function RootLayout({ children }) {
 		<html lang="en">
 			<body className={inter.className}>
 				<SupabaseContext>
-					<Header />
-					<main className=" mx-auto max-w-[1440px]">
-						<ThemeProvider>{children}</ThemeProvider>
-					</main>
+					<ShoppingCartProvider>
+						<Header />
+						<main className=" mx-auto max-w-[1440px]">
+							<ThemeProvider>{children}</ThemeProvider>
+						</main>
+					</ShoppingCartProvider>
 				</SupabaseContext>
 				<ToastContainer
 					position="top-right"

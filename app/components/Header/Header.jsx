@@ -9,7 +9,7 @@ import dynamic from "next/dynamic"
 export default async function Header() {
 	const { session } = await useSession()
 
-	const DynamicShoppingCart = dynamic(() => import("./ShoppingCart"), {
+	const DynamicShoppingCart = dynamic(() => import("./Shopping Cart Components/ShoppingCart"), {
 		ssr: false,
 	})
 
@@ -47,9 +47,9 @@ export default async function Header() {
 								</button>
 							</Link>
 						)}
-						<Link href={"/checkout"}>
-							<DynamicShoppingCart />
-						</Link>
+						{/* <Link href={"/checkout"}>
+						</Link> */}
+						<DynamicShoppingCart />
 					</div>
 				</div>
 				<nav className={styles.navWrapper}>

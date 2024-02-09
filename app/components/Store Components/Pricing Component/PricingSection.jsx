@@ -8,36 +8,16 @@ import AccordionSummary from "@mui/material/AccordionSummary"
 import AccordionDetails from "@mui/material/AccordionDetails"
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 import UsageTerms from "./UsageTerms"
-import { addToCart } from "@/app/actions/addToCart"
 import { useLocalStorage } from "../../CustomHooks/useLocalStorage"
+import { useShoppingCart } from "@/libs/contexts/CartContext"
 
-export default function PricingSection({ pricing, product }) {
-	const SESSION_STORAGE_KEY = "SHOPPING_CART"
+export default function PricingSection({ pricing, product, imageSrc }) {
+	const { shoppingCart, addToCart } = useShoppingCart()
 
 	const [selected, setSelected] = useLocalStorage("SELECTED_PRODUCT", "")
-
 	const [cartTotal, setCartTotal] = useLocalStorage("CART_TOTAL", () =>
 		formatCurrency(0)
 	)
-
-	const [shoppingCart, setShoppingCart] = useLocalStorage(
-		"SHOPPING_CART",
-		loadCart()
-	)
-
-	function addToCart(newItem) {
-		setShoppingCart((prevItems) => {
-			const updatedItems = Array.isArray(prevItems)
-				? [...prevItems, newItem]
-				: [newItem]
-			return updatedItems
-		})
-	}
-
-	function loadCart() {
-		const cart = localStorage.getItem(SESSION_STORAGE_KEY)
-		return JSON.parse(cart) || []
-	}
 
 	if (!pricing) {
 		return null
@@ -108,49 +88,48 @@ export default function PricingSection({ pricing, product }) {
 	return (
 		<>
 			<div className="flex flex-col gap-4 p-4 bg-bg-elevated rounded-xl">
-				<form>
-					<div className="flex justify-between items-center ">
-						<p className="text-xl">Liscensing</p>
+				<div className="flex justify-between items-center">
+					<p className="text-xl">Liscensing</p>
 
-						<div className="flex gap-4">
-							{selected && <p>{`${selected} ${cartTotal}`}</p>}
-							<div>
-								<p className="text-sm text-text-secondary text-end">
-									TOTAL:
-								</p>
-								<h2>{`${cartTotal}`}</h2>
-							</div>
-							<Button
-								onClick={() =>
-									addToCart({
-										id: product.upload_id,
-										type: selectedProduct.type,
-										price: selectedProduct.price,
-									})
-								}
-								type="button"
-							>
-								Add to Cart
-							</Button>
-							<input
-								className="hidden"
-								type="text"
-								name="cart"
-								id="cart"
-								defaultValue={JSON.stringify(selectedProduct)}
-							/>
-						</div>
-					</div>
-					<Divider />
 					<div className="flex gap-4">
-						{pricing.basic &&
-							PricingButton("basic", pricing.basic_price)}
-						{pricing.premium &&
-							PricingButton("premium", pricing.premium_price)}
-						{pricing.exclusive &&
-							PricingButton("exclusive", pricing.exclusive_price)}
+						<div>
+							<p className="text-sm text-text-secondary text-end">
+								TOTAL:
+							</p>
+							<h2>{`${cartTotal}`}</h2>
+						</div>
+						<Button
+							onClick={() =>
+								addToCart({
+									id: product.upload_id,
+									title: product.title,
+									type: selectedProduct.type,
+									price: selectedProduct.price,
+									imageSrc: imageSrc,
+								})
+							}
+							type="button"
+						>
+							Add to Cart
+						</Button>
+						<input
+							className="hidden"
+							type="text"
+							name="cart"
+							id="cart"
+							defaultValue={JSON.stringify(selectedProduct)}
+						/>
 					</div>
-				</form>
+				</div>
+				<Divider />
+				<div className="flex gap-4">
+					{pricing.basic &&
+						PricingButton("basic", pricing.basic_price)}
+					{pricing.premium &&
+						PricingButton("premium", pricing.premium_price)}
+					{pricing.exclusive &&
+						PricingButton("exclusive", pricing.exclusive_price)}
+				</div>
 				<Divider />
 				<div>
 					<Accordion sx={{ boxShadow: "none" }}>

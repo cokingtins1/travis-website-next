@@ -1,45 +1,46 @@
-// "use client"
+"use client"
 
-// import { createContext, useContext } from "react"
-// import { useLocalStorage } from "../../app/components/CustomHooks/useLocalStorage"
+import { useLocalStorage } from "@/app/components/CustomHooks/useLocalStorage"
+import React, { createContext, useContext } from "react"
 
-// const Context = createContext(null)
+const ShoppingCartContext = createContext()
 
-// export default function CartContext({ children }) {
-// 	let shoppingCart
-// 	let setShoppingCart
-// 	const SESSION_STORAGE_KEY = "SHOPPING_CART"
+export const ShoppingCartProvider = ({ children }) => {
+	const SESSION_STORAGE_KEY = "SHOPPING_CART"
 
-// 	if (typeof window !== "undefined") {
-// 		;[shoppingCart, setShoppingCart] = useLocalStorage(
-// 			"SHOPPING_CART",
-// 			loadCart()
-// 		)
+	const [shoppingCart, setShoppingCart] = useLocalStorage(
+		SESSION_STORAGE_KEY,
+		loadCart()
+	)
 
-// 		function addToCart(newItem) {
-// 			setShoppingCart((prevItems) => {
-// 				const updatedItems = Array.isArray(prevItems)
-// 					? [...prevItems, newItem]
-// 					: [newItem]
-// 				return updatedItems
-// 			})
-// 		}
+	function loadCart() {
+		if (typeof localStorage !== "undefined") {
+			const cart = localStorage.getItem(SESSION_STORAGE_KEY)
+			return JSON.parse(cart) || []
+		}
+	}
 
-// 		function loadCart() {
-// 			const cart = localStorage.getItem(SESSION_STORAGE_KEY)
-// 			return JSON.parse(cart) || []
-// 		}
-//         const values = [shoppingCart, addToCart, loadCart]
-// 	}
+	const addToCart = (newItem) => {
+		setShoppingCart((prevItems) => {
+			const updatedItems = Array.isArray(prevItems)
+				? [...prevItems, newItem]
+				: [newItem]
+			return updatedItems
+		})
+	}
 
-// 	return <Context.Provider value={values}>{children}</Context.Provider>
-// }
+	const values = {
+		shoppingCart,
+		addToCart,
+	}
 
-// export const useCart = () => {
-// 	const context = useContext(Context)
-// 	if (context === undefined) {
-// 		throw new Error("useCart must be used inside CartProvider")
-// 	}
+	return (
+		<ShoppingCartContext.Provider value={values}>
+			{children}
+		</ShoppingCartContext.Provider>
+	)
+}
 
-// 	return context
-// }
+export const useShoppingCart = () => {
+	return useContext(ShoppingCartContext)
+}
