@@ -72,7 +72,7 @@ export async function getImageSrc(upload_id) {
 			offset: 0,
 		})
 
-	if (data.length > 0) {
+	if (data && data.length > 0) {
 		const imageData = data[0]
 		const src = `${productFileURL}/${upload_id}/productImage/${imageData.name}`
 

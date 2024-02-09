@@ -17,11 +17,13 @@ export default async function NewProductCard({ product }) {
 				<li className="border border-bg-base hover:bg-bg-elevated hover:border-border-primary rounded-lg flex justify-between gap-2 p-4">
 					<Link href={`/store/${product.id}`}>
 						<div className="flex gap-4">
-							<figure className="relative flex flex-col items-center">
+							<figure className="relative flex flex-col items-center h-[85px] w-[85px]">
 								<Image
 									src={imageSrc ? imageSrc : beatKitImage}
-									width={90}
-									height={90}
+									className="rounded-sm"
+									fill={true}
+									style={{ objectFit: "cover" }}
+									sizes="(max-width: 430px), 85px "
 									alt="product image"
 								/>
 								<figcaption className="absolute bottom-0 text-xs bg-bg-secondary rounded p-1">
@@ -46,7 +48,7 @@ export default async function NewProductCard({ product }) {
 							</div>
 						</div>
 					</Link>
-					<div className="flex flex-col justify-center items-end">
+					<div className="flex flex-col justify-center items-end whitespace-nowrap">
 						<AddToCartBtn startingPrice={startingPrice} />
 						<div>
 							<IconButton>

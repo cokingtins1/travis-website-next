@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react"
 
 export default function TagInput({
 	label = "",
+	update,
 	hashtag = false,
 	dropDownList = false, // dropDownList is an object
 	disabled = true,
@@ -13,9 +14,12 @@ export default function TagInput({
 	name,
 }) {
 	const [tagList, setTagList] = useState(
-		value
+		update
 			? value.map((tag) => ({ name: tag, id: crypto.randomUUID() }))
+			: value && !update
+			? value
 			: []
+
 	)
 	const [newTag, setNewTag] = useState("")
 	const [isfocused, setIsfocused] = useState(false)

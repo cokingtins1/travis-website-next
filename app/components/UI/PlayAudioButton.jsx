@@ -4,7 +4,12 @@ import PlayCircleIcon from "@mui/icons-material/PlayCircle"
 import PauseIcon from "@mui/icons-material/Pause"
 import { useRef, useState } from "react"
 
-export default function PlayAudioButton({ audioSrc, disabled, fileType }) {
+export default function PlayAudioButton({
+	audioSrc,
+	disabled,
+	fileType,
+	styles = { width: "115px", height: "40px" },
+}) {
 	const audioRef = useRef(null)
 	const [playing, setPlaying] = useState(false)
 
@@ -35,7 +40,7 @@ export default function PlayAudioButton({ audioSrc, disabled, fileType }) {
 				disabled={disabled}
 				startIcon={!playing ? <PlayCircleIcon /> : <PauseIcon />}
 				onClick={handleClick}
-				sx={{ width: "115px", height: "40px" }}
+				sx={styles}
 			>
 				{playing ? "Pause" : "Play"}
 			</Button>

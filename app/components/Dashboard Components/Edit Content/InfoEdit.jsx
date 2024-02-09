@@ -13,11 +13,10 @@ import Image from "next/image"
 import { useState } from "react"
 import TagInput from "../AddContentForm/Upload Components/TagInput"
 import DropDown from "@/app/components/Dashboard Components/AddContentForm/Upload Components/DropDown.json"
-import { Button as MyButton } from "../../UI/Button"
 import { toast } from "react-toastify"
 import PricingSwitch from "../AddContentForm/Upload Components/PricingSwitch"
-import UploadFile from "../AddContentForm/Upload Components/UploadFile"
 import SubmitModal from "../../UI/SubmitModal"
+import EditFile from "../AddContentForm/Upload Components/EditFile"
 
 export default function InfoEdit({ product, productFiles }) {
 	const INITIAL_DATA = {
@@ -171,8 +170,34 @@ export default function InfoEdit({ product, productFiles }) {
 							</label>
 						</Button>
 					</div>
-					<div className="flex flex-col">
-						<UploadFile
+					<div className="flex flex-col gap-4">
+						<EditFile
+							type="MP3"
+							fileProps={data.MP3_file}
+							fileNameProps={data.MP3_fileName}
+							fileSizeProps={data.MP3_fileSize}
+							updateFields={(fields) =>
+								updateFields({
+									MP3_file: fields.file,
+									MP3_fileName: fields.fileName,
+									MP3_fileSize: fields.fileSize,
+								})
+							}
+						/>
+						<EditFile
+							type="WAV"
+							fileProps={data.WAV_file}
+							fileNameProps={data.WAV_fileName}
+							fileSizeProps={data.WAV_fileSize}
+							updateFields={(fields) =>
+								updateFields({
+									WAV_file: fields.file,
+									WAV_fileName: fields.fileName,
+									WAV_fileSize: fields.fileSize,
+								})
+							}
+						/>
+						<EditFile
 							type="WAV"
 							fileProps={data.MP3_file}
 							fileNameProps={data.MP3_fileName}
@@ -182,7 +207,6 @@ export default function InfoEdit({ product, productFiles }) {
 									MP3_file: fields.file,
 									MP3_fileName: fields.fileName,
 									MP3_fileSize: fields.fileSize,
-									title: fields.fileName.split(".")[0],
 								})
 							}
 						/>
@@ -301,6 +325,7 @@ export default function InfoEdit({ product, productFiles }) {
 						<div className="flex-1">
 							<TagInput
 								name="tags"
+								update={true}
 								hashtag={true}
 								disabled={!editing}
 								value={data.tags}
@@ -320,6 +345,7 @@ export default function InfoEdit({ product, productFiles }) {
 						<div className="flex-1">
 							<TagInput
 								name="genres"
+								update={true}
 								addFunctionality
 								dropDownList={DropDown.Genres}
 								disabled={!editing}
@@ -340,6 +366,7 @@ export default function InfoEdit({ product, productFiles }) {
 						<div className="flex-1">
 							<TagInput
 								name="moods"
+								update={true}
 								addFunctionality
 								hashtag={true}
 								dropDownList={DropDown.Moods}
@@ -361,6 +388,7 @@ export default function InfoEdit({ product, productFiles }) {
 						<div className="flex-1">
 							<TagInput
 								name="instruments"
+								update={true}
 								hashtag={true}
 								addFunctionality
 								dropDownList={DropDown.Instruments}

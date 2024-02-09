@@ -1,6 +1,6 @@
-
 // import { useState } from "react"
 import FilterDropDown from "../../UI/FilterDropDown"
+import BPMSlider from "./BPMSlider"
 
 export default function FilterSection({ genres, moods, instruments }) {
 	// const searchParams = useSearchParams()
@@ -46,6 +46,7 @@ export default function FilterSection({ genres, moods, instruments }) {
 				items={test}
 				type={"test"}
 			/>
+			<BPMSlider />
 		</div>
 	)
 }

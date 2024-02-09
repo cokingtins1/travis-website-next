@@ -83,6 +83,24 @@ export default function MetaData({
 				/>
 			</div>
 			<Divider />
+			<div>
+				<p className="text-lg font-bold">
+					{" "}
+					<KeyboardVoiceIcon /> Instruments & Vocals
+				</p>
+				<TagInput
+					name="instruments"
+					label="Instruments"
+					value={instruments}
+					disabled={false}
+					dropDownList={DropDown.Instruments}
+					addFunctionality
+					onChange={(newTagList) => {
+						updateFields({ instruments: newTagList })
+					}}
+				/>
+			</div>
+			<Divider />
 
 			<div className="flex flex-col gap-4">
 				<p className="text-lg font-bold">
@@ -133,23 +151,6 @@ export default function MetaData({
 			</div>
 			<Divider />
 
-			<div>
-				<p className="text-lg font-bold">
-					{" "}
-					<KeyboardVoiceIcon /> Instruments & Vocals
-				</p>
-				<TagInput
-					name="instruments"
-					label="Instruments"
-					value={instruments}
-					dropDownList={DropDown.Instruments}
-					addFunctionality
-					onChange={(newTagList) => {
-						updateFields({ instruments: newTagList })
-					}}
-				/>
-			</div>
-			<Divider />
 			<div>
 				<p className="text-lg font-bold">
 					{" "}

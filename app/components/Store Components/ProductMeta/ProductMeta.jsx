@@ -8,25 +8,28 @@ import IosShareIcon from "@mui/icons-material/IosShare"
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart"
 
 export default function ProductMeta({ product, imageSrc }) {
-	
-
 	return (
 		<>
 			<div className="bg-bg-elevated rounded-xl p-4">
-				<div className="flex flex-col justify-center items-center gap-4">
-					<Image
-						src={imageSrc ? imageSrc : beatKitImage}
-						alt="product image"
-						width={200}
-						height={300}
-					></Image>
+				<div className="flex flex-col justify-center items-center gap-4 ">
+					<div className="h-[300px] w-[250px] relative">
+						<Image
+							src={imageSrc ? imageSrc : beatKitImage}
+							alt="product image"
+							fill={true}
+							style={{ objectFit: "cover" }}
+							// style={{
+							// 	width: "100%",
+							// 	height: "auto",
+							// }}
+							sizes="(max-width: 430px), 250px"
+						/>
+					</div>
 					<h1 className="text-2xl text-center">{product.title}</h1>
 				</div>
 
 				<div className={styles.metaInfo}>
 					<div className={styles.iconCont}>
-						<button></button>
-
 						<IconButton>
 							<FavoriteBorderIcon />
 						</IconButton>

@@ -10,6 +10,7 @@ import Tabs from "@mui/material/Tabs"
 import Tab from "@mui/material/Tab"
 import Divider from "@mui/material/Divider"
 import beatKitImage from "@/public/beatKitImage.jpg"
+import { toast } from "react-toastify"
 
 import MetaData from "./MetaData"
 import Pricing from "./Pricing"
@@ -118,11 +119,17 @@ export default function AddContentForm() {
 
 		try {
 			setFileLoading(true)
-			const res = await fetch("/api/uploadFile", {
-				method: "POST",
-				body: fileFormData,
-			})
-
+			const res = await toast.promise(
+				fetch("/api/uploadFile", {
+					method: "POST",
+					body: fileFormData,
+				}),
+				{
+					pending: "Uploading files",
+					success: "Files uploaded successfully",
+					error: "Error uploading files",
+				}
+			)
 			if (res.ok) {
 				setFileLoading(false)
 			} else {
@@ -136,11 +143,18 @@ export default function AddContentForm() {
 
 		try {
 			setDataLoading(true)
-			const res = await fetch("/api/uploadData", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify(JSONFormData),
-			})
+			const res = await toast.promise(
+				fetch("/api/uploadData", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify(JSONFormData),
+				}),
+				{
+					pending: "Uploading product data",
+					success: "Product data uploaded successfully",
+					error: "Error uploading product data files",
+				}
+			)
 			if (res.ok) {
 				setDataLoading(false)
 				console.log(await res.json())
@@ -156,7 +170,7 @@ export default function AddContentForm() {
 
 	return (
 		<>
-		{/* Put the form in an action... use server -> action={uploadData} */}
+			{/* Put the form in an action... use server -> action={uploadData} */}
 			<div className="w-full bg-bg-elevated border border-black p-4 rounded-md ">
 				<form>
 					<div className="flex flex-col">
