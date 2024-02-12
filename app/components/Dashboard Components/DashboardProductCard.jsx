@@ -2,8 +2,6 @@ import Image from "next/image"
 import beatKitImage from "@/public/beatKitImage.jpg"
 import Link from "next/link"
 import { getImageSrc } from "@/libs/supabase/supabaseQuery"
-import PlayArrowIcon from "@mui/icons-material/PlayArrow"
-import PlayCircleIcon from "@mui/icons-material/PlayCircle"
 
 export default async function DashboardProductCard({ product, index }) {
 	const imageSrc = await getImageSrc(product.upload_id)
@@ -23,7 +21,7 @@ export default async function DashboardProductCard({ product, index }) {
 						src={imageSrc ? imageSrc : beatKitImage}
 						className="rounded-sm"
 						fill={true}
-						style={{objectFit:"cover"}}
+						style={{ objectFit: "cover" }}
 						sizes="(max-width: 430px), 40px "
 						alt="product image"
 					/>

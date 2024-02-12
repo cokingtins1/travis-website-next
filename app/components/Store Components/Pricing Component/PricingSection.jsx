@@ -8,16 +8,14 @@ import AccordionSummary from "@mui/material/AccordionSummary"
 import AccordionDetails from "@mui/material/AccordionDetails"
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 import UsageTerms from "./UsageTerms"
-import { useLocalStorage } from "../../CustomHooks/useLocalStorage"
 import { useShoppingCart } from "@/libs/contexts/CartContext"
+import { formatCurrency } from "@/libs/utils"
 
 export default function PricingSection({ pricing, product, imageSrc }) {
-	const { shoppingCart, addToCart } = useShoppingCart()
+	const { addToCart } = useShoppingCart()
 
-	const [selected, setSelected] = useLocalStorage("SELECTED_PRODUCT", "")
-	const [cartTotal, setCartTotal] = useLocalStorage("CART_TOTAL", () =>
-		formatCurrency(0)
-	)
+	const [selected, setSelected] = useState("")
+	const [cartTotal, setCartTotal] = useState(() => formatCurrency(0))
 
 	if (!pricing) {
 		return null
@@ -28,13 +26,6 @@ export default function PricingSection({ pricing, product, imageSrc }) {
 		type: null,
 		price: null,
 	})
-
-	function formatCurrency(amount) {
-		return new Intl.NumberFormat("en-US", {
-			style: "currency",
-			currency: "USD",
-		}).format(amount)
-	}
 
 	function getFileType(name) {
 		let fileType
@@ -99,15 +90,17 @@ export default function PricingSection({ pricing, product, imageSrc }) {
 							<h2>{`${cartTotal}`}</h2>
 						</div>
 						<Button
-							onClick={() =>
-								addToCart({
-									id: product.upload_id,
-									title: product.title,
-									type: selectedProduct.type,
-									price: selectedProduct.price,
-									imageSrc: imageSrc,
-								})
-							}
+							onClick={() => {
+								if (selected) {
+									addToCart({
+										id: product.upload_id,
+										title: product.title,
+										type: selectedProduct.type,
+										price: selectedProduct.price,
+										imageSrc: imageSrc,
+									})
+								}
+							}}
 							type="button"
 						>
 							Add to Cart

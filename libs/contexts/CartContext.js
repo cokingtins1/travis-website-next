@@ -20,7 +20,9 @@ export const ShoppingCartProvider = ({ children }) => {
 		}
 	}
 
-	const addToCart = (newItem) => {
+	function addToCart(newItem) {
+		if (shoppingCart.some((item) => item.id === newItem.id && item.type === newItem.type)) return
+
 		setShoppingCart((prevItems) => {
 			const updatedItems = Array.isArray(prevItems)
 				? [...prevItems, newItem]
@@ -29,9 +31,16 @@ export const ShoppingCartProvider = ({ children }) => {
 		})
 	}
 
+	function removeFromCart(id) {
+		setShoppingCart((prevItems) => {
+			return prevItems.filter((item) => item.id !== id)
+		})
+	}
+
 	const values = {
 		shoppingCart,
 		addToCart,
+		removeFromCart,
 	}
 
 	return (

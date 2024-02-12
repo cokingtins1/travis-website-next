@@ -1,13 +1,42 @@
 import Image from "next/image"
+import ClearIcon from "@mui/icons-material/Clear"
+import { formatCurrency } from "@/libs/utils"
+import { useShoppingCart } from "@/libs/contexts/CartContext"
 
 export default function CartItem({ cartItem }) {
 	const { id, imageSrc, title, type, price } = cartItem
 
+	const { removeFromCart } = useShoppingCart()
+
 	return (
 		<li>
 			<div className="flex items-center gap-4">
-				<Image src={imageSrc} width={50} height={50} alt="" />
-				<p className='text-text-primary text-sm'>{title}</p>
+				<div className="w-[50px] h-[50px] relative">
+					<Image
+						className="rounded-sm"
+						src={imageSrc}
+						fill={true}
+						style={{ objectFit: "cover" }}
+						sizes="(max-width: 430px), 50px "
+						alt="product image"
+					/>
+				</div>
+				<div className="flex items-center w-full">
+					<p className="text-text-primary text-sm w-9/12 pr-4">
+						{title}
+					</p>
+					<p className="text-text-primary text-sm">
+						{formatCurrency(price)}
+					</p>
+					<span className="text-text-secondary pl-4">
+						<button
+							onClick={() => removeFromCart(id)}
+							className="rounded-md hover:bg-bg-hover p-1"
+						>
+							<ClearIcon fontSize="small" />
+						</button>
+					</span>
+				</div>
 			</div>
 		</li>
 	)

@@ -38,6 +38,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.11.17",
+    "@types/whatwg-url": "^11.0.4",
     "autoprefixer": "^10.4.17",
     "eslint": "^8",
     "eslint-config-next": "14.1.0",

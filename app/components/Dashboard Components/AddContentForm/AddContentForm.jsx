@@ -98,47 +98,25 @@ export default function AddContentForm() {
 		e.preventDefault()
 		if (!isLastStep) return next()
 
-		const uploadID = crypto.randomUUID()
-
-		const fileFormData = new FormData()
-		const JSONFormData = {}
-
-		fileFormData.set("upload_id", uploadID)
-		JSONFormData["upload_id"] = uploadID
+		const formData = new FormData()
 
 		for (const key in data) {
 			if (data.hasOwnProperty(key)) {
 				const value = data[key]
-				if (value instanceof File) {
-					fileFormData.append(key, value)
+				if (
+					Array.isArray(value) &&
+					value.every((item) => typeof item === "object")
+				) {
+					value.forEach((obj, index) => {
+						if (obj.hasOwnProperty("name")) {
+							const newKey = `${key}_${index + 1}_name`
+							formData.append(newKey, obj.name)
+						}
+					})
 				} else {
-					JSONFormData[key] = value
+					formData.append(key, value)
 				}
 			}
-		}
-
-		try {
-			setFileLoading(true)
-			const res = await toast.promise(
-				fetch("/api/uploadFile", {
-					method: "POST",
-					body: fileFormData,
-				}),
-				{
-					pending: "Uploading files",
-					success: "Files uploaded successfully",
-					error: "Error uploading files",
-				}
-			)
-			if (res.ok) {
-				setFileLoading(false)
-			} else {
-				addError("There was an error uploading the files")
-				setFileLoading(false)
-				throw new Error("There was an error uploading the files")
-			}
-		} catch (error) {
-			console.log(error)
 		}
 
 		try {
@@ -146,8 +124,7 @@ export default function AddContentForm() {
 			const res = await toast.promise(
 				fetch("/api/uploadData", {
 					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify(JSONFormData),
+					body: formData,
 				}),
 				{
 					pending: "Uploading product data",
