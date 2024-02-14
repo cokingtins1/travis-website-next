@@ -13,10 +13,11 @@ import dynamic from "next/dynamic"
 
 export default async function Page({ params: { id } }) {
 	const product = await getProductById(id)
-	const imageSrc = await getImageSrc(product.id)
+	const imageSrc = await getImageSrc(id)
 	const { pricing } = await getPricingById(id)
 
 	// add url to database and write function to grab it
+
 
 	const DynamicPricing = dynamic(
 		() =>

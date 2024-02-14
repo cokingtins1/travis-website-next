@@ -129,7 +129,7 @@ export async function POST(req) {
 					if (value.type === "application/x-zip-compressed") {
 						return NextResponse.json({ success: true })
 					} else if (value.type.split("/")[0] == "image") {
-						const imagePath = `${product_id}/productImage`
+						const imagePath = `${product_id}/productImage/${value.name}`
 						await uploadFile(imagePath, value)
 					} else if (value.name.endsWith(".mp3")) {
 						await uploadFile(file_url_mp3, value)

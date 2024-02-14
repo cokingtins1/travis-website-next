@@ -9,7 +9,7 @@ import AddToCartBtn from "../UI/AddToCartBtn"
 
 export default async function NewProductCard({ product }) {
 	const { startingPrice } = await getPricingById(product.id)
-	const imageSrc = await getImageSrc(product.upload_id)
+	const imageSrc = await getImageSrc(product.id)
 
 	return (
 		<>

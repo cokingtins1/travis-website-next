@@ -4,7 +4,7 @@ import Link from "next/link"
 import { getImageSrc } from "@/libs/supabase/supabaseQuery"
 
 export default async function DashboardProductCard({ product, index }) {
-	const imageSrc = await getImageSrc(product.upload_id)
+	const imageSrc = await getImageSrc(product.id)
 
 	return (
 		<li

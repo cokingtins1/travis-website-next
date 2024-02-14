@@ -44,10 +44,6 @@ export async function getProductFilePathById(id) {
 		if (error) {
 			console.error("Error:", error)
 		} else {
-
-			
-
-
 		}
 	} catch (error) {}
 }

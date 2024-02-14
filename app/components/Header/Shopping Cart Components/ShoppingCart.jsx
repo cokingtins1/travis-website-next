@@ -12,9 +12,11 @@ import { useState } from "react"
 import CartItem from "./CartItem"
 import Button from "@mui/material/Button"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 
 export default function ShoppingCart() {
 	const { shoppingCart } = useShoppingCart()
+	const router = useRouter()
 
 	const [anchorEl, setAnchorEl] = useState(null)
 	const open = Boolean(anchorEl)
@@ -25,6 +27,29 @@ export default function ShoppingCart() {
 
 	const handleClose = () => {
 		setAnchorEl(null)
+	}
+
+	async function handleCheckout(e) {
+		console.log("handling checkout")
+		e.preventDefault()
+		try {
+			const res = await fetch("/api/checkout", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(shoppingCart),
+			})
+
+			if (res.ok) {
+				const redirect = await res.json()
+				router.push(redirect)
+			} else {
+				console.log("there was an error going to checkout")
+			}
+		} catch (error) {
+			console.log(error)
+		}
 	}
 
 	return (
@@ -52,9 +77,18 @@ export default function ShoppingCart() {
 						<CartItem key={index} cartItem={item} />
 					))}
 
-					<Link href={"/checkout"}>
-						<Button onClick={handleClose} fullWidth variant="outlined">Checkout</Button>
-					</Link>
+					{/* <Link href={"/checkout"}> */}
+					<Button
+						onClick={
+							handleCheckout
+							// handleClose()
+						}
+						fullWidth
+						variant="outlined"
+					>
+						Checkout
+					</Button>
+					{/* </Link> */}
 				</div>
 			</Menu>
 		</>
