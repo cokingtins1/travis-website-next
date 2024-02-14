@@ -121,6 +121,7 @@ export default function AddContentForm() {
 
 		try {
 			setDataLoading(true)
+			
 			const res = await toast.promise(
 				fetch("/api/uploadData", {
 					method: "POST",

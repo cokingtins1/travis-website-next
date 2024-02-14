@@ -4,11 +4,11 @@ import Link from "next/link"
 import Divider from "@mui/material/Divider"
 import IconButton from "@mui/material/IconButton"
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder"
-import { getImageSrc, getStartingPrice } from "@/libs/supabase/supabaseQuery"
+import { getImageSrc, getPricingById } from "@/libs/supabase/supabaseQuery"
 import AddToCartBtn from "../UI/AddToCartBtn"
 
 export default async function NewProductCard({ product }) {
-	const startingPrice = await getStartingPrice(product.id)
+	const { startingPrice } = await getPricingById(product.id)
 	const imageSrc = await getImageSrc(product.upload_id)
 
 	return (

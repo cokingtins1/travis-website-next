@@ -11,7 +11,7 @@ import UsageTerms from "./UsageTerms"
 import { useShoppingCart } from "@/libs/contexts/CartContext"
 import { formatCurrency } from "@/libs/utils"
 
-export default function PricingSection({ pricing, product, imageSrc }) {
+export default function PricingSection({ product, pricing, imageSrc }) {
 	const { addToCart } = useShoppingCart()
 
 	const [selected, setSelected] = useState("")
@@ -22,7 +22,9 @@ export default function PricingSection({ pricing, product, imageSrc }) {
 	}
 
 	const [selectedProduct, setSelectedProduct] = useState({
-		id: product.upload_id,
+		product_id: null,
+		pricing_id: null,
+		product_name: null,
 		type: null,
 		price: null,
 	})
@@ -46,9 +48,10 @@ export default function PricingSection({ pricing, product, imageSrc }) {
 		return fileType
 	}
 
-	function PricingButton(name, price) {
+	function PricingButton(name, price, pricing_id, product_id) {
 		return (
 			<button
+				key={pricing_id}
 				type="button"
 				value={price}
 				className={`flex items-center border rounded-xl p-4 flex-1 ${
@@ -59,7 +62,14 @@ export default function PricingSection({ pricing, product, imageSrc }) {
 				onClick={() => {
 					setSelected(name)
 					setSelectedProduct((prev) => {
-						return { ...prev, type: name, price: price }
+						return {
+							...prev,
+							product_id: product_id,
+							pricing_id: pricing_id,
+							product_name: product.title,
+							type: name.toUpperCase(),
+							price: price,
+						}
 					})
 
 					setCartTotal(() => formatCurrency(price))
@@ -93,10 +103,12 @@ export default function PricingSection({ pricing, product, imageSrc }) {
 							onClick={() => {
 								if (selected) {
 									addToCart({
-										id: product.upload_id,
-										title: product.title,
-										type: selectedProduct.type,
+										pricing_id: selectedProduct.pricing_id,
+										product_id: selectedProduct.product_id,
+										product_name:
+											selectedProduct.product_name,
 										price: selectedProduct.price,
+										type: selectedProduct.type,
 										imageSrc: imageSrc,
 									})
 								}
@@ -105,23 +117,18 @@ export default function PricingSection({ pricing, product, imageSrc }) {
 						>
 							Add to Cart
 						</Button>
-						<input
-							className="hidden"
-							type="text"
-							name="cart"
-							id="cart"
-							defaultValue={JSON.stringify(selectedProduct)}
-						/>
 					</div>
 				</div>
 				<Divider />
 				<div className="flex gap-4">
-					{pricing.basic &&
-						PricingButton("basic", pricing.basic_price)}
-					{pricing.premium &&
-						PricingButton("premium", pricing.premium_price)}
-					{pricing.exclusive &&
-						PricingButton("exclusive", pricing.exclusive_price)}
+					{pricing.map((item) =>
+						PricingButton(
+							item.name, //basic, premium, exclusive
+							item.price,
+							item.pricing_id,
+							item.product_id
+						)
+					)}
 				</div>
 				<Divider />
 				<div>

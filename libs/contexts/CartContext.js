@@ -21,19 +21,35 @@ export const ShoppingCartProvider = ({ children }) => {
 	}
 
 	function addToCart(newItem) {
-		if (shoppingCart.some((item) => item.id === newItem.id && item.type === newItem.type)) return
-
-		setShoppingCart((prevItems) => {
-			const updatedItems = Array.isArray(prevItems)
-				? [...prevItems, newItem]
-				: [newItem]
-			return updatedItems
-		})
+		if (
+			shoppingCart.some((item) => item.pricing_id === newItem.pricing_id)
+		) {
+			return
+		}
+		if (
+			shoppingCart.some((item) => item.product_id === newItem.product_id)
+		) {
+			setShoppingCart((prevItems) => {
+				const updatedItems = prevItems.map((item) =>
+					item.product_id === newItem.product_id
+						? { ...newItem }
+						: item
+				)
+				return updatedItems
+			})
+		} else {
+			setShoppingCart((prevItems) => {
+				const updatedItems = Array.isArray(prevItems)
+					? [...prevItems, newItem]
+					: [newItem]
+				return updatedItems
+			})
+		}
 	}
 
 	function removeFromCart(id) {
 		setShoppingCart((prevItems) => {
-			return prevItems.filter((item) => item.id !== id)
+			return prevItems.filter((item) => item.pricing_id !== id)
 		})
 	}
 

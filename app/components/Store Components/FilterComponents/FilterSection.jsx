@@ -40,12 +40,6 @@ export default function FilterSection({ genres, moods, instruments }) {
 				type={"instruments"}
 			/>
 
-			<FilterDropDown
-				// updateFilters={updateFilters}
-				label="BALLS"
-				items={test}
-				type={"test"}
-			/>
 			<BPMSlider />
 		</div>
 	)
