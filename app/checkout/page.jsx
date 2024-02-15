@@ -2,7 +2,10 @@
 
 import React, { useEffect, useState } from "react"
 import { loadStripe } from "@stripe/stripe-js"
-import { Elements, PaymentElement } from "@stripe/react-stripe-js"
+import {
+	EmbeddedCheckoutProvider,
+	EmbeddedCheckout,
+} from "@stripe/react-stripe-js"
 import { useShoppingCart } from "@/libs/contexts/CartContext"
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
@@ -25,15 +28,11 @@ export default function Page() {
 
 			if (res.ok) {
 				const data = await res.json()
-				setClientSecret(data)
+				setClientSecret(data.clientSecret)
 			}
 		}
 		fetchData()
 	}, [])
-
-	const options = {
-		clientSecret: clientSecret,
-	}
 
 	const mediaMain = {
 		lg: "lg:grid-cols-12",
@@ -44,30 +43,37 @@ export default function Page() {
 	}
 
 	const mediaSummary = {
-		lg: "lg:col-span-5 px-2",
+		lg: "lg:col-span-12 px-2",
+	}
+
+	const options = {
+		clientSecret: `{{${clientSecret}}}`,
 	}
 
 	return (
 		<main className={`grid grid-cols-8 px-4 pt-4 gap-4 ${mediaMain.lg} `}>
-			<div id="checkout">
-				{/* <Elements stripe={stripePromise} options={options}>
-					<form action="">
-						<PaymentElement />
-					</form>
-				</Elements> */}
-			</div>
-
-			{/* <section
+			<section
 				className={`grid content-start col-span-8 px-10 ${mediaCart.lg} `}
 			>
-				{" "}
 				cart section
 			</section>
 			<section
 				className={`grid content-start col-span-8 px-10 gap-4 ${mediaSummary.lg} `}
 			>
-				cart summary
-			</section> */}
+				<div id="checkout">
+					{clientSecret && (
+						<EmbeddedCheckoutProvider
+							stripe={stripePromise}
+							options={{ clientSecret }}
+						>
+							<EmbeddedCheckout />
+						</EmbeddedCheckoutProvider>
+					)}
+				</div>
+			</section>
 		</main>
 	)
 }
+
+
+// http://localhost:3000/success?session_id=cs_test_b1mirhgRJUpRRDGm1FugZ3JQpI49wFkj7D2ccxbIUvkaWMvkpsvKh8lfQT

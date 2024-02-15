@@ -8,7 +8,6 @@ export async function POST(req) {
 
 	const origin = headers().get("origin")
 
-
 	const lineItems = data.map((item) => ({
 		price_data: {
 			currency: "usd",
@@ -22,10 +21,22 @@ export async function POST(req) {
 
 	const session = await stripe.checkout.sessions.create({
 		ui_mode: "embedded",
-        line_items: lineItems,
-        mode: 'payment',
-        return_url: `${origin}/success`
+		line_items: lineItems,
+		mode: "payment",
+		return_url: `${origin}/success?session_id={CHECKOUT_SESSION_ID}`,
 	})
 
-    return NextResponse.json({clientSecret: session.client_secret})
+	return NextResponse.json({ clientSecret: session.client_secret })
+}
+
+export async function GET(req) {
+	const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
+	const data = await req.json()
+
+	const session = await stripe.checkout.sessions.retrieve(data)
+
+	return NextResponse.json({
+		status: session.status,
+		customer_email: session.customer.email,
+	})
 }
