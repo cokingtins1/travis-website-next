@@ -18,7 +18,6 @@ export default async function Page({ params: { id } }) {
 
 	// add url to database and write function to grab it
 
-
 	const DynamicPricing = dynamic(
 		() =>
 			import(
@@ -33,31 +32,25 @@ export default async function Page({ params: { id } }) {
 		notFound()
 	}
 
-	const mediaMain = {
-		lg: "lg:grid-cols-12",
-	}
-
-	const mediaMeta = {
-		lg: "lg:col-span-3 px-2",
-	}
-
-	const mediaPricing = {
-		lg: "lg:col-span-9 px-2",
+	const media = {
+		mainLg: "lg:grid-cols-12",
+		metaLg: "lg:col-span-3 px-2",
+		pricingLg: "lg:col-span-9 px-2",
 	}
 
 	return (
 		<>
 			<main
-				className={`grid grid-cols-8 px-4 pt-4 gap-4 ${mediaMain.lg} `}
+				className={`grid grid-cols-8 px-4 pt-4 gap-4 ${media.mainLg} `}
 			>
 				<section
-					className={`grid content-start col-span-8 px-10 ${mediaMeta.lg} `}
+					className={`grid content-start col-span-8 px-10 ${media.metaLg} `}
 				>
 					<ProductMeta imageSrc={imageSrc} product={product} />
 				</section>
 
 				<section
-					className={`grid content-start col-span-8 px-10 gap-4 ${mediaPricing.lg} `}
+					className={`grid content-start col-span-8 px-10 gap-4 ${media.pricingLg} `}
 				>
 					<DynamicPricing
 						product={product}

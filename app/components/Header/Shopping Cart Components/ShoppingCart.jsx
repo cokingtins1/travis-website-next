@@ -1,7 +1,6 @@
 "use client"
 
 import Menu from "@mui/material/Menu"
-import MenuItem from "@mui/material/MenuItem"
 
 import Fade from "@mui/material/Fade"
 
@@ -11,7 +10,6 @@ import { useShoppingCart } from "@/libs/contexts/CartContext"
 import { useState } from "react"
 import CartItem from "./CartItem"
 import Button from "@mui/material/Button"
-import Link from "next/link"
 import { useRouter } from "next/navigation"
 
 export default function ShoppingCart() {
@@ -32,6 +30,11 @@ export default function ShoppingCart() {
 	async function handleCheckout(e) {
 		console.log("handling checkout")
 		e.preventDefault()
+
+		router.push("/checkout")
+		return
+
+		// Execute the below for Stripe to host checkout functionalities.
 		try {
 			const res = await fetch("/api/checkout", {
 				method: "POST",
@@ -77,18 +80,16 @@ export default function ShoppingCart() {
 						<CartItem key={index} cartItem={item} />
 					))}
 
-					{/* <Link href={"/checkout"}> */}
 					<Button
-						onClick={
-							handleCheckout
-							// handleClose()
-						}
+						onClick={(e) => {
+							handleCheckout(e)
+							handleClose()
+						}}
 						fullWidth
 						variant="outlined"
 					>
 						Checkout
 					</Button>
-					{/* </Link> */}
 				</div>
 			</Menu>
 		</>

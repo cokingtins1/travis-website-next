@@ -53,10 +53,15 @@ export const ShoppingCartProvider = ({ children }) => {
 		})
 	}
 
+	function clearShoppingCart() {
+		setShoppingCart([])
+	}
+
 	const values = {
 		shoppingCart,
 		addToCart,
 		removeFromCart,
+		clearShoppingCart,
 	}
 
 	return (

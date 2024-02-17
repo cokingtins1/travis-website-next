@@ -9,13 +9,14 @@ export default function CartItem({ cartItem }) {
 	const { removeFromCart } = useShoppingCart()
 
 	return (
-		<li>
+		<li className="list-none">
 			<div className="flex items-center gap-4">
 				<div className="w-[50px] h-[50px] relative">
 					<Image
 						className="rounded-sm"
 						src={imageSrc}
 						fill={true}
+						priority
 						style={{ objectFit: "cover" }}
 						sizes="(max-width: 430px), 50px "
 						alt="product image"
@@ -23,8 +24,8 @@ export default function CartItem({ cartItem }) {
 				</div>
 				<div className="flex items-center w-full">
 					<p className="text-text-primary text-sm w-9/12 pr-4">
-						{product_name} 
-						<span className='font-bold'>{` (${type})`}</span>
+						{product_name}
+						<span className="font-bold">{` (${type})`}</span>
 					</p>
 					<p className="text-text-primary text-sm">
 						{formatCurrency(price)}

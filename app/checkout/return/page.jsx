@@ -1,37 +1,37 @@
 "use client"
 
-import { useRouter } from 'next/navigation'
+import { useShoppingCart } from "@/libs/contexts/CartContext"
+import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 
-export default function Page() {
+export default function Page({ searchParams }) {
 	const [status, setStatus] = useState(null)
 	const [customerEmail, setCustomerEmail] = useState("")
-    const router = useRouter()
+	const router = useRouter()
+	const { clearShoppingCart } = useShoppingCart()
 
 	useEffect(() => {
-		const queryString = window.location.search
-		const urlParams = new URLSearchParams(queryString)
-		const sessionId = urlParams.get("session_id")
+		const sessionId = searchParams.session_id
 
 		const fetchSessionStatus = async () => {
-			const res = await fetch("/api/create-checkout-session", {
-				method: "GET",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: sessionId,
-			})
-				.then((res) => res.json())
-				.then((data) => {
-					setStatus(data.status)
-					setCustomerEmail(data.customer_email)
-				})
+			const res = await fetch(
+				`/api/create-checkout-session?session_id=${sessionId}`,
+				{
+					method: "GET",
+				}
+			)
+
+			if (res.ok) {
+				const data = await res.json()
+				setStatus(data.status)
+				setCustomerEmail(data.customer_email)
+			}
 		}
 		fetchSessionStatus()
 	}, [])
 
 	if (status === "open") {
-		router.push('/checkout')
+		router.push("/checkout")
 	}
 
 	if (status === "complete") {

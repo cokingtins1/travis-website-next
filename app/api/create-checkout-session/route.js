@@ -1,5 +1,5 @@
 import Stripe from "stripe"
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 import { headers } from "next/headers"
 
 export async function POST(req) {
@@ -23,7 +23,7 @@ export async function POST(req) {
 		ui_mode: "embedded",
 		line_items: lineItems,
 		mode: "payment",
-		return_url: `${origin}/success?session_id={CHECKOUT_SESSION_ID}`,
+		return_url: `${origin}/checkout/return?session_id={CHECKOUT_SESSION_ID}`,
 	})
 
 	return NextResponse.json({ clientSecret: session.client_secret })
@@ -31,12 +31,13 @@ export async function POST(req) {
 
 export async function GET(req) {
 	const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
-	const data = await req.json()
 
-	const session = await stripe.checkout.sessions.retrieve(data)
+	const session_id = req.nextUrl.searchParams.get("session_id")
+
+	const session = await stripe.checkout.sessions.retrieve(session_id)
 
 	return NextResponse.json({
 		status: session.status,
-		customer_email: session.customer.email,
+		customer_email: session.customer_details.email,
 	})
 }
