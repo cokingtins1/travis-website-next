@@ -57,8 +57,15 @@ export const ShoppingCartProvider = ({ children }) => {
 		setShoppingCart([])
 	}
 
+	const cartTotal = shoppingCart
+		? shoppingCart.reduce((acc, currentVal) => {
+				return acc + currentVal.price
+		  }, 0)
+		: 0
+
 	const values = {
 		shoppingCart,
+		cartTotal,
 		addToCart,
 		removeFromCart,
 		clearShoppingCart,

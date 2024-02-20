@@ -8,14 +8,13 @@ import { getImageSrc, getPricingById } from "@/libs/supabase/supabaseQuery"
 import AddToCartBtn from "../UI/AddToCartBtn"
 
 export default async function NewProductCard({ product }) {
-	const {pricing } = await getPricingById(product.id)
+	const { pricing } = await getPricingById(product.id)
 	const imageSrc = await getImageSrc(product.id)
-
 
 	return (
 		<>
-			<div>
-				<li className="border border-bg-base hover:bg-bg-elevated hover:border-border-primary rounded-lg flex justify-between gap-2 p-4">
+			<li>
+				<div className="border border-bg-base hover:bg-bg-elevated hover:border-border-primary rounded-lg flex justify-between gap-2 p-4">
 					<Link href={`/store/${product.id}`}>
 						<div className="flex gap-4">
 							<figure className="relative flex flex-col items-center h-[85px] w-[85px]">
@@ -50,7 +49,11 @@ export default async function NewProductCard({ product }) {
 						</div>
 					</Link>
 					<div className="flex flex-col justify-center items-end whitespace-nowrap">
-						<AddToCartBtn  startingPrice={pricing[0]} imageSrc={imageSrc} product={product}/>
+						<AddToCartBtn
+							startingPrice={pricing[0]}
+							imageSrc={imageSrc}
+							product={product}
+						/>
 						<div>
 							<IconButton>
 								<FavoriteBorderIcon />
@@ -60,9 +63,9 @@ export default async function NewProductCard({ product }) {
 							...
 						</button>
 					</div>
-				</li>
+				</div>
 				<Divider />
-			</div>
+			</li>
 		</>
 	)
 }

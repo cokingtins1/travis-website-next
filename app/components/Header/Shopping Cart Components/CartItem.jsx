@@ -25,7 +25,7 @@ export default function CartItem({ cartItem }) {
 				<div className="flex items-center w-full">
 					<p className="text-text-primary text-sm w-9/12 pr-4">
 						{product_name}
-						<span className="font-bold">{` (${type})`}</span>
+						<span>{` (${type})`}</span>
 					</p>
 					<p className="text-text-primary text-sm">
 						{formatCurrency(price)}

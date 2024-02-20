@@ -1,21 +1,18 @@
 "use client"
 
 import Menu from "@mui/material/Menu"
-import Divider from "@mui/material/Divider"
 
 import Fade from "@mui/material/Fade"
 
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart"
-import styles from "../styles.module.css"
 import { useShoppingCart } from "@/libs/contexts/CartContext"
 import { useState } from "react"
-import CartItem from "./CartItem"
+import CartItem from "../Header/Shopping Cart Components/CartItem"
 import Button from "@mui/material/Button"
 import { useRouter } from "next/navigation"
-import { formatCurrency } from "@/libs/utils"
 
 export default function ShoppingCart() {
-	const { shoppingCart, cartTotal } = useShoppingCart()
+	const { shoppingCart } = useShoppingCart()
 	const router = useRouter()
 
 	const [anchorEl, setAnchorEl] = useState(null)
@@ -59,9 +56,8 @@ export default function ShoppingCart() {
 
 	return (
 		<>
-			<button onClick={handleClick} className={styles.iconBtn}>
+			<button onClick={handleClick}>
 				<ShoppingCartIcon />
-				<label className={styles.label}>Cart</label>
 				<p>{shoppingCart && shoppingCart.length}</p>
 			</button>
 			<Menu
@@ -81,21 +77,7 @@ export default function ShoppingCart() {
 					{shoppingCart.map((item, index) => (
 						<CartItem key={index} cartItem={item} />
 					))}
-					{shoppingCart.length > 0 && (
-						<>
-							<Divider sx={{ backgroundColor: "#a7a7a7" }} />
-							<div className="flex justify-between">
-								<p className="text-text-primary">{`Total (${
-									shoppingCart.length
-								} ${
-									shoppingCart.length > 1 ? "items" : "item"
-								}) `}</p>
-								<p className="text-text-primary">
-									{formatCurrency(cartTotal)}
-								</p>
-							</div>
-						</>
-					)}
+
 					<Button
 						onClick={(e) => {
 							handleCheckout(e)

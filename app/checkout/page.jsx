@@ -8,7 +8,7 @@ import {
 	EmbeddedCheckout,
 } from "@stripe/react-stripe-js"
 import { useShoppingCart } from "@/libs/contexts/CartContext"
-import CartItem from "../components/Header/Shopping Cart Components/CartItem"
+import CartItem from '../components/Header/Shopping Cart Components/CartItem'
 
 // const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
 
@@ -18,7 +18,6 @@ export default function Page() {
 	const [stripePromise, setStripePromise] = useState(() =>
 		loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
 	)
-	const [loading, setLoading] = useState(true)
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -34,7 +33,6 @@ export default function Page() {
 				if (res.ok) {
 					const data = await res.json()
 					setClientSecret(data.clientSecret)
-					setLoading(false)
 				}
 			}
 		}
@@ -53,34 +51,37 @@ export default function Page() {
 
 	return (
 		<>
-			{!loading && clientSecret && (
+			<>
+				<h1 className="text-2xl font-semibold my-8">Cart</h1>
 				<main
 					className={`grid grid-cols-8 px-4 pt-4 gap-4 ${media.mainLg} `}
 				>
 					<section
 						className={`grid content-start col-span-8 px-10 ${media.cartLg} `}
 					>
-						<Elements stripe={stripePromise}>
+						{/* <Elements stripe={stripePromise}> */}
 							{shoppingCart.map((item, index) => (
 								<CartItem key={index} cartItem={item} />
 							))}
-						</Elements>
+						{/* </Elements> */}
 					</section>
 					<section
 						className={`grid content-start col-span-8 px-10 gap-4 ${media.summaryLg} `}
 					>
-						{shoppingCart.length > 0 && (
-							<EmbeddedCheckoutProvider
-								key={clientSecret}
-								stripe={stripePromise}
-								options={{ clientSecret }}
-							>
-								<EmbeddedCheckout />
-							</EmbeddedCheckoutProvider>
-						)}
+						<div id="checkout">
+							{clientSecret && (
+								<EmbeddedCheckoutProvider
+									key={JSON.stringify(shoppingCart)}
+									stripe={stripePromise}
+									options={{ clientSecret }}
+								>
+									<EmbeddedCheckout />
+								</EmbeddedCheckoutProvider>
+							)}
+						</div>
 					</section>
 				</main>
-			)}
+			</>
 		</>
 	)
 }

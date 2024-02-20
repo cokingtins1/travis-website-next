@@ -9,11 +9,15 @@ export async function POST(req) {
 
 	const origin = headers().get("origin")
 
+	// store file path of supabase storage item as product_id/pricing_id
 	const lineItems = data.map((item) => ({
 		price_data: {
 			currency: "usd",
 			product_data: {
 				name: item.product_name,
+				metadata: {
+					filePath: `${item.product_id}/${item.pricing_id}`,
+				},
 			},
 			unit_amount: item.price * 100,
 		},
@@ -23,7 +27,6 @@ export async function POST(req) {
 	const session = await stripe.checkout.sessions.create({
 		mode: "payment",
 		line_items: lineItems,
-
 		success_url: `${origin}/checkout/success`,
 		cancel_url: `${origin}/checkout/canceled`,
 	})
