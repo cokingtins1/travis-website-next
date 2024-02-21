@@ -11,7 +11,7 @@ export default function CartItem({ cartItem }) {
 	return (
 		<li className="list-none">
 			<div className="flex items-center gap-4">
-				<div className="w-[50px] h-[50px] relative">
+				<div className="size-[50px] relative">
 					<Image
 						className="rounded-sm"
 						src={imageSrc}

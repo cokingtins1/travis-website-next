@@ -9,7 +9,6 @@ export async function POST(req) {
 
 	const origin = headers().get("origin")
 
-	// store file path of supabase storage item as product_id/pricing_id
 	const lineItems = data.map((item) => ({
 		price_data: {
 			currency: "usd",
