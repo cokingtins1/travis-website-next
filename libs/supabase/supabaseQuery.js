@@ -40,10 +40,10 @@ export async function getProductFilePathById(id) {
 				p_product_id: id,
 			}
 		)
-
 		if (error) {
 			console.error("Error:", error)
 		} else {
+			return { pricingId: url[0].file_ext, url_file: url }
 		}
 	} catch (error) {}
 }
@@ -75,17 +75,51 @@ export async function getPricingById(id) {
 						price: price[0].prices[index],
 						pricing_id: price[0].pricing_ids[index],
 						product_id: price[0].product_ids[index],
+						isActive: price[0].is_active[index],
 					}
 				})
 				.sort((a, b) => a.price - b.price)
+
+			const basicPrice = sortedArray
+				.filter((item) => item.name === "basic")
+				.map(({ name, price, isActive }) => ({
+					[name]: { price, isActive },
+				}))
+				.find(Boolean)
+
+			const premiumPrice = sortedArray
+				.filter((item) => item.name === "premium")
+				.map(({ name, price, isActive }) => ({
+					[name]: { price, isActive },
+				}))
+				.find(Boolean)
+
+			const exclusivePrice = sortedArray
+				.filter((item) => item.name === "exclusive")
+				.map(({ name, price, isActive }) => ({
+					[name]: { price, isActive },
+				}))
+				.find(Boolean)
+
+			const pricingShort = {
+				...basicPrice,
+				...premiumPrice,
+				...exclusivePrice,
+			}
+
+			const filteredArray = sortedArray.filter(
+				(obj) => obj.isActive === true
+			)
 
 			return {
 				// price return a [prices: [30, 350, 125], type_ids:['basic', exclusive', 'premium'], pricing_id:[three unique ids], product_id:[three ids (all the same)]}]
 
 				// sortedArray returns array of objs. [{name: 'basic', price: 30}...] that is sorted by price.
 
-				startingPrice: sortedArray[0].price,
+				startingPrice: filteredArray[0].price,
 				pricing: sortedArray,
+				pricingShort: pricingShort,
+				filteredPricing: filteredArray,
 			}
 		}
 

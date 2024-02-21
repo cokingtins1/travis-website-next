@@ -108,7 +108,9 @@ export async function POST(req) {
 			await fulfillOrder(line_items, sessionData)
 
 			return NextResponse.json({ status: 200 }, { message: "success" })
-
+		case "checkout.session.expired":
+			console.log("checkout session expired")
+			break
 		default:
 			console.log(`Unhandled event type ${event.type}`)
 	}

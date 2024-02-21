@@ -14,7 +14,7 @@ import dynamic from "next/dynamic"
 export default async function Page({ params: { id } }) {
 	const product = await getProductById(id)
 	const imageSrc = await getImageSrc(id)
-	const { pricing } = await getPricingById(id)
+	const { filteredPricing } = await getPricingById(id)
 
 	// add url to database and write function to grab it
 
@@ -54,7 +54,7 @@ export default async function Page({ params: { id } }) {
 				>
 					<DynamicPricing
 						product={product}
-						pricing={pricing}
+						pricing={filteredPricing}
 						imageSrc={imageSrc}
 					/>
 					<section>

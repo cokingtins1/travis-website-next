@@ -15,6 +15,7 @@ import { toast } from "react-toastify"
 import MetaData from "./MetaData"
 import Pricing from "./Pricing"
 import { Button } from "../../UI/Button"
+import { createFormData } from "@/libs/utils"
 
 const INITIAL_DATA = {
 	MP3_file: null,
@@ -98,30 +99,11 @@ export default function AddContentForm() {
 		e.preventDefault()
 		if (!isLastStep) return next()
 
-		const formData = new FormData()
-
-		for (const key in data) {
-			if (data.hasOwnProperty(key)) {
-				const value = data[key]
-				if (
-					Array.isArray(value) &&
-					value.every((item) => typeof item === "object")
-				) {
-					value.forEach((obj, index) => {
-						if (obj.hasOwnProperty("name")) {
-							const newKey = `${key}_${index + 1}_name`
-							formData.append(newKey, obj.name)
-						}
-					})
-				} else {
-					formData.append(key, value)
-				}
-			}
-		}
+		const formData = createFormData(data, "product_id", product.id)
 
 		try {
 			setDataLoading(true)
-			
+
 			const res = await toast.promise(
 				fetch("/api/uploadData", {
 					method: "POST",

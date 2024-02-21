@@ -8,7 +8,7 @@ import { getImageSrc, getPricingById } from "@/libs/supabase/supabaseQuery"
 import AddToCartBtn from "../UI/AddToCartBtn"
 
 export default async function NewProductCard({ product }) {
-	const { pricing } = await getPricingById(product.id)
+	const { startingPrice } = await getPricingById(product.id)
 	const imageSrc = await getImageSrc(product.id)
 
 	return (
@@ -50,7 +50,7 @@ export default async function NewProductCard({ product }) {
 					</Link>
 					<div className="flex flex-col justify-center items-end whitespace-nowrap">
 						<AddToCartBtn
-							startingPrice={pricing[0]}
+							startingPrice={startingPrice}
 							imageSrc={imageSrc}
 							product={product}
 						/>

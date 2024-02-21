@@ -21,7 +21,7 @@ export default function AddToCartBtn({ startingPrice, imageSrc, product }) {
 					})
 				}}
 			>
-				From ${startingPrice.price}
+				From ${startingPrice}
 				<ShoppingCartIcon fontSize="small" />
 			</button>
 		</>

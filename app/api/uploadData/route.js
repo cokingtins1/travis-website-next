@@ -3,6 +3,7 @@ import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
 import { cookies } from "next/headers"
 import dayjs from "dayjs"
 import { cache } from "react"
+import { returnArray } from '@/libs/utils'
 
 export async function POST(req) {
 	const createServerClient = cache(() => {
@@ -12,16 +13,6 @@ export async function POST(req) {
 	const supabase = createServerClient()
 
 	const formData = await req.formData()
-
-	function returnArray(keyVal, formData) {
-		let tagsArray = []
-		formData.forEach((value, key) => {
-			if (key.startsWith(keyVal)) {
-				tagsArray.push(value)
-			}
-		})
-		return tagsArray
-	}
 
 	async function uploadFile(path, file) {
 		try {
@@ -78,6 +69,7 @@ export async function POST(req) {
 				pricing_id: pricing_id_mp3,
 				product_id: product_id,
 				type_id: "basic",
+				is_active: formData.get("basic"),
 				price: formData.get("basicPrice"),
 			})
 
@@ -85,6 +77,7 @@ export async function POST(req) {
 				pricing_id: pricing_id_wav,
 				product_id: product_id,
 				type_id: "premium",
+				is_active: formData.get("premium"),
 				price: formData.get("premiumPrice"),
 			})
 
@@ -92,6 +85,7 @@ export async function POST(req) {
 				pricing_id: pricing_id_zip,
 				product_id: product_id,
 				type_id: "exclusive",
+				is_active: formData.get("exclusive"),
 				price: formData.get("exclusivePrice"),
 			})
 

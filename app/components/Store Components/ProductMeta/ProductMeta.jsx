@@ -36,9 +36,6 @@ export default function ProductMeta({ product, imageSrc }) {
 						<IconButton>
 							<IosShareIcon />
 						</IconButton>
-						<IconButton>
-							<ShoppingCartIcon />
-						</IconButton>
 					</div>
 
 					<Divider />
@@ -73,6 +70,12 @@ export default function ProductMeta({ product, imageSrc }) {
 						</div>
 					</div>
 					<Divider />
+					<div className={styles.productAbout}>
+						<h3 className="text-sm">ABOUT</h3>
+
+						<p className="text-sm">{product.description}</p>
+						<div className="flex gap-2 flex-wrap"></div>
+					</div>
 				</div>
 			</div>
 		</>

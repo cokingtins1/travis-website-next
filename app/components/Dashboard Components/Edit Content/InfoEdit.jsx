@@ -17,20 +17,24 @@ import { toast } from "react-toastify"
 import PricingSwitch from "../AddContentForm/Upload Components/PricingSwitch"
 import SubmitModal from "../../UI/SubmitModal"
 import EditFile from "../AddContentForm/Upload Components/EditFile"
+import { createFormData } from "@/libs/utils"
 
-export default function InfoEdit({ product, productFiles }) {
+export default function InfoEdit({ product, productFiles, pricing }) {
 	const INITIAL_DATA = {
-		MP3_file: productFiles.MP3_file,
-		MP3_fileName: productFiles.MP3_file.name,
-		MP3_fileSize: productFiles.MP3_file.metadata.size,
+		MP3_file: productFiles.MP3_file ?? null,
+		MP3_fileName: product.title ?? null,
+		MP3_fileSize: productFiles.MP3_file?.metadata?.size ?? null,
 
-		WAV_file: productFiles.WAV_file,
-		WAV_fileName: productFiles.WAV_file.name,
-		WAV_fileSize: productFiles.WAV_file.metadata.size,
+		WAV_file: productFiles.WAV_file ?? null,
+		WAV_fileName: product.title ?? null,
+		WAV_fileSize: productFiles.WAV_file?.metadata?.size ?? null,
 
-		// STEM_file: productFiles.STEM_file,
-		// STEM_fileName: productFiles.STEM_file.name,
-		// STEM_fileSize: productFiles.STEM_file.metadata.size,
+		STEM_file: productFiles.STEM_file ?? null,
+		STEM_fileName: product.title ?? null,
+		STEM_fileSize: productFiles.STEM_file?.metadata?.size ?? null,
+
+		productImage: productFiles.productImage,
+		productImageSrc: productFiles.productImage,
 
 		title: product.title,
 		description: product.description,
@@ -41,18 +45,20 @@ export default function InfoEdit({ product, productFiles }) {
 		instruments: product.instruments,
 		keys: product.keys,
 		bpm: product.bpm,
-		basic: product.basic,
-		basicPrice: product.basic_price,
-		premium: product.premium,
-		premiumPrice: product.premium_price,
-		exclusive: product.exclusive,
-		exclusivePrice: product.exclusive_price,
+
+		basic: pricing.basic.isActive,
+		basicPrice: pricing.basic.price,
+		premium: pricing.premium.isActive,
+		premiumPrice: pricing.premium.price,
+		exclusive: pricing.exclusive.isActive,
+		exclusivePrice: pricing.exclusive.price,
 		free: product.free,
 	}
 
 	const [data, setData] = useState(INITIAL_DATA)
 	const [editing, setEditing] = useState(false)
 	const [dataLoading, setDataLoading] = useState(false)
+	const [imageErr, setImageErr] = useState("")
 
 	function abortEditing(e) {
 		e.preventDefault()
@@ -68,24 +74,14 @@ export default function InfoEdit({ product, productFiles }) {
 	async function handleSubmit(e) {
 		e.preventDefault()
 
-		console.log("submitting form")
-
-		const JSONFormData = {}
-		JSONFormData["upload_id"] = product.upload_id
-
-		for (const key in data) {
-			if (data.hasOwnProperty(key)) {
-				const value = data[key]
-				JSONFormData[key] = value
-			}
-		}
+		const formData = createFormData(data, "product_id", product.id)
 
 		try {
 			setDataLoading(true)
 			const res = await toast.promise(
 				fetch("/api/updateData", {
 					method: "PUT",
-					body: JSON.stringify(JSONFormData),
+					body: formData,
 				}),
 				{
 					pending: "Upadating fields",
@@ -133,17 +129,34 @@ export default function InfoEdit({ product, productFiles }) {
 		})
 	}
 
+	function handleChange(e) {
+		const file = e.target.files[0]
+		const fileIsImage = file.type.split("/")[0] === "image"
+
+		if (!fileIsImage) {
+			setImageErr("Please select a valid image file type")
+			return
+		} else {
+			setImageErr("")
+		}
+
+		if (file) {
+			updateFields({
+				productImage: file,
+				productImageSrc: URL.createObjectURL(file),
+			})
+		}
+	}
+
 	return (
 		<form>
 			<div className="max-w-[1200px] grid grid-cols-12 gap-4 p-4">
 				<div className="col-span-4">
-					<div className="flex justify-center items-center flex-col">
+					<div className="flex justify-center items-center flex-col mb-4">
 						<Image
 							alt=""
 							src={
-								productFiles.productImage
-									? productFiles.productImage
-									: beatKitImage
+								data.productImageSrc ? data.productImageSrc : beatKitImage
 							}
 							height={500}
 							width={500}
@@ -169,6 +182,11 @@ export default function InfoEdit({ product, productFiles }) {
 								/>
 							</label>
 						</Button>
+						{imageErr && (
+							<span className="text-sm text-text-error">
+								{imageErr}
+							</span>
+						)}
 					</div>
 					<div className="flex flex-col gap-4">
 						<EditFile
@@ -184,6 +202,7 @@ export default function InfoEdit({ product, productFiles }) {
 								})
 							}
 						/>
+
 						<EditFile
 							type="WAV"
 							fileProps={data.WAV_file}
@@ -199,14 +218,14 @@ export default function InfoEdit({ product, productFiles }) {
 						/>
 						<EditFile
 							type="WAV"
-							fileProps={data.MP3_file}
-							fileNameProps={data.MP3_fileName}
-							fileSizeProps={data.MP3_fileSize}
+							fileProps={data.STEM_file}
+							fileNameProps={data.STEM_fileName}
+							fileSizeProps={data.STEM_fileSize}
 							updateFields={(fields) =>
 								updateFields({
-									MP3_file: fields.file,
-									MP3_fileName: fields.fileName,
-									MP3_fileSize: fields.fileSize,
+									STEM_file: fields.file,
+									STEM_fileName: fields.fileName,
+									STEM_fileSize: fields.fileSize,
 								})
 							}
 						/>
@@ -468,7 +487,7 @@ export default function InfoEdit({ product, productFiles }) {
 								}}
 								onChange={(newPrice) => {
 									updateFields({
-										exclusivePrice: newPrice,
+										exclusivePrice: Number(newPrice),
 									})
 								}}
 							/>
@@ -488,7 +507,7 @@ export default function InfoEdit({ product, productFiles }) {
 								}}
 								onChange={(newPrice) => {
 									updateFields({
-										basicPrice: newPrice,
+										basicPrice: Number(newPrice),
 									})
 								}}
 							/>
@@ -508,7 +527,7 @@ export default function InfoEdit({ product, productFiles }) {
 								}}
 								onChange={(newPrice) => {
 									updateFields({
-										premiumPrice: newPrice,
+										premiumPrice: Number(newPrice),
 									})
 								}}
 							/>
