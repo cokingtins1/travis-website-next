@@ -45,7 +45,9 @@ export async function getProductFilePathById(id) {
 		} else {
 			return { pricingId: url[0].file_ext, url_file: url }
 		}
-	} catch (error) {}
+	} catch (error) {
+		console.log(error)
+	}
 }
 
 export async function getProductFilesById(id) {
@@ -116,7 +118,7 @@ export async function getPricingById(id) {
 
 				// sortedArray returns array of objs. [{name: 'basic', price: 30}...] that is sorted by price.
 
-				startingPrice: filteredArray[0].price,
+				startingPrice: filteredArray[0],
 				pricing: sortedArray,
 				pricingShort: pricingShort,
 				filteredPricing: filteredArray,

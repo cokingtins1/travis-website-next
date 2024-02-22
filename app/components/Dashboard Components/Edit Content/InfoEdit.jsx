@@ -148,15 +148,46 @@ export default function InfoEdit({ product, productFiles, pricing }) {
 		}
 	}
 
+	const media = {
+		fileLg: "lg:col-span-4",
+		infoLg: "lg:col-span-8",
+	}
+
 	return (
 		<form>
+			<div className="flex justify-end gap-4 pt-4 pr-4">
+				{editing || (
+					<SubmitModal variant="delete" callback={deleteProduct} />
+				)}
+				{!editing ? (
+					<Button
+						disabled={dataLoading}
+						type="button"
+						onClick={(e) => {
+							setEditing(true)
+							e.preventDefault()
+						}}
+					>
+						Edit Fields
+					</Button>
+				) : (
+					<>
+						<Button color="warning" onClick={abortEditing}>
+							Discard Changes
+						</Button>
+						<SubmitModal variant="update" callback={handleSubmit} />
+					</>
+				)}
+			</div>
 			<div className="max-w-[1200px] grid grid-cols-12 gap-4 p-4">
-				<div className="col-span-4">
+				<div className={`col-span-12 ${media.fileLg}`}>
 					<div className="flex justify-center items-center flex-col mb-4">
 						<Image
 							alt=""
 							src={
-								data.productImageSrc ? data.productImageSrc : beatKitImage
+								data.productImageSrc
+									? data.productImageSrc
+									: beatKitImage
 							}
 							height={500}
 							width={500}
@@ -231,37 +262,9 @@ export default function InfoEdit({ product, productFiles, pricing }) {
 						/>
 					</div>
 				</div>
-				<div className="flex flex-col gap-4 col-span-8">
-					<div className="flex justify-end gap-4">
-						{editing || (
-							<SubmitModal
-								variant="delete"
-								callback={deleteProduct}
-							/>
-						)}
-						{!editing ? (
-							<Button
-								disabled={dataLoading}
-								type="button"
-								onClick={(e) => {
-									setEditing(true)
-									e.preventDefault()
-								}}
-							>
-								Edit Fields
-							</Button>
-						) : (
-							<>
-								<Button color="warning" onClick={abortEditing}>
-									Discard Changes
-								</Button>
-								<SubmitModal
-									variant="update"
-									callback={handleSubmit}
-								/>
-							</>
-						)}
-					</div>
+				<div
+					className={`flex flex-col gap-4 col-span-12 ${media.infoLg}`}
+				>
 					<div className="flex items-center">
 						<label
 							htmlFor="title"

@@ -14,7 +14,7 @@ export default async function Page({ params: { id } }) {
 		redirect("/login")
 	}
 
-	const {pricingId} = await getProductFilePathById(id)
+	const { pricingId } = await getProductFilePathById(id)
 	const productImage = await getImageSrc(id)
 	const pricing = await getPricingById(id)
 

@@ -11,6 +11,8 @@ export default async function NewProductCard({ product }) {
 	const { startingPrice } = await getPricingById(product.id)
 	const imageSrc = await getImageSrc(product.id)
 
+
+
 	return (
 		<>
 			<li>

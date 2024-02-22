@@ -27,10 +27,10 @@ export default function SideBar() {
 	const [open, setOpen] = useState()
 
 	const myContent = [
-		{ id: 1, text: "Add Content", icon: <AddIcon />, href: "/add-content" },
-		{ id: 2, text: "Tracks", icon: <LibraryMusicIcon />, href: "/tracks" },
-		{ id: 3, text: "Albums", icon: <AlbumIcon />, href: "/albums" },
-		{ id: 4, text: "Videos", icon: <YouTubeIcon />, href: "/videos" },
+		{ id: 1, text: "Add Content", icon: <AddIcon />, href: "" },
+		{ id: 2, text: "Tracks", icon: <LibraryMusicIcon />, href: "" },
+		{ id: 3, text: "Albums", icon: <AlbumIcon />, href: "" },
+		{ id: 4, text: "Videos", icon: <YouTubeIcon />, href: "" },
 	]
 
 	return (

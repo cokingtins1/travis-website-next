@@ -16,7 +16,7 @@ export default async function DashboardProductCard({ product, index }) {
 				href={`/dashboard/${product.id}`}
 				className="flex gap-4 justify-start items-center"
 			>
-				<div className="relative h-[40px] w-[40px]">
+				<div className="relative size-[40px]">
 					<Image
 						src={imageSrc ? imageSrc : beatKitImage}
 						className="rounded-sm"

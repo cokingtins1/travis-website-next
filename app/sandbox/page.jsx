@@ -1,14 +1,21 @@
-import beatKitImage from "@/public/beatKitImage.jpg"
+"use client"
+
+import { useState } from "react"
+import AudioDrawer from "../components/Audio/AudioDrawer"
+import Button from "@mui/material/Button"
 
 export default function Page() {
-	
-	fetch(beatKitImage.blurDataURL)
-	.then(response => response.blob())
-	.then(blob => {
-	  const file = new File([blob], 'beatKitImage.jpg', { type: 'image/jpeg' }); // replace 'image/jpeg' with the correct MIME type of your image
-	  console.log(file);
-	})
-	.catch(error => console.error(error));	
 
-	return <div>Hi</div>
+	const [open, setOpen] = useState(false)
+
+	const audio = {
+		src:'https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3'
+	}
+
+	return (
+		<div>
+			<Button onClick={() => setOpen(!open)}>Play Audio</Button>
+			<AudioDrawer isOpen={open} currentSong={audio} />
+		</div>
+	)
 }
