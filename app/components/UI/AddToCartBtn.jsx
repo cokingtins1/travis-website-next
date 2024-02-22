@@ -9,7 +9,7 @@ export default function AddToCartBtn({ startingPrice, imageSrc, product }) {
 	return (
 		<>
 			<button
-				className="flex items-center gap-2 border bg-bg-secondary text-sm rounded-md p-1"
+				className="flex whitespace-nowrap items-center gap-2 border bg-bg-secondary hover:bg-bg-accent-khaki hover:text-black text-sm hover:ring-1 ring-white rounded-md p-1"
 				onClick={() => {
 					addToCart({
 						pricing_id: startingPrice.pricing_id,
@@ -21,7 +21,7 @@ export default function AddToCartBtn({ startingPrice, imageSrc, product }) {
 					})
 				}}
 			>
-				From ${startingPrice.price}
+				<p>From ${startingPrice.price}</p>
 				<ShoppingCartIcon fontSize="small" />
 			</button>
 		</>

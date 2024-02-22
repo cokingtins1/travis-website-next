@@ -25,10 +25,12 @@ module.exports = {
 			},
 			backgroundColor: {
 				"bg-accent-blue": "#007FFF",
+				"bg-accent-khaki": "#ffeec2",
 				"bg-disabled": "#929292",
 				"bg-accent-red": "#FF033E",
 				"bg-elevated": "#121212",
 				"bg-secondary": "#242424",
+				"bg-secondary-light": "#a7a7a7",
 				"bg-hover": "#2a2a2a",
 				"bg-dropDown": "#2D2D2D ",
 				"bg-button": "#2a2a2a",

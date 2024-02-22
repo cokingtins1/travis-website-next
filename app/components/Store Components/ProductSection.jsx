@@ -1,4 +1,4 @@
-import NewProductCard from "../ProductCard/NewProductCard"
+import ProductCard from "../ProductCard/ProductCard"
 import { Button } from "../UI/Button"
 import FilterSection from "./FilterComponents/FilterSection"
 import Divider from "@mui/material/Divider"
@@ -35,7 +35,7 @@ export default function ProductSection({
 				<section className="w-full">
 					<ul className="grid sm:grid-cols-2 gap-x-4 grid-cols-1 ">
 						{productData?.map((product, index) => (
-							<NewProductCard key={index} product={product} />
+							<ProductCard key={index} product={product} />
 						))}
 					</ul>
 				</section>

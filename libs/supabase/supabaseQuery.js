@@ -1,3 +1,4 @@
+"use server"
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
 import { cookies } from "next/headers"
 import { cache } from "react"
@@ -50,12 +51,30 @@ export async function getProductFilePathById(id) {
 	}
 }
 
-export async function getProductFilesById(id) {
+export async function getAudioSrcById(product_id) {
 	const supabase = createServerClient()
-	supabase.auth.getUser()
-	const { data: productsFiles } = await supabase.storage.from("").select()
 
-	return productsFiles
+	const { data } = await supabase.storage
+		.from(`all_products`)
+		.list(`${product_id}`, {
+			offset: 0,
+		})
+
+	if (data) {
+		const audioFile = data.find(
+			(item) =>
+				item?.metadata?.mimetype === "audio/mpeg" ||
+				item?.metadata?.mimetype === "audio/wav"
+		)
+
+		if (audioFile) {
+			const productFileURL =
+				"https://njowjcfiaxbnflrcwcep.supabase.co/storage/v1/object/public/all_products"
+			const audioSrc = `${productFileURL}/${product_id}/${audioFile.name}`
+			
+			return audioSrc
+		}
+	}
 }
 
 export async function getPricingById(id) {

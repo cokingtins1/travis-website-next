@@ -22,6 +22,11 @@
   --headerHeight: 120px;
   --screenMinusHeaderHeight: calc(100dvh - (var(--headerHeight))) 
 
+  /* Audio player styles */
+  --progress-width: 0;
+  --buffered-width: 0;
+  --buffered-left: 0;
+
 }
 
 html{
