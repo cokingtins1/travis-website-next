@@ -70,9 +70,15 @@ export async function getAudioSrcById(product_id) {
 		if (audioFile) {
 			const productFileURL =
 				"https://njowjcfiaxbnflrcwcep.supabase.co/storage/v1/object/public/all_products"
+
+			const { data: publicURL } = supabase.storage
+				.from("all_products")
+				.createSignedUrl(`${product_id}/${audioFile.name}`, 60)
+
 			const audioSrc = `${productFileURL}/${product_id}/${audioFile.name}`
-			
-			return audioSrc
+			const srcType = audioFile?.metadata?.mimetype
+
+			return { audioSrc, srcType, publicURL }
 		}
 	}
 }

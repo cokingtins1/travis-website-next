@@ -13,24 +13,34 @@ import Image from "next/image"
 import AddToCartBtn from "../UI/AddToCartBtn"
 import { useEffect, useRef, useState } from "react"
 import AudioProgressBar from "./AudioProgressBar"
+import Tooltip from "@mui/material/Tooltip"
+import CloseIcon from "@mui/icons-material/Close"
+import { useAudio } from "@/libs/contexts/AudioContext"
 
 export default function AudioDrawer({
-	isOpen,
 	product,
-	currentSong,
+	audioSrc,
+	srcType,
 	startingPrice,
 	imageSrc,
 }) {
-	const drawerClasses = isOpen ? "translate-y-0" : "translate-y-full"
-
 	const audioRef = useRef(null)
-
 	const [isReady, setIsReady] = useState(false)
 	const [duration, setDuration] = useState(0)
 	const [currentProgress, setCurrentProgress] = useState(0)
 	const [buffered, setBuffered] = useState(0)
 	const [volume, setVolume] = useState(0.2)
-	const [isPlaying, setIsPlaying] = useState(false)
+
+	const {
+		audioSrcId,
+		setAudioSrcId,
+		playing,
+		setPlaying,
+		togglePlayPause,
+		getRef,
+		drawerOpen,
+		setDrawerOpen,
+	} = useAudio()
 
 	useEffect(() => {
 		if (audioRef.current) {
@@ -38,22 +48,33 @@ export default function AudioDrawer({
 		}
 	}, [])
 
-	const handleNext = () => {
-		onNext()
-	}
+	useEffect(() => {
+		audioRef.current?.pause()
 
-	const handlePrev = () => {
-		onPrev()
-	}
-
-	const togglePlayPause = () => {
-		if (!isPlaying) {
-			setIsPlaying(true)
+		const timeOut = setTimeout(() => {
 			audioRef.current?.play()
-		} else {
-			setIsPlaying(false)
-			audioRef.current?.pause()
+		}, 500)
+
+		getRef(audioRef)
+
+		return () => {
+			clearTimeout(timeOut)
 		}
+	}, [audioSrcId])
+
+	// const handleNext = () => {
+	// 	onNext()
+	// }
+
+	// const handlePrev = () => {
+	// 	onPrev()
+	// }
+
+	const closePlayer = () => {
+		togglePlayPause()
+		setDrawerOpen(false)
+		setPlaying(false)
+		setAudioSrcId(null)
 	}
 
 	const handleVolumeChange = (e) => {
@@ -92,10 +113,18 @@ export default function AudioDrawer({
 		}
 	}
 
+	function volumeLabelFormat(value) {
+		return (value * 100).toFixed()
+	}
+
+	// console.log("drawerOpen from drawer", drawerOpen)
+
 	return (
 		<>
 			<div
-				className={`bottom-drawer fixed left-0 bottom-0 w-full bg-bg-elevated transition-transform ${drawerClasses}`}
+				className={`bottom-drawer fixed left-0 bottom-0 w-full bg-bg-elevated transition-transform duration-300 ease-in-out ${
+					drawerOpen ? "translate-y-0" : "translate-y-full"
+				} `}
 			>
 				<audio
 					ref={audioRef}
@@ -103,9 +132,9 @@ export default function AudioDrawer({
 					onDurationChange={(e) =>
 						setDuration(e.currentTarget.duration)
 					}
-					onPlaying={() => setIsPlaying(true)}
-					onPause={() => setIsPlaying(false)}
-					onEnded={handleNext}
+					onPlaying={() => setPlaying(true)}
+					onPause={() => setPlaying(false)}
+					// onEnded={handleNext}
 					onCanPlay={(e) => {
 						e.currentTarget.volume = volume
 						setIsReady(true)
@@ -117,13 +146,13 @@ export default function AudioDrawer({
 					onProgress={handleBufferProgress}
 					onVolumeChange={(e) => setVolume(e.currentTarget.volume)}
 				>
-					<source type="audio/mpeg" src={currentSong} />
+					<source type={srcType} src={audioSrc} />
 				</audio>
 				<div className="grid grid-cols-2 lg:grid-cols-3 justify-items-stretch items-center justify-center my-2 mx-16">
 					<div className="flex justify-self-start gap-4">
 						<div className="size-[75px] relative">
 							<Image
-								src={imageSrc}
+								src={imageSrc || beatKitImage}
 								fill
 								sizes="(max-width: 430px), 75px "
 								alt="product image"
@@ -138,11 +167,13 @@ export default function AudioDrawer({
 							</p>
 						</div>
 						<div className="hidden lg:block">
-							<AddToCartBtn
-								startingPrice={startingPrice}
-								imageSrc={imageSrc}
-								product={product}
-							/>
+							{startingPrice && (
+								<AddToCartBtn
+									startingPrice={startingPrice}
+									imageSrc={imageSrc}
+									product={product}
+								/>
+							)}
 						</div>
 					</div>
 					<div className="justify-self-center">
@@ -155,9 +186,10 @@ export default function AudioDrawer({
 							</IconButton>
 							<IconButton
 								sx={{ fontSize: "3rem" }}
-								onClick={togglePlayPause}
+								onClick={() => togglePlayPause(audioSrc)}
+								disabled={audioSrc === false}
 							>
-								{!isPlaying ? (
+								{!playing ? (
 									<PlayCircleFilledIcon fontSize="inherit" />
 								) : (
 									<PauseCircleFilledIcon fontSize="inherit" />
@@ -170,7 +202,7 @@ export default function AudioDrawer({
 								/>
 							</IconButton>
 						</div>
-						<div className="text-center">
+						<div className="text-center h-[30px]">
 							{!isNaN(duration) && (
 								<AudioProgressBar
 									duration={duration}
@@ -187,13 +219,28 @@ export default function AudioDrawer({
 						</div>
 					</div>
 					<div className="hidden lg:flex justify-self-end items-center w-[200px] gap-4 mt-8">
-						<IconButton onClick={handleMuteUnmute}>
-							{volume === 0 ? <VolumeOffIcon /> : <VolumeDown />}
-						</IconButton>
+						<div className="absolute top-0 right-4">
+							<Tooltip title={"Close Player"} placement="top">
+								<IconButton onClick={closePlayer}>
+									<CloseIcon />
+								</IconButton>
+							</Tooltip>
+						</div>
+						<Tooltip title={volume === 0 ? "Unmute" : "Mute"}>
+							<IconButton onClick={handleMuteUnmute}>
+								{volume === 0 ? (
+									<VolumeOffIcon />
+								) : (
+									<VolumeDown />
+								)}
+							</IconButton>
+						</Tooltip>
 						<Slider
 							aria-label="Volume"
+							valueLabelDisplay="auto"
+							valueLabelFormat={volumeLabelFormat}
 							min={0}
-							step={0.05}
+							step={0.01}
 							max={1}
 							value={volume}
 							sx={{ color: "#ffeec2" }}

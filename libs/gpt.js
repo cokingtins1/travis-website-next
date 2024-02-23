@@ -1,151 +1,401 @@
-import { styled } from "@mui/material/styles"
-import Button from "@mui/material/Button"
-import CloudUploadIcon from "@mui/icons-material/CloudUpload"
-import MusicNoteIcon from "@mui/icons-material/MusicNote"
-import PlayCircleIcon from "@mui/icons-material/PlayCircle"
-import CachedIcon from "@mui/icons-material/Cached"
-import { Button as MyButton } from "@/app/components/UI/Button"
+// I'm trying to make a smooth transition for the AudioDrawer whenever it opens. It is currently smooth when the IconButton on the ProductImageCard is pressed but I want it to stay open when the same IconButton is pressed again and I want the smooth close transition when the CloseIcon is pressed in the AudioDrawer. 
 
+// ProductCardImage:
+"use client"
+
+import beatKitImage from "@/public/beatKitImage.jpg"
+import Image from "next/image"
+import IconButton from "@mui/material/IconButton"
+
+import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled"
+import PauseCircleFilledIcon from "@mui/icons-material/PauseCircleFilled"
+
+import AudioDrawer from "../Audio/AudioDrawer"
+import { useAudio } from "@/libs/contexts/AudioContext"
 import { useEffect, useState } from "react"
 
-export default function UploadFile({ fileData, updateFields }) {
-	const [file, setFile] = useState(fileData.file)
-	const [fileName, setFileName] = useState(fileData.fileName)
-	const [size, setSize] = useState(fileData.size)
-	const [src, setSrc] = useState(fileData.src)
+export default function ProductCardImage({
+	imageSrc,
+	audioSrc,
+	srcType,
+	product,
+	startingPrice,
+}) {
+	const {
+		audioSrcId,
+		setAudioSrcId,
+		playing,
+		togglePlayPause,
+		drawerOpen,
+		setDrawerOpen,
+	} = useAudio()
 
-	function handleChange(e) {
-		let reader = new FileReader()
-		let newFile = e.target.files[0]
+	useEffect(() => {
+		setAudioSrcId(null)
+	}, [])
 
-		if (newFile) {
-			// console.log("newFile.name:", newFile.name, "fileName:", fileName)
-			reader.onloadend = () => setFileName(newFile.name)
-			if (newFile.name !== fileName) {
-				reader.readAsDataURL(newFile)
-				setFile(newFile)
-				setSrc(reader.result)
-				setSize(newFile.size)
-				updateFields({
-					file_MP3: {
-						file: newFile,
-						fileName: newFile.name,
-						size: newFile.size,
-					},
-				})
-			}
-			// console.log("file:", file, "fileName:", fileName)
+	const [pleaseOpen, setPleaseOpen] = useState(false)
+
+	return (
+		<>
+			<figure className="relative group flex flex-col items-center h-[85px] w-[85px]">
+				<Image
+					src={imageSrc ? imageSrc : beatKitImage}
+					className="rounded-sm"
+					fill={true}
+					style={{ objectFit: "cover" }}
+					sizes="(max-width: 430px), 85px "
+					alt="product image"
+				/>
+				<figcaption className="absolute bottom-0 text-xs bg-bg-secondary rounded p-1">
+					{product.bpm} BPM
+				</figcaption>
+				{audioSrc && (
+					<figcaption className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-80 transition-opacity duration-200">
+						<IconButton
+							sx={{ fontSize: "3rem" }}
+							onClick={() => {
+								{
+									togglePlayPause(audioSrc)
+
+									setPleaseOpen(!pleaseOpen)
+								}
+							}}
+						>
+							{!playing ? (
+								<PlayCircleFilledIcon fontSize="inherit" />
+							) : (
+								<PauseCircleFilledIcon fontSize="inherit" />
+							)}
+						</IconButton>
+					</figcaption>
+				)}
+			</figure>
+			{audioSrc === audioSrcId && (
+				<AudioDrawer
+					open={pleaseOpen}
+					audioSrc={audioSrc}
+					srcType={srcType}
+					startingPrice={startingPrice}
+					product={product}
+					imageSrc={imageSrc}
+				/>
+			)}
+		</>
+	)
+}
+
+//AudioDrawer: 
+"use client"
+
+import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled"
+import PauseCircleFilledIcon from "@mui/icons-material/PauseCircleFilled"
+import SkipNextIcon from "@mui/icons-material/SkipNext"
+import SkipPreviousIcon from "@mui/icons-material/SkipPrevious"
+import IconButton from "@mui/material/IconButton"
+import VolumeDown from "@mui/icons-material/VolumeDown"
+import VolumeOffIcon from "@mui/icons-material/VolumeOff"
+import Slider from "@mui/material/Slider"
+import beatKitImage from "@/public/beatKitImage.jpg"
+import Image from "next/image"
+import AddToCartBtn from "../UI/AddToCartBtn"
+import { useEffect, useRef, useState } from "react"
+import AudioProgressBar from "./AudioProgressBar"
+import Tooltip from "@mui/material/Tooltip"
+import CloseIcon from "@mui/icons-material/Close"
+import { useAudio } from "@/libs/contexts/AudioContext"
+
+export default function AudioDrawer({
+	open,
+	product,
+	audioSrc,
+	srcType,
+	startingPrice,
+	imageSrc,
+}) {
+    
+    const audioRef = useRef(null)
+	const [isReady, setIsReady] = useState(false)
+	const [duration, setDuration] = useState(0)
+	const [currentProgress, setCurrentProgress] = useState(0)
+	const [buffered, setBuffered] = useState(0)
+	const [volume, setVolume] = useState(0.2)
+    
+	const {
+        audioSrcId,
+        setAudioSrcId,
+		playing,
+		setPlaying,
+		togglePlayPause,
+		getRef,
+	} = useAudio()
+    
+    
+	useEffect(() => {
+		if (audioRef.current) {
+			setDuration(audioRef.current.duration)
+		}
+	}, [])
+
+	useEffect(() => {
+		audioRef.current?.pause()
+
+		const timeOut = setTimeout(() => {
+			audioRef.current?.play()
+		}, 500)
+
+		getRef(audioRef)
+
+		return () => {
+			clearTimeout(timeOut)
+		}
+	}, [open])
+
+	const handleNext = () => {
+		onNext()
+	}
+
+	const handlePrev = () => {
+		onPrev()
+	}
+
+	const closePlayer = () => {
+		togglePlayPause()
+		setPlaying(false)
+		setAudioSrcId(null)
+	}
+
+	const handleVolumeChange = (e) => {
+		if (!audioRef.current) return
+		const volumeValue = e.target.value
+		audioRef.current.volume = volumeValue
+		setVolume(volumeValue)
+	}
+
+	const handleMuteUnmute = () => {
+		if (!audioRef.current) return
+
+		if (audioRef.current.volume !== 0) {
+			audioRef.current.volume = 0
+		} else {
+			audioRef.current.volume = 0.3
 		}
 	}
 
-	// async function handleSubmit(e) {
-	// 	e.preventDefault()
-	// 	const file = e.target.files[0]
-	// 	const fileData = new FormData()
-	// 	fileData.set("file", file)
+	const handleBufferProgress = (e) => {
+		const audio = e.currentTarget
+		const dur = audio.duration
+		if (dur > 0) {
+			for (let i = 0; i < audio.buffered.length; i++) {
+				if (
+					audio.buffered.start(audio.buffered.length - 1 - i) <
+					audio.currentTime
+				) {
+					const bufferedLength = audio.buffered.end(
+						audio.buffered.length - 1 - i
+					)
+					setBuffered(bufferedLength)
+					break
+				}
+			}
+		}
+	}
 
-	// 	try {
-	// 		const res = await fetch("/api/upload", {
-	// 			method: "POST",
-	// 			body: fileData,
-	// 		})
-	// 	} catch (error) {}
-	// }
-
-	// useEffect(() => {
-	// 	// This useEffect will run after each render when file changes
-	// 	updateFields({
-	// 		fileProps: file,
-	// 		fileNameProps: fileName,
-	// 		fileSizeProps: size,
-	// 		fileSrcProps: src,
-	// 	})
-	// }, [file, fileName, size, src])
-
-	const VisuallyHiddenInput = styled("input")({
-		clip: "rect(0 0 0 0)",
-		clipPath: "inset(50%)",
-		height: 1,
-		overflow: "hidden",
-		position: "absolute",
-		bottom: 0,
-		left: 0,
-		whiteSpace: "nowrap",
-		width: 1,
-	})
+	function volumeLabelFormat(value) {
+		return (value * 100).toFixed()
+	}
 
 	return (
 		<>
-			<div className="flex justify-between items-center rounded-lg border border-border-primary p-2">
-				<div className="flex gap-2">
-					<span className="flex items-center rounded-full border border-border-primary p-2">
-						<MusicNoteIcon sx={{ fontSize: 40 }} />
-					</span>
-					<div>
-						<p className="font-semibold">Un-tagged audio</p>
-						<p className="text-sm text-text-secondary">
-							{!file ? (
-								<span>Upload .mp3 or .wav files only</span>
-							) : (
-								<span>
-									{fileName} &#8226;{" "}
-									{Math.round(size * 10e-6)}MB{" "}
-								</span>
+			<div
+				className={`bottom-drawer fixed left-0 bottom-0 w-full bg-bg-elevated transition-transform duration-300 ease-in-out ${
+					open ? "translate-y-0" : "translate-y-full"
+				} `}
+			>
+				<audio
+					ref={audioRef}
+					preload="metadata"
+					onDurationChange={(e) =>
+						setDuration(e.currentTarget.duration)
+					}
+					onPlaying={() => setPlaying(true)}
+					onPause={() => setPlaying(false)}
+					onEnded={handleNext}
+					onCanPlay={(e) => {
+						e.currentTarget.volume = volume
+						setIsReady(true)
+					}}
+					onTimeUpdate={(e) => {
+						setCurrentProgress(e.currentTarget.currentTime)
+						handleBufferProgress(e)
+					}}
+					onProgress={handleBufferProgress}
+					onVolumeChange={(e) => setVolume(e.currentTarget.volume)}
+				>
+					<source type={srcType} src={audioSrc} />
+				</audio>
+				<div className="grid grid-cols-2 lg:grid-cols-3 justify-items-stretch items-center justify-center my-2 mx-16">
+					<div className="flex justify-self-start gap-4">
+						<div className="size-[75px] relative">
+							<Image
+								src={imageSrc || beatKitImage}
+								fill
+								sizes="(max-width: 430px), 75px "
+								alt="product image"
+							/>
+						</div>
+						<div>
+							<p className="text-sm text-text-primary">
+								{product.title}
+							</p>
+							<p className="text-sm text-text-secondary">
+								beatsByTrav
+							</p>
+						</div>
+						<div className="hidden lg:block">
+							{startingPrice && (
+								<AddToCartBtn
+									startingPrice={startingPrice}
+									imageSrc={imageSrc}
+									product={product}
+								/>
 							)}
-						</p>
+						</div>
+					</div>
+					<div className="justify-self-center">
+						<div className="flex items-center justify-center">
+							<IconButton sx={{ fontSize: "2.5rem" }}>
+								<SkipPreviousIcon
+									sx={{ color: "#a7a7a7" }}
+									fontSize="inherit"
+								/>
+							</IconButton>
+							<IconButton
+								sx={{ fontSize: "3rem" }}
+								onClick={() => togglePlayPause(audioSrc)}
+								disabled={audioSrc === false}
+							>
+								{!playing ? (
+									<PlayCircleFilledIcon fontSize="inherit" />
+								) : (
+									<PauseCircleFilledIcon fontSize="inherit" />
+								)}
+							</IconButton>
+							<IconButton sx={{ fontSize: "2.5rem" }}>
+								<SkipNextIcon
+									sx={{ color: "#a7a7a7" }}
+									fontSize="inherit"
+								/>
+							</IconButton>
+						</div>
+						<div className="text-center h-[30px]">
+							{!isNaN(duration) && (
+								<AudioProgressBar
+									duration={duration}
+									currentProgress={currentProgress}
+									buffered={buffered}
+									onChange={(e, value) => {
+										if (!audioRef.current) return
+										audioRef.current.currentTime = value
+
+										setCurrentProgress(value)
+									}}
+								/>
+							)}
+						</div>
+					</div>
+					<div className="hidden lg:flex justify-self-end items-center w-[200px] gap-4 mt-8">
+						<div className="absolute top-0 right-4">
+							<Tooltip title={"Close Player"} placement="top">
+								<IconButton onClick={closePlayer}>
+									<CloseIcon />
+								</IconButton>
+							</Tooltip>
+						</div>
+						<Tooltip title={volume === 0 ? "Unmute" : "Mute"}>
+							<IconButton onClick={handleMuteUnmute}>
+								{volume === 0 ? (
+									<VolumeOffIcon />
+								) : (
+									<VolumeDown />
+								)}
+							</IconButton>
+						</Tooltip>
+						<Slider
+							aria-label="Volume"
+							valueLabelDisplay="auto"
+							valueLabelFormat={volumeLabelFormat}
+							min={0}
+							step={0.01}
+							max={1}
+							value={volume}
+							sx={{ color: "#ffeec2" }}
+							onChange={(e) => {
+								handleVolumeChange(e)
+							}}
+						/>
 					</div>
 				</div>
-
-				<div className="flex gap-2">
-					<Button
-						component="label"
-						variant="contained"
-						disabled={!file}
-						startIcon={<PlayCircleIcon />}
-						sx={{ width: "115px", height: "40px" }}
-					>
-						Play
-					</Button>
-
-					<Button
-						component="label"
-						variant="contained"
-						startIcon={!file ? <CloudUploadIcon /> : <CachedIcon />}
-						sx={{ width: "115px", height: "40px" }}
-					>
-						{!file ? "Upload" : "Replace"}
-						<VisuallyHiddenInput
-							onChange={(e) => {
-								// handleSubmit(e)
-								handleChange(e)
-							}}
-							type="file"
-						/>
-					</Button>
-				</div>
 			</div>
 		</>
 	)
 }
 
+//AudioContext:
+"use client"
 
-// **********************
+import React, { createContext, useContext, useState } from "react"
 
-import UploadFile from "./Upload Components/UploadFile"
-import UploadFolder from "./Upload Components/UploadFolder"
+const AudioContext = createContext()
 
-export default function Files({
+export const AudioContextProvider = ({ children }) => {
+	const [audioSrcId, setAudioSrcId] = useState(null)
+	const [playing, setPlaying] = useState(false)
+	const [drawerOpen, setDrawerOpen] = useState(false)
+	const [ref, setRef] = useState(null)
 
-	file_MP3,
-	updateFields,
-}) {
+	const getRef = (ref) => {
+		setRef(ref)
+	}
+
+	const togglePlayPause = (audioSrc) => {
+		if (!audioSrc) return
+
+		if (audioSrc !== audioSrcId || !ref) {
+			setAudioSrcId(audioSrc)
+			if (!drawerOpen) {
+				setDrawerOpen(true)
+			}
+		}
+
+		setPlaying(!playing)
+
+		if (ref) {
+			if (!playing) {
+				ref.current?.play()
+			} else {
+				ref.current?.pause()
+			}
+		}
+	}
+
+	const values = {
+		audioSrcId,
+		playing,
+		drawerOpen,
+		setDrawerOpen,
+		setAudioSrcId,
+		setPlaying,
+		togglePlayPause,
+		getRef,
+	}
+
 	return (
-		<>
-			<div className="flex flex-col gap-4">
-
-				<UploadFile fileData={file_MP3} updateFields={updateFields} />
-				{/* <UploadFolder /> */}
-			</div>
-		</>
+		<AudioContext.Provider value={values}>{children}</AudioContext.Provider>
 	)
 }
+
+export const useAudio = () => {
+	return useContext(AudioContext)
+}
+

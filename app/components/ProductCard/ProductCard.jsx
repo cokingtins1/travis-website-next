@@ -13,7 +13,7 @@ import ProductCardImage from "./ProductCardImage"
 export default async function ProductCard({ product }) {
 	const { startingPrice } = await getPricingById(product.id)
 	const imageSrc = await getImageSrc(product.id)
-	const audioSrc = await getAudioSrcById(product.id)
+	const { audioSrc, srcType } = await getAudioSrcById(product.id)
 
 	return (
 		<>
@@ -24,7 +24,8 @@ export default async function ProductCard({ product }) {
 							imageSrc={imageSrc}
 							audioSrc={audioSrc}
 							product={product}
-							startingPrice = {startingPrice}
+							startingPrice={startingPrice}
+							srcType={srcType}
 						/>
 						<Link href={`/store/${product.id}`}>
 							<div>

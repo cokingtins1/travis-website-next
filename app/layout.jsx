@@ -6,6 +6,7 @@ import ThemeProvider from "@/libs/contexts/ThemeContext"
 import { ToastContainer, toast } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import { ShoppingCartProvider } from "@/libs/contexts/CartContext"
+import { AudioContextProvider } from '@/libs/contexts/AudioContext'
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -23,10 +24,12 @@ export default function RootLayout({ children }) {
 			<body className={inter.className}>
 				<SupabaseContext>
 					<ShoppingCartProvider>
-						<Header />
-						<main className=" mx-auto max-w-[1440px]">
-							<ThemeProvider>{children}</ThemeProvider>
-						</main>
+						<AudioContextProvider>
+							<Header />
+							<main className=" mx-auto max-w-[1440px]">
+								<ThemeProvider>{children}</ThemeProvider>
+							</main>
+						</AudioContextProvider>
 					</ShoppingCartProvider>
 				</SupabaseContext>
 				<ToastContainer

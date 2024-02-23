@@ -5,16 +5,33 @@ import Image from "next/image"
 import IconButton from "@mui/material/IconButton"
 
 import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled"
+import PauseCircleFilledIcon from "@mui/icons-material/PauseCircleFilled"
+
 import AudioDrawer from "../Audio/AudioDrawer"
-import { useState } from "react"
+import { useAudio } from "@/libs/contexts/AudioContext"
+import { useEffect, useState } from "react"
 
 export default function ProductCardImage({
 	imageSrc,
 	audioSrc,
+	srcType,
 	product,
 	startingPrice,
 }) {
-	const [open, setOpen] = useState(false)
+	const {
+		audioSrcId,
+		setAudioSrcId,
+		playing,
+		togglePlayPause,
+		drawerOpen,
+		setDrawerOpen,
+	} = useAudio()
+
+	useEffect(() => {
+		setAudioSrcId(null)
+	}, [])
+
+	console.log("drawerOpen from product image", audioSrc === audioSrcId)
 
 	return (
 		<>
@@ -30,22 +47,32 @@ export default function ProductCardImage({
 				<figcaption className="absolute bottom-0 text-xs bg-bg-secondary rounded p-1">
 					{product.bpm} BPM
 				</figcaption>
-				<figcaption className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-80 transition-opacity duration-200">
-					<IconButton
-						sx={{ fontSize: "3rem" }}
-						onClick={() => setOpen(!open)}
-					>
-						<PlayCircleFilledIcon fontSize="inherit" />
-					</IconButton>
-				</figcaption>
+				{audioSrc && (
+					<figcaption className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-80 transition-opacity duration-200">
+						<IconButton
+							sx={{ fontSize: "3rem" }}
+							onClick={() => {
+								{
+									togglePlayPause(audioSrc)
+								}
+							}}
+						>
+							{!playing ? (
+								<PlayCircleFilledIcon fontSize="inherit" />
+							) : (
+								<PauseCircleFilledIcon fontSize="inherit" />
+							)}
+						</IconButton>
+					</figcaption>
+				)}
 			</figure>
-			{audioSrc && (
+			{audioSrc === audioSrcId && (
 				<AudioDrawer
-					isOpen={open}
-					currentSong={audioSrc}
+					audioSrc={audioSrc}
+					srcType={srcType}
 					startingPrice={startingPrice}
 					product={product}
-                    imageSrc={imageSrc}
+					imageSrc={imageSrc}
 				/>
 			)}
 		</>
