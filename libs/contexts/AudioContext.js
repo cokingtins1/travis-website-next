@@ -6,18 +6,34 @@ const AudioContext = createContext()
 
 export const AudioContextProvider = ({ children }) => {
 	const [audioSrcId, setAudioSrcId] = useState(null)
+	const [audioSrc, setAudioSrc] = useState(null)
 	const [playing, setPlaying] = useState(false)
 	const [ref, setRef] = useState(null)
 	const [drawerOpen, setDrawerOpen] = useState(false)
+	const [file, setFile] = useState({})
+
+	const [tempMP3, setTempMP3] = useState({})
+	const [tempWAV, setTempWAV] = useState({})
+
+	const [filePlaying, setFilePlaying] = useState(null)
+
+	function selectFileToPlay(fileObject){
+		if(fileObject.type === 'MP3'){}
+	}
 
 	const getRef = (ref) => {
 		setRef(ref)
 	}
 
 	const togglePlayPause = (audioSrc) => {
+		// console.log(audioSrc, audioSrcId, drawerOpen, playing)
+
+		console.log(audioSrc)
+		console.log(ref?.current)
+
 		if (audioSrc !== audioSrcId) {
 			setPlaying(!playing)
-
+			setAudioSrc(audioSrc)
 			setAudioSrcId(audioSrc)
 			setDrawerOpen(true)
 		}
@@ -55,6 +71,14 @@ export const AudioContextProvider = ({ children }) => {
 		audioSrcId,
 		playing,
 		drawerOpen,
+		audioSrc,
+		file,
+		tempMP3,
+		tempWAV,
+		setTempMP3, 
+		setTempWAV,
+		setFile,
+		setAudioSrc,
 		setDrawerOpen,
 		setAudioSrcId,
 		setPlaying,

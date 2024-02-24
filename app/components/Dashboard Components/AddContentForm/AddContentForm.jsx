@@ -1,6 +1,6 @@
 "use client"
 // AddContentForm.jsx
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 import useMultipleStepForm from "./useMultipleStepForm"
 import BasicInfo from "./BasicInfo"
@@ -16,6 +16,8 @@ import MetaData from "./MetaData"
 import Pricing from "./Pricing"
 import { Button } from "../../UI/Button"
 import { createFormData } from "@/libs/utils"
+import AudioDrawer from "../../Audio/AudioDrawer"
+import { useAudio } from "@/libs/contexts/AudioContext"
 
 const INITIAL_DATA = {
 	MP3_file: null,
@@ -60,6 +62,20 @@ export default function AddContentForm() {
 	const [dataLoading, setDataLoading] = useState(false)
 	const [error, setError] = useState([])
 
+	const {
+		drawerOpen,
+		audioSrc,
+		audioSrcId,
+		setAudioSrcId,
+		setAudioSrc,
+		file,
+	} = useAudio()
+
+	useEffect(() => {
+		setAudioSrcId(null)
+		setAudioSrc(null)
+	}, [])
+
 	const indices = [
 		{ index: 0, value: "Upload Files" },
 		{ index: 1, value: "Basic Info" },
@@ -99,7 +115,7 @@ export default function AddContentForm() {
 		e.preventDefault()
 		if (!isLastStep) return next()
 
-		const formData = createFormData(data, "product_id", product.id)
+		const formData = createFormData(data)
 
 		try {
 			setDataLoading(true)
@@ -128,9 +144,10 @@ export default function AddContentForm() {
 		}
 	}
 
+	const srcType = "audio/mpeg"
+
 	return (
 		<>
-			{/* Put the form in an action... use server -> action={uploadData} */}
 			<div className="w-full bg-bg-elevated border border-black p-4 rounded-md ">
 				<form>
 					<div className="flex flex-col">
@@ -156,6 +173,13 @@ export default function AddContentForm() {
 						<div className="h-[32rem] overflow-auto p-2 mt-4">
 							{step}
 						</div>
+						{audioSrc === audioSrcId && drawerOpen && (
+							<AudioDrawer
+								audioSrc={audioSrc}
+								srcType={srcType}
+								file={file}
+							/>
+						)}
 						<Divider />
 						<div className="flex mt-4 gap-2 self-end items-center ">
 							{error && (

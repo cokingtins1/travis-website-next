@@ -4,8 +4,10 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload"
 import MusicNoteIcon from "@mui/icons-material/MusicNote"
 import FolderIcon from "@mui/icons-material/Folder"
 import CachedIcon from "@mui/icons-material/Cached"
-import { useEffect, useState } from "react"
-import PlayAudioButton from "@/app/components/UI/PlayAudioButton"
+import { useState } from "react"
+import PlayCircleIcon from "@mui/icons-material/PlayCircle"
+import PauseIcon from "@mui/icons-material/Pause"
+import { useAudio } from "@/libs/contexts/AudioContext"
 
 export default function UploadFile({
 	fileProps,
@@ -15,7 +17,20 @@ export default function UploadFile({
 	type,
 }) {
 	const [error, setError] = useState("")
-	const [audioSrc, setAudioSrc] = useState("")
+	const {
+		drawerOpen,
+		audioSrc,
+		audioSrcId,
+		setAudioSrc,
+		playing,
+		togglePlayPause,
+		file,
+		setFile,
+		tempMP3,
+		tempWAV,
+		setTempMP3,
+		setTempWAV,
+	} = useAudio()
 
 	let typeExt
 	let fileType
@@ -42,7 +57,34 @@ export default function UploadFile({
 		setError("")
 		let newFile = e.target.files[0]
 		if (newFile) {
-			setAudioSrc(URL.createObjectURL(newFile))
+			// setAudioSrc(URL.createObjectURL(newFile))
+			setFile({
+				file: newFile,
+				audioSrc: URL.createObjectURL(newFile),
+				fileName: newFile.name,
+				fileSize: `${Math.round(newFile.size * 10e-6)}MB`,
+				title: newFile.name.split(".")[0],
+				type: type,
+			})
+			if (type === "MP3") {
+				setTempMP3({
+					file: newFile,
+					audioSrc: URL.createObjectURL(newFile),
+					fileName: newFile.name,
+					fileSize: `${Math.round(newFile.size * 10e-6)}MB`,
+					title: newFile.name.split(".")[0],
+					type: type,
+				})
+			} else if (type === "WAV") {
+				setTempWAV({
+					file: newFile,
+					audioSrc: URL.createObjectURL(newFile),
+					fileName: newFile.name,
+					fileSize: `${Math.round(newFile.size * 10e-6)}MB`,
+					title: newFile.name.split(".")[0],
+					type: type,
+				})
+			}
 			updateFields({
 				file: newFile,
 				fileName: newFile.name,
@@ -51,19 +93,6 @@ export default function UploadFile({
 			})
 		}
 	}
-
-	// useEffect(() => {
-	// 	console.log("formik.values.file", formik.values.file)
-	// }, [formik.values.file])
-
-	// function sortFiles(e){
-	// 	const selectedFiles = e.target.files
-	// 	if (selectedFiles.length === 0){
-	// 		return
-	// 	}
-	// 	const sortedFiles = Array.from(selectedFiles).sort((a, b) => a.name.localeCompare(b.name))
-
-	// }
 
 	const VisuallyHiddenInput = styled("input")({
 		clip: "rect(0 0 0 0)",
@@ -114,11 +143,29 @@ export default function UploadFile({
 				</div>
 
 				<div className="flex gap-2">
-					<PlayAudioButton
-						audioSrc={audioSrc}
-						disabled={!fileProps}
-						fileType={fileType}
-					/>
+					{type !== "STEM" && (
+						<Button
+							component="label"
+							variant="contained"
+							disabled={!fileProps}
+							startIcon={
+								file.type === type && playing ? (
+									<PauseIcon />
+								) : (
+									<PlayCircleIcon />
+								)
+							}
+							onClick={() => {
+								if (type === "MP3") {
+									togglePlayPause(tempMP3.audioSrc)
+								} else if (type === "WAV") {
+									togglePlayPause(tempWAV.audioSrc)
+								}
+							}}
+						>
+							{file.type === type && playing ? "Pause" : "Play"}
+						</Button>
+					)}
 
 					<Button
 						component="label"

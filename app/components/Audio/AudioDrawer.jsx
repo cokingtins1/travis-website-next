@@ -8,21 +8,20 @@ import IconButton from "@mui/material/IconButton"
 import VolumeDown from "@mui/icons-material/VolumeDown"
 import VolumeOffIcon from "@mui/icons-material/VolumeOff"
 import Slider from "@mui/material/Slider"
-import beatKitImage from "@/public/beatKitImage.jpg"
-import Image from "next/image"
-import AddToCartBtn from "../UI/AddToCartBtn"
 import { useEffect, useRef, useState } from "react"
 import AudioProgressBar from "./AudioProgressBar"
 import Tooltip from "@mui/material/Tooltip"
 import CloseIcon from "@mui/icons-material/Close"
 import { useAudio } from "@/libs/contexts/AudioContext"
+import AudioProductSection from "./AudioProductSection"
 
 export default function AudioDrawer({
-	product,
-	audioSrc,
-	srcType,
-	startingPrice,
-	imageSrc,
+	audioSrc, //required
+	srcType, //required
+	file = false,
+	product = null,
+	startingPrice = null,
+	imageSrc = null,
 }) {
 	const audioRef = useRef(null)
 	const [isReady, setIsReady] = useState(false)
@@ -67,11 +66,14 @@ export default function AudioDrawer({
 	// }
 
 	// const handlePrev = () => {
-	// 	onPrev()
+	// 	audioRef.current?.pause()
+	// 	audioRef.current?.currentTime = 0
+	//     audioRef.current?.play()
+
 	// }
 
 	const closePlayer = () => {
-		togglePlayPause()
+		togglePlayPause(audioSrc)
 		setDrawerOpen(false)
 		setPlaying(false)
 		setAudioSrcId(null)
@@ -117,12 +119,12 @@ export default function AudioDrawer({
 		return (value * 100).toFixed()
 	}
 
-	// console.log("drawerOpen from drawer", drawerOpen)
-
 	return (
 		<>
 			<div
-				className={`bottom-drawer fixed left-0 bottom-0 w-full bg-bg-elevated transition-transform duration-300 ease-in-out ${
+				className={`${
+					file || "fixed left-0 bottom-0"
+				} w-full bg-bg-elevated transition-transform duration-300 ease-in-out ${
 					drawerOpen ? "translate-y-0" : "translate-y-full"
 				} `}
 			>
@@ -145,37 +147,16 @@ export default function AudioDrawer({
 					}}
 					onProgress={handleBufferProgress}
 					onVolumeChange={(e) => setVolume(e.currentTarget.volume)}
+					loop
 				>
 					<source type={srcType} src={audioSrc} />
 				</audio>
 				<div className="grid grid-cols-2 lg:grid-cols-3 justify-items-stretch items-center justify-center my-2 mx-16">
-					<div className="flex justify-self-start gap-4">
-						<div className="size-[75px] relative">
-							<Image
-								src={imageSrc || beatKitImage}
-								fill
-								sizes="(max-width: 430px), 75px "
-								alt="product image"
-							/>
-						</div>
-						<div>
-							<p className="text-sm text-text-primary">
-								{product.title}
-							</p>
-							<p className="text-sm text-text-secondary">
-								beatsByTrav
-							</p>
-						</div>
-						<div className="hidden lg:block">
-							{startingPrice && (
-								<AddToCartBtn
-									startingPrice={startingPrice}
-									imageSrc={imageSrc}
-									product={product}
-								/>
-							)}
-						</div>
-					</div>
+					<AudioProductSection
+						imageSrc={imageSrc}
+						product={product}
+						startingPrice={startingPrice}
+					/>
 					<div className="justify-self-center">
 						<div className="flex items-center justify-center">
 							<IconButton sx={{ fontSize: "2.5rem" }}>
@@ -186,6 +167,7 @@ export default function AudioDrawer({
 							</IconButton>
 							<IconButton
 								sx={{ fontSize: "3rem" }}
+                                id={audioSrc}
 								onClick={() => togglePlayPause(audioSrc)}
 								disabled={audioSrc === false}
 							>
@@ -221,12 +203,14 @@ export default function AudioDrawer({
 					<div className="hidden lg:flex justify-self-end items-center w-[200px] gap-4 mt-8">
 						<div className="absolute top-0 right-4">
 							<Tooltip title={"Close Player"} placement="top">
-								<IconButton onClick={closePlayer}>
+								<IconButton
+									onClick={() => closePlayer(audioSrc)}
+								>
 									<CloseIcon />
 								</IconButton>
 							</Tooltip>
 						</div>
-						<Tooltip title={volume === 0 ? "Unmute" : "Mute"}>
+						<Tooltip title={volume === 0 ? "Unmute" : "Mute"} placement="top">
 							<IconButton onClick={handleMuteUnmute}>
 								{volume === 0 ? (
 									<VolumeOffIcon />

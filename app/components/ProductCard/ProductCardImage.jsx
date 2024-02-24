@@ -9,7 +9,7 @@ import PauseCircleFilledIcon from "@mui/icons-material/PauseCircleFilled"
 
 import AudioDrawer from "../Audio/AudioDrawer"
 import { useAudio } from "@/libs/contexts/AudioContext"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 
 export default function ProductCardImage({
 	imageSrc,
@@ -31,7 +31,6 @@ export default function ProductCardImage({
 		setAudioSrcId(null)
 	}, [])
 
-	console.log("drawerOpen from product image", audioSrc === audioSrcId)
 
 	return (
 		<>
@@ -50,6 +49,7 @@ export default function ProductCardImage({
 				{audioSrc && (
 					<figcaption className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-80 transition-opacity duration-200">
 						<IconButton
+			
 							sx={{ fontSize: "3rem" }}
 							onClick={() => {
 								{
@@ -57,10 +57,10 @@ export default function ProductCardImage({
 								}
 							}}
 						>
-							{!playing ? (
-								<PlayCircleFilledIcon fontSize="inherit" />
-							) : (
+							{audioSrc === audioSrcId && playing ? (
 								<PauseCircleFilledIcon fontSize="inherit" />
+							) : (
+								<PlayCircleFilledIcon fontSize="inherit" />
 							)}
 						</IconButton>
 					</figcaption>
