@@ -64,16 +64,31 @@ export default function AddContentForm() {
 
 	const {
 		drawerOpen,
+		setRef,
 		audioSrc,
 		audioSrcId,
 		setAudioSrcId,
+		setDrawerOpen,
 		setAudioSrc,
 		file,
+		ref,
 	} = useAudio()
 
 	useEffect(() => {
+		// console.table(
+		// 	"audioSrc:",
+		// 	audioSrc,
+		// 	"audioSrcId:",
+		// 	audioSrcId,
+		// 	"drawerOpen",
+		// 	drawerOpen,
+		// 	"ref.current",
+		// 	ref?.current
+		// )
 		setAudioSrcId(null)
 		setAudioSrc(null)
+		setDrawerOpen(false)
+		setRef(null)
 	}, [])
 
 	const indices = [
@@ -173,8 +188,9 @@ export default function AddContentForm() {
 						<div className="h-[32rem] overflow-auto p-2 mt-4">
 							{step}
 						</div>
-						{audioSrc === audioSrcId && drawerOpen && (
+						{audioSrcId && audioSrc === audioSrcId && (
 							<AudioDrawer
+								key={audioSrcId}
 								audioSrc={audioSrc}
 								srcType={srcType}
 								file={file}

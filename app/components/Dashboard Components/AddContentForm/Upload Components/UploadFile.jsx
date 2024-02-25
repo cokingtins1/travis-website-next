@@ -57,15 +57,6 @@ export default function UploadFile({
 		setError("")
 		let newFile = e.target.files[0]
 		if (newFile) {
-			// setAudioSrc(URL.createObjectURL(newFile))
-			setFile({
-				file: newFile,
-				audioSrc: URL.createObjectURL(newFile),
-				fileName: newFile.name,
-				fileSize: `${Math.round(newFile.size * 10e-6)}MB`,
-				title: newFile.name.split(".")[0],
-				type: type,
-			})
 			if (type === "MP3") {
 				setTempMP3({
 					file: newFile,
