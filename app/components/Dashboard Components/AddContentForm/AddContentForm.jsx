@@ -44,6 +44,7 @@ const INITIAL_DATA = {
 	keys: "None",
 	bpm: 0,
 	instruments: [],
+	videoLink: "",
 
 	basic: true,
 	basicPrice: 30,
@@ -72,23 +73,12 @@ export default function AddContentForm() {
 		setAudioSrc,
 		file,
 		ref,
+		buttonId,
+		clearAudio,
 	} = useAudio()
 
 	useEffect(() => {
-		// console.table(
-		// 	"audioSrc:",
-		// 	audioSrc,
-		// 	"audioSrcId:",
-		// 	audioSrcId,
-		// 	"drawerOpen",
-		// 	drawerOpen,
-		// 	"ref.current",
-		// 	ref?.current
-		// )
-		setAudioSrcId(null)
-		setAudioSrc(null)
-		setDrawerOpen(false)
-		setRef(null)
+		clearAudio()
 	}, [])
 
 	const indices = [
@@ -159,8 +149,6 @@ export default function AddContentForm() {
 		}
 	}
 
-	const srcType = "audio/mpeg"
-
 	return (
 		<>
 			<div className="w-full bg-bg-elevated border border-black p-4 rounded-md ">
@@ -188,14 +176,17 @@ export default function AddContentForm() {
 						<div className="h-[32rem] overflow-auto p-2 mt-4">
 							{step}
 						</div>
-						{audioSrcId && audioSrc === audioSrcId && (
-							<AudioDrawer
-								key={audioSrcId}
-								audioSrc={audioSrc}
-								srcType={srcType}
-								file={file}
-							/>
-						)}
+						<div className="h-[110px]">
+							{audioSrcId && (
+								<AudioDrawer
+									key={audioSrcId}
+									audioSrc={audioSrcId}
+									srcType={"audio/mpeg"}
+									buttonId={buttonId}
+									file={true}
+								/>
+							)}
+						</div>
 						<Divider />
 						<div className="flex mt-4 gap-2 self-end items-center ">
 							{error && (

@@ -41,6 +41,7 @@ export async function PUT(req) {
 					instruments: returnArray("instruments", formData),
 					keys: formData.get("keys"),
 					bpm: formData.get("bpm"),
+					video_link: formData.get("videoLink"),
 
 					free: formData.get("free"),
 				})

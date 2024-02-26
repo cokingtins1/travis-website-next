@@ -31,7 +31,6 @@ export default function ProductCardImage({
 		setAudioSrcId(null)
 	}, [])
 
-
 	return (
 		<>
 			<figure className="relative group flex flex-col items-center h-[85px] w-[85px]">
@@ -49,7 +48,6 @@ export default function ProductCardImage({
 				{audioSrc && (
 					<figcaption className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-80 transition-opacity duration-200">
 						<IconButton
-			
 							sx={{ fontSize: "3rem" }}
 							onClick={() => {
 								{
@@ -66,9 +64,9 @@ export default function ProductCardImage({
 					</figcaption>
 				)}
 			</figure>
-			{audioSrc === audioSrcId && (
+			{audioSrc === audioSrcId && drawerOpen && (
 				<AudioDrawer
-					audioSrc={audioSrc}
+					audioSrc={audioSrcId}
 					srcType={srcType}
 					startingPrice={startingPrice}
 					product={product}

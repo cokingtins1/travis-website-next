@@ -11,128 +11,48 @@ export const AudioContextProvider = ({ children }) => {
 	const [ref, setRef] = useState(null)
 	const [drawerOpen, setDrawerOpen] = useState(false)
 	const [file, setFile] = useState({})
+	const [buttonId, setButtonId] = useState(null)
 
 	const [tempMP3, setTempMP3] = useState({})
 	const [tempWAV, setTempWAV] = useState({})
-
-	const [filePlaying, setFilePlaying] = useState(null)
-
-	function selectFileToPlay(fileObject) {
-		if (fileObject.type === "MP3") {
-		}
-	}
 
 	const getRef = (ref) => {
 		setRef(ref)
 	}
 
-	const togglePlayPause = (audioSrc) => {
-		// if (tempMP3 || tempWAV) {
-		// 	if (tempMP3 && audioSrc === tempMP3.audioSrc) {
-		// 		setPlaying(!playing)
-		// 		setAudioSrc(tempMP3.audioSrc)
-		// 		setDrawerOpen(true)
-		// 		setAudioSrcId(tempMP3.audioSrc)
-		// 		setDrawerOpen(true)
-		// 		setFile({
-		// 			fileName: tempMP3.fileName,
-		// 			fileSize: tempMP3.fileSize,
-		// 			type: tempMP3.type,
-		// 		})
-		// 	}
+	const clearAudio = () => {
+		setAudioSrcId(null)
+		setAudioSrc(null)
+		setDrawerOpen(false)
+		setRef(null)
+		setPlaying(false)
+		// setTempMP3(null)
+		// setTempWAV(null)
+	}
 
-		// 	if (tempWAV && audioSrc === tempWAV.audioSrc) {
-		// 		setPlaying(!playing)
-		// 		setAudioSrc(tempWAV.audioSrc)
-		// 		setDrawerOpen(true)
-		// 		setAudioSrcId(tempWAV.audioSrc)
-		// 		setDrawerOpen(true)
-		// 		setFile({
-		// 			fileName: tempWAV.fileName,
-		// 			fileSize: tempWAV.fileSize,
-		// 			type: tempWAV.type,
-		// 		})
-		// 	}
 
-		// 	if (tempMP3 && tempWAV && audioSrc !== audioSrcId) {
-		// 		setPlaying(!playing)
-		// 		setAudioSrc(audioSrc)
-		// 		setDrawerOpen(true)
-		// 		setAudioSrcId(audioSrc)
-		// 		setDrawerOpen(true)
-		// 	}
+	const togglePlayPause = (audioSrc, inputId = null, inputFile = null) => {
+		setAudioSrcId(audioSrc)
 
-		// 	if (!ref && audioSrc) {
-		// 		setAudioSrcId(audioSrc)
-		// 		setPlaying(!playing)
-		// 	} else {
-		// 		if (!playing) {
-		// 			setPlaying(false)
-		// 			ref.current?.play()
-		// 		} else {
-		// 			setPlaying(true)
-		// 			ref.current?.pause()
-		// 		}
-		// 	}
-		// } else {
-		// 	if (audioSrc !== audioSrcId) {
-		// 		setPlaying(!playing)
-		// 		setAudioSrc(audioSrc)
-		// 		setAudioSrcId(audioSrc)
-		// 		setDrawerOpen(true)
-		// 	}
-		// 	if (!ref && audioSrc) {
-		// 		setAudioSrcId(audioSrc)
-		// 		setPlaying(!playing)
-		// 	} else {
-		// 		if (!playing) {
-		// 			setPlaying(false)
-		// 			ref.current?.play()
-		// 		} else {
-		// 			setPlaying(true)
-		// 			ref.current?.pause()
-		// 		}
-		// 	}
-		// }
-
-		if (tempMP3 && audioSrc === tempMP3.audioSrc) {
+		inputId && setButtonId(inputId)
+		inputFile &&
 			setFile({
-				fileName: tempMP3.fileName,
-				fileSize: tempMP3.fileSize,
-				type: tempMP3.type,
+				fileName: inputFile.fileName,
+				fileSize: inputFile.fileSize,
 			})
-		} else if (tempWAV && audioSrc === tempWAV.audioSrc) {
-			setFile({
-				fileName: tempWAV.fileName,
-				fileSize: tempWAV.fileSize,
-				type: tempWAV.type,
-			})
-		}
 
-		if ((tempMP3 || tempWAV) && audioSrc !== audioSrcId) {
-			setPlaying(!playing)
-			setAudioSrc(audioSrc)
-			setDrawerOpen(true)
-			setAudioSrcId(audioSrc)
-		} else {
-			setPlaying(!playing)
-			setAudioSrc(audioSrc)
-			setAudioSrcId(audioSrc)
-			setDrawerOpen(true)
-		}
-
-		if (!ref && audioSrc) {
-			setAudioSrcId(audioSrc)
+		if (!ref) {
 			setPlaying(!playing)
 		} else {
 			if (!playing) {
-				setPlaying(false)
-				ref.current?.play()
+				ref.current.play()
 			} else {
-				setPlaying(true)
-				ref.current?.pause()
+				ref.current.pause()
 			}
+			setPlaying(!playing)
 		}
+
+		setDrawerOpen(true)
 	}
 
 	const values = {
@@ -144,6 +64,7 @@ export const AudioContextProvider = ({ children }) => {
 		tempMP3,
 		tempWAV,
 		ref,
+		buttonId,
 		setRef,
 		setTempMP3,
 		setTempWAV,
@@ -154,6 +75,7 @@ export const AudioContextProvider = ({ children }) => {
 		setPlaying,
 		togglePlayPause,
 		getRef,
+		clearAudio,
 	}
 
 	return (

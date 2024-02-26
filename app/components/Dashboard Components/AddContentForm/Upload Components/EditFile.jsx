@@ -5,17 +5,55 @@ import MusicNoteIcon from "@mui/icons-material/MusicNote"
 import FolderIcon from "@mui/icons-material/Folder"
 import CachedIcon from "@mui/icons-material/Cached"
 import { useEffect, useState } from "react"
-import PlayAudioButton from "@/app/components/UI/PlayAudioButton"
+import PlayCircleIcon from "@mui/icons-material/PlayCircle"
+import PauseIcon from "@mui/icons-material/Pause"
+import { useAudio } from "@/libs/contexts/AudioContext"
 
 export default function EditFile({
 	fileProps,
 	fileNameProps,
 	fileSizeProps,
 	updateFields,
+	audioSource,
 	type,
 }) {
 	const [error, setError] = useState("")
-	const [audioSrc, setAudioSrc] = useState("")
+
+	const {
+		playing,
+		togglePlayPause,
+		tempMP3,
+		tempWAV,
+		setTempMP3,
+		setTempWAV,
+		buttonId,
+	} = useAudio()
+
+	useEffect(() => {
+		if (!audioSource) return
+
+		if (type === "MP3") {
+			setTempMP3({
+				file: fileProps,
+				audioSrc: audioSource,
+				fileName: fileNameProps,
+				fileSize: fileSizeProps,
+				title: fileNameProps,
+				fileSrcType: "audio/mpeg",
+				type: "MP3",
+			})
+		} else if (type === "WAV") {
+			setTempWAV({
+				file: fileProps,
+				audioSrc: audioSource,
+				fileName: fileNameProps,
+				fileSize: fileSizeProps,
+				title: fileNameProps,
+				fileSrcType: "audio/wav",
+				type: "WAV",
+			})
+		}
+	}, [])
 
 	let typeExt
 	let fileType
@@ -42,7 +80,27 @@ export default function EditFile({
 		setError("")
 		let newFile = e.target.files[0]
 		if (newFile) {
-			setAudioSrc(URL.createObjectURL(newFile))
+			if (type === "MP3") {
+				setTempMP3({
+					file: newFile,
+					audioSrc: URL.createObjectURL(newFile),
+					fileName: newFile.name,
+					fileSize: `${Math.round(newFile.size * 10e-6)}MB`,
+					title: newFile.name.split(".")[0],
+					fileSrcType: "audio/mpeg",
+					type: type,
+				})
+			} else if (type === "WAV") {
+				setTempWAV({
+					file: newFile,
+					audioSrc: URL.createObjectURL(newFile),
+					fileName: newFile.name,
+					fileSize: `${Math.round(newFile.size * 10e-6)}MB`,
+					title: newFile.name.split(".")[0],
+					fileSrcType: "audio/wav",
+					type: type,
+				})
+			}
 			updateFields({
 				file: newFile,
 				fileName: newFile.name,
@@ -91,7 +149,7 @@ export default function EditFile({
 									<span>Upload {typeExt} files only</span>
 								)
 							) : (
-								<span className='text-xs'>
+								<span className="text-xs">
 									{fileNameProps} &#8226;{" "}
 									{Math.round(fileSizeProps * 10e-6)}MB{" "}
 								</span>
@@ -101,16 +159,42 @@ export default function EditFile({
 				</div>
 
 				<div className="flex flex-col gap-2">
-					<PlayAudioButton
-						styles={{
-							width: "85px",
-							height: "30px",
-							fontSize: "x-small",
-						}}
-						audioSrc={audioSrc}
-						disabled={!fileProps}
-						fileType={fileType}
-					/>
+					{type !== "STEM" && (
+						<Button
+							component="label"
+							variant="contained"
+							sx={{
+								width: "85px",
+								height: "30px",
+								fontSize: "x-small",
+							}}
+							disabled={!fileProps}
+							startIcon={
+								buttonId === type && playing ? (
+									<PauseIcon />
+								) : (
+									<PlayCircleIcon />
+								)
+							}
+							onClick={() => {
+								if (type === "MP3") {
+									togglePlayPause(
+										tempMP3.audioSrc,
+										"MP3",
+										tempMP3
+									)
+								} else if (type === "WAV") {
+									togglePlayPause(
+										tempWAV.audioSrc,
+										"WAV",
+										tempWAV
+									)
+								}
+							}}
+						>
+							{buttonId === type && playing ? "Pause" : "Play"}
+						</Button>
+					)}
 
 					<Button
 						component="label"
@@ -139,3 +223,5 @@ export default function EditFile({
 		</>
 	)
 }
+
+

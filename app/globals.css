@@ -22,10 +22,6 @@
   --headerHeight: 120px;
   --screenMinusHeaderHeight: calc(100dvh - (var(--headerHeight))) 
 
-  /* Audio player styles */
-  --progress-width: 0;
-  --buffered-width: 0;
-  --buffered-left: 0;
 
 }
 
@@ -36,7 +32,7 @@ html{
 }
 
 * {
-  scrollbar-color: var(--secondary) var(--primary);
+  scrollbar-color: var(--bg-secondary) var(--bg-primary);
 }
 
 *::-webkit-scrollbar {
@@ -44,19 +40,19 @@ html{
 }
 
 *::-webkit-scrollbar-track {
-  background: var(--primary);
+  background: var(--bg-primary);
   border-radius: 100vw;
-  margin-block: .125em;
+  margin-block: .5em;
 }
 
 *::-webkit-scrollbar-thumb {
-  background-color: var(--secondary);
+  background-color: var(--bg-secondary);
   border-radius: 100vw;
-  border: 3px solid var(--primary);
+  border: 3px solid var(--bg-primary);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: var(--tertiary);
+  background-color: var(--bg-hover);
 }
 
 input::-webkit-outer-spin-button,

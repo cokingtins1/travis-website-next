@@ -61,24 +61,61 @@ export async function getAudioSrcById(product_id) {
 		})
 
 	if (data) {
-		const audioFile = data.find(
+		const audioFiles = data.filter(
 			(item) =>
 				item?.metadata?.mimetype === "audio/mpeg" ||
-				item?.metadata?.mimetype === "audio/wav"
+				item?.metadata?.mimetype === "audio/wav" ||
+				item?.metadata?.mimetype === "application/x-zip-compressed"
 		)
 
-		if (audioFile) {
+		let audioFile_MP3 = null
+		let audioFile_WAV = null
+		let audioFile_STEM = null
+
+		audioFiles.forEach((audioFile) => {
+			if (audioFile?.metadata?.mimetype === "audio/mpeg") {
+				audioFile_MP3 = audioFile
+			} else if (audioFile?.metadata?.mimetype === "audio/wav") {
+				audioFile_WAV = audioFile
+			} else if (
+				audioFile?.metadata?.mimetype === "application/x-zip-compressed"
+			) {
+				audioFile_STEM = audioFile
+			}
+		})
+
+		if (audioFile_MP3 || audioFile_WAV || audioFile_STEM) {
 			const productFileURL =
 				"https://njowjcfiaxbnflrcwcep.supabase.co/storage/v1/object/public/all_products"
 
-			const { data: publicURL } = supabase.storage
-				.from("all_products")
-				.createSignedUrl(`${product_id}/${audioFile.name}`, 60)
+			const audioSrc_MP3 =
+				audioFile_MP3 &&
+				`${productFileURL}/${product_id}/${audioFile_MP3.name}`
+			const audioSrc_WAV =
+				audioFile_WAV &&
+				`${productFileURL}/${product_id}/${audioFile_WAV.name}`
 
-			const audioSrc = `${productFileURL}/${product_id}/${audioFile.name}`
-			const srcType = audioFile?.metadata?.mimetype
+			const audioSrc_STEM =
+				audioFile_STEM &&
+				`${productFileURL}/${product_id}/${audioFile_STEM.name}`
 
-			return { audioSrc, srcType, publicURL }
+			// Send the store the MP3 src by default
+			const srcType_MP3 = audioFile_MP3?.metadata?.mimetype
+			const srcType_WAV = audioFile_WAV?.metadata?.mimetype
+			const srcType_STEM = audioFile_WAV?.metadata?.mimetype
+
+			const storeSrc = audioSrc_MP3 || audioSrc_WAV
+			const storeSrcType = srcType_MP3 || srcType_MP3
+
+			return {
+				storeSrc,
+				storeSrcType,
+				audioSrc_MP3,
+				srcType_MP3,
+				audioSrc_WAV,
+				srcType_WAV,
+				audioSrc_STEM,
+			}
 		}
 	}
 }

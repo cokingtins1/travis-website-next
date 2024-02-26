@@ -4,7 +4,7 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload"
 import MusicNoteIcon from "@mui/icons-material/MusicNote"
 import FolderIcon from "@mui/icons-material/Folder"
 import CachedIcon from "@mui/icons-material/Cached"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import PlayCircleIcon from "@mui/icons-material/PlayCircle"
 import PauseIcon from "@mui/icons-material/Pause"
 import { useAudio } from "@/libs/contexts/AudioContext"
@@ -17,19 +17,15 @@ export default function UploadFile({
 	type,
 }) {
 	const [error, setError] = useState("")
+
 	const {
-		drawerOpen,
-		audioSrc,
-		audioSrcId,
-		setAudioSrc,
 		playing,
 		togglePlayPause,
-		file,
-		setFile,
 		tempMP3,
 		tempWAV,
 		setTempMP3,
 		setTempWAV,
+		buttonId,
 	} = useAudio()
 
 	let typeExt
@@ -64,6 +60,7 @@ export default function UploadFile({
 					fileName: newFile.name,
 					fileSize: `${Math.round(newFile.size * 10e-6)}MB`,
 					title: newFile.name.split(".")[0],
+					fileSrcType: "audio/mpeg",
 					type: type,
 				})
 			} else if (type === "WAV") {
@@ -73,6 +70,7 @@ export default function UploadFile({
 					fileName: newFile.name,
 					fileSize: `${Math.round(newFile.size * 10e-6)}MB`,
 					title: newFile.name.split(".")[0],
+					fileSrcType: "audio/wav",
 					type: type,
 				})
 			}
@@ -138,9 +136,10 @@ export default function UploadFile({
 						<Button
 							component="label"
 							variant="contained"
+							sx={{ width: "115px", height: "40px" }}
 							disabled={!fileProps}
 							startIcon={
-								file.type === type && playing ? (
+								buttonId === type && playing ? (
 									<PauseIcon />
 								) : (
 									<PlayCircleIcon />
@@ -148,13 +147,21 @@ export default function UploadFile({
 							}
 							onClick={() => {
 								if (type === "MP3") {
-									togglePlayPause(tempMP3.audioSrc)
+									togglePlayPause(
+										tempMP3.audioSrc,
+										"MP3",
+										tempMP3
+									)
 								} else if (type === "WAV") {
-									togglePlayPause(tempWAV.audioSrc)
+									togglePlayPause(
+										tempWAV.audioSrc,
+										"WAV",
+										tempWAV
+									)
 								}
 							}}
 						>
-							{file.type === type && playing ? "Pause" : "Play"}
+							{buttonId === type && playing ? "Pause" : "Play"}
 						</Button>
 					)}
 

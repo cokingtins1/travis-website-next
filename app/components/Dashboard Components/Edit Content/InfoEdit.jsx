@@ -10,7 +10,7 @@ import { styled } from "@mui/material/styles"
 import beatKitImage from "@/public/beatKitImage.jpg"
 import Image from "next/image"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import TagInput from "../AddContentForm/Upload Components/TagInput"
 import DropDown from "@/app/components/Dashboard Components/AddContentForm/Upload Components/DropDown.json"
 import { toast } from "react-toastify"
@@ -18,47 +18,105 @@ import PricingSwitch from "../AddContentForm/Upload Components/PricingSwitch"
 import SubmitModal from "../../UI/SubmitModal"
 import EditFile from "../AddContentForm/Upload Components/EditFile"
 import { createFormData } from "@/libs/utils"
+import { useAudio } from "@/libs/contexts/AudioContext"
+import AudioDrawer from "../../Audio/AudioDrawer"
 
-export default function InfoEdit({ product, productFiles, pricing }) {
+export default function InfoEdit({
+	product,
+	productFiles,
+	pricing,
+	audioSources,
+}) {
 	const INITIAL_DATA = {
-		MP3_file: productFiles.MP3_file ?? null,
-		MP3_fileName: product.title ?? null,
-		MP3_fileSize: productFiles.MP3_file?.metadata?.size ?? null,
+		MP3_file: productFiles.MP3_file || null,
+		MP3_fileName: product.title || null,
+		MP3_fileSize: productFiles.MP3_file?.metadata?.size || null,
 
-		WAV_file: productFiles.WAV_file ?? null,
-		WAV_fileName: product.title ?? null,
-		WAV_fileSize: productFiles.WAV_file?.metadata?.size ?? null,
+		WAV_file: productFiles.WAV_file || null,
+		WAV_fileName: product.title || null,
+		WAV_fileSize: productFiles.WAV_file?.metadata?.size || null,
 
-		STEM_file: productFiles.STEM_file ?? null,
-		STEM_fileName: product.title ?? null,
-		STEM_fileSize: productFiles.STEM_file?.metadata?.size ?? null,
+		STEM_file: productFiles.STEM_file || null,
+		STEM_fileName: product.title || null,
+		STEM_fileSize: productFiles.STEM_file?.metadata?.size || null,
 
 		productImage: productFiles.productImage,
 		productImageSrc: productFiles.productImage,
 
-		title: product.title,
-		description: product.description,
-		type: product.type,
-		tags: product.tags,
-		genres: product.genres,
-		moods: product.moods,
-		instruments: product.instruments,
-		keys: product.keys,
-		bpm: product.bpm,
+		title: product.title || "",
+		description: product.description || "",
+		type: product.type || "",
+		tags: product.tags || [],
+		genres: product.genres || [],
+		moods: product.moods || [],
+		instruments: product.instruments || [],
+		videoLink: product.video_link || "",
+		keys: product.keys || "",
+		bpm: product.bpm || "",
 
-		basic: pricing.basic.isActive,
-		basicPrice: pricing.basic.price,
-		premium: pricing.premium.isActive,
-		premiumPrice: pricing.premium.price,
-		exclusive: pricing.exclusive.isActive,
-		exclusivePrice: pricing.exclusive.price,
-		free: product.free,
+		basic: pricing.basic.isActive || true,
+		basicPrice: pricing.basic.price || 30,
+		premium: pricing.premium.isActive || true,
+		premiumPrice: pricing.premium.price || 150,
+		exclusive: pricing.exclusive.isActive || true,
+		exclusivePrice: pricing.exclusive.price || 350,
+		free: product.free || false,
 	}
 
 	const [data, setData] = useState(INITIAL_DATA)
 	const [editing, setEditing] = useState(false)
 	const [dataLoading, setDataLoading] = useState(false)
 	const [imageErr, setImageErr] = useState("")
+
+	const {
+		drawerOpen,
+		setRef,
+		audioSrc,
+		audioSrcId,
+		setAudioSrcId,
+		setDrawerOpen,
+		setAudioSrc,
+		setTempMP3,
+		setTempWAV,
+		file,
+		ref,
+		clearAudio,
+		buttonId,
+	} = useAudio()
+
+	useEffect(() => {
+		clearAudio()
+		// if (data.MP3_file) {
+		// 	const blob = new Blob([JSON.stringify(data.MP3_file, null, 2)], {
+		// 		type: "application/json",
+		// 	})
+		// 	const fileUrl = URL.createObjectURL(blob)
+		// 	setTempMP3({
+		// 		file: data.MP3_file,
+		// 		audioSrc: fileUrl,
+		// 		fileName: data.MP3_fileName,
+		// 		fileSize: data.MP3_fileSize,
+		// 		title: data.MP3_fileName,
+		// 		fileSrcType: "audio/mpeg",
+		// 		type: "MP3",
+		// 	})
+		// }
+
+		// if (data.WAV_file) {
+		// 	const blob = new Blob([JSON.stringify(data.WAV_file, null, 2)], {
+		// 		type: "application/json",
+		// 	})
+		// 	const fileUrl = URL.createObjectURL(blob)
+		// 	setTempWAV({
+		// 		file: data.WAV_file,
+		// 		audioSrc: fileUrl,
+		// 		fileSize: data.WAV_fileSize,
+		// 		title: data.WAV_fileName,
+		// 		fileSrcType: "audio/wav",
+		// 		type: "WAV",
+		// 	})
+		// }
+	}, [])
 
 	function abortEditing(e) {
 		e.preventDefault()
@@ -76,33 +134,35 @@ export default function InfoEdit({ product, productFiles, pricing }) {
 
 		const formData = createFormData(data, "product_id", product.id)
 
-		try {
-			setDataLoading(true)
-			const res = await toast.promise(
-				fetch("/api/updateData", {
-					method: "PUT",
-					body: formData,
-				}),
-				{
-					pending: "Upadating fields",
-					success: "Fields updated successfully",
-					error: "Error updating filds",
-				}
-			)
 
-			if (res.ok) {
-				setDataLoading(false)
-				setEditing(false)
-			} else {
-				setDataLoading(false)
-				throw new Error("There was an error updating the files")
-			}
-		} catch (error) {
-			console.log(error)
-		}
+		// formData.forEach((value, key) => {
+		// 	console.log(key, value);
+		//   });
 
-		// console.log("intiial data:", INITIAL_DATA, "data:", data)
-		// console.log(INITIAL_DATA == data)
+		// try {
+		// 	setDataLoading(true)
+		// 	const res = await toast.promise(
+		// 		fetch("/api/updateData", {
+		// 			method: "PUT",
+		// 			body: formData,
+		// 		}),
+		// 		{
+		// 			pending: "Upadating fields",
+		// 			success: "Fields updated successfully",
+		// 			error: "Error updating filds",
+		// 		}
+		// 	)
+
+		// 	if (res.ok) {
+		// 		setDataLoading(false)
+		// 		setEditing(false)
+		// 	} else {
+		// 		setDataLoading(false)
+		// 		throw new Error("There was an error updating the files")
+		// 	}
+		// } catch (error) {
+		// 	console.log(error)
+		// }
 	}
 
 	const VisuallyHiddenInput = styled("input")({
@@ -182,16 +242,19 @@ export default function InfoEdit({ product, productFiles, pricing }) {
 			<div className="max-w-[1200px] grid grid-cols-12 gap-4 p-4">
 				<div className={`col-span-12 ${media.fileLg}`}>
 					<div className="flex justify-center items-center flex-col mb-4">
-						<Image
-							alt=""
-							src={
-								data.productImageSrc
-									? data.productImageSrc
-									: beatKitImage
-							}
-							height={500}
-							width={500}
-						/>
+						<div className="relative w-[250px] h-[300px]">
+							<Image
+								alt=""
+								src={
+									data.productImageSrc
+										? data.productImageSrc
+										: beatKitImage
+								}
+								style={{ objectFit: "cover" }}
+								fill={true}
+								sizes="(max-width: 430px), 300px "
+							/>
+						</div>
 						<Button
 							type="button"
 							size="lg"
@@ -222,6 +285,7 @@ export default function InfoEdit({ product, productFiles, pricing }) {
 					<div className="flex flex-col gap-4">
 						<EditFile
 							type="MP3"
+							audioSource={audioSources.MP3}
 							fileProps={data.MP3_file}
 							fileNameProps={data.MP3_fileName}
 							fileSizeProps={data.MP3_fileSize}
@@ -236,6 +300,7 @@ export default function InfoEdit({ product, productFiles, pricing }) {
 
 						<EditFile
 							type="WAV"
+							audioSource={audioSources.WAV}
 							fileProps={data.WAV_file}
 							fileNameProps={data.WAV_fileName}
 							fileSizeProps={data.WAV_fileSize}
@@ -248,7 +313,7 @@ export default function InfoEdit({ product, productFiles, pricing }) {
 							}
 						/>
 						<EditFile
-							type="WAV"
+							type="STEM"
 							fileProps={data.STEM_file}
 							fileNameProps={data.STEM_fileName}
 							fileSizeProps={data.STEM_fileSize}
@@ -422,6 +487,29 @@ export default function InfoEdit({ product, productFiles, pricing }) {
 							/>
 						</div>
 					</div>
+					<div className="flex items-center">
+						<label
+							htmlFor="instruments"
+							className=" w-1/5 text-right pr-4"
+						>
+							Related videos:
+						</label>
+						<div className="flex-1">
+							<TextField
+								name="title"
+								className="col-span-2"
+								fullWidth
+								size="small"
+								id="videoLink"
+								label="YouTube Link (optional)"
+								type="text"
+								value={data.videoLink}
+								onChange={(e) => {
+									updateFields({ videoLink: e.target.value })
+								}}
+							/>
+						</div>
+					</div>
 					<div className="flex items-center justify-between">
 						<label
 							htmlFor="keys"
@@ -561,6 +649,17 @@ export default function InfoEdit({ product, productFiles, pricing }) {
 						</div>
 					</div>
 				</div>
+			</div>
+			<div className="h-[110px]">
+				{audioSrcId && (
+					<AudioDrawer
+						key={audioSrcId}
+						audioSrc={audioSrcId}
+						srcType={"audio/mpeg"}
+						buttonId={buttonId}
+						file={true}
+					/>
+				)}
 			</div>
 		</form>
 	)

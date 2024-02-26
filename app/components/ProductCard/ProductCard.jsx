@@ -13,7 +13,8 @@ import ProductCardImage from "./ProductCardImage"
 export default async function ProductCard({ product }) {
 	const { startingPrice } = await getPricingById(product.id)
 	const imageSrc = await getImageSrc(product.id)
-	const { audioSrc, srcType } = await getAudioSrcById(product.id)
+	const { storeSrc, storeSrcType } = await getAudioSrcById(product.id)
+
 
 	return (
 		<>
@@ -22,10 +23,10 @@ export default async function ProductCard({ product }) {
 					<div className="flex gap-4">
 						<ProductCardImage
 							imageSrc={imageSrc}
-							audioSrc={audioSrc}
+							audioSrc={storeSrc}
 							product={product}
 							startingPrice={startingPrice}
-							srcType={srcType}
+							srcType={storeSrcType}
 						/>
 						<Link href={`/store/${product.id}`}>
 							<div>

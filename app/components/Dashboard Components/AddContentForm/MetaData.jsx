@@ -21,6 +21,7 @@ export default function MetaData({
 	keys,
 	bpm,
 	instruments,
+	videoLink,
 	updateFields,
 }) {
 	const VisuallyHiddenInput = styled("input")({
@@ -152,21 +153,24 @@ export default function MetaData({
 			<Divider />
 
 			<div>
-				<p className="text-lg font-bold">
+				<p className="text-lg font-bold mb-2">
 					{" "}
 					<YouTubeIcon /> Related videos
 				</p>
-				<div className="my-12">
-					<Button
-						component="label"
-						variant="contained"
-						startIcon={<CloudUploadIcon />}
-						sx={{ width: "115px", height: "40px" }}
-					>
-						Upload
-						<VisuallyHiddenInput type="file" />
-					</Button>
-				</div>
+
+				<TextField
+					name="title"
+					className="col-span-2"
+					fullWidth
+					size="small"
+					id="videoLink"
+					label="YouTube Link (optional)"
+					type="text"
+					value={videoLink}
+					onChange={(e) => {
+						updateFields({ videoLink: e.target.value })
+					}}
+				/>
 			</div>
 		</div>
 	)

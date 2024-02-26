@@ -18,6 +18,7 @@ import AudioProductSection from "./AudioProductSection"
 export default function AudioDrawer({
 	audioSrc, //required
 	srcType, //required
+	buttonId,
 	file = false,
 	product = null,
 	startingPrice = null,
@@ -77,6 +78,7 @@ export default function AudioDrawer({
 		setDrawerOpen(false)
 		setPlaying(false)
 		setAudioSrcId(null)
+		getRef(null)
 	}
 
 	const handleVolumeChange = (e) => {
@@ -167,8 +169,10 @@ export default function AudioDrawer({
 							</IconButton>
 							<IconButton
 								sx={{ fontSize: "3rem" }}
-                                id={audioSrc}
-								onClick={() => togglePlayPause(audioSrc)}
+								id={audioSrc}
+								onClick={() =>
+									togglePlayPause(audioSrc, buttonId)
+								}
 								disabled={audioSrc === false}
 							>
 								{!playing ? (
@@ -210,7 +214,10 @@ export default function AudioDrawer({
 								</IconButton>
 							</Tooltip>
 						</div>
-						<Tooltip title={volume === 0 ? "Unmute" : "Mute"} placement="top">
+						<Tooltip
+							title={volume === 0 ? "Unmute" : "Mute"}
+							placement="top"
+						>
 							<IconButton onClick={handleMuteUnmute}>
 								{volume === 0 ? (
 									<VolumeOffIcon />
