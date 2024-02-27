@@ -3,48 +3,30 @@ import Switch from "@mui/material/Switch"
 import { useState } from "react"
 
 export default function Pricing({
+	MP3_file,
+	WAV_file,
+	STEM_file,
 	updateFields,
-	basic,
 	basicPrice,
-	premium,
 	premiumPrice,
-	exclusive,
 	exclusivePrice,
 	free,
 }) {
 	const [freeChecked, setFreeChecked] = useState(free)
 	return (
 		<>
-			<div>
-				<p className="m-2 text-text-secondary">Exclusive</p>
-				<PricingSwitch
-					nameSwitch="exclusive"
-					namePrice="exclusivePrice"
-					defaultChecked={exclusive}
-					contractTitle={"Exclusive License"}
-					contractSubtext={"WAV, MP3, STEMS"}
-					value={exclusivePrice}
-					onCheckedChange={(newChecked) => {
-						updateFields({
-							exclusive: newChecked,
-						})
-					}}
-					onChange={(newPrice) => {
-						updateFields({
-							exclusivePrice: newPrice,
-						})
-					}}
-				/>
-			</div>
+
 			<div className="mt-4 flex flex-col gap-2">
 				<p className="m-2 text-text-secondary">Regular</p>
 				<PricingSwitch
 					nameSwitch="basic"
 					namePrice="basicPrice"
-					defaultChecked={basic}
+					defaultChecked={MP3_file}
 					contractTitle={"Basic License"}
 					contractSubtext={"MP3"}
 					value={basicPrice}
+					type={'MP3'}
+					file={MP3_file}
 					onCheckedChange={(newChecked) => {
 						updateFields({
 							basic: newChecked,
@@ -59,10 +41,12 @@ export default function Pricing({
 				<PricingSwitch
 					nameSwitch="premium"
 					namePrice="premiumPrice"
-					defaultChecked={premium}
+					defaultChecked={WAV_file}
 					contractTitle={"Premium License"}
 					contractSubtext={"WAV, MP3"}
 					value={premiumPrice}
+					type={'WAV'}
+					file={WAV_file}
 					onCheckedChange={(newChecked) => {
 						updateFields({
 							premium: newChecked,
@@ -71,6 +55,29 @@ export default function Pricing({
 					onChange={(newPrice) => {
 						updateFields({
 							premiumPrice: newPrice,
+						})
+					}}
+				/>
+			</div>
+			<div>
+				<p className="m-2 py-2 text-text-secondary">Exclusive</p>
+				<PricingSwitch
+					nameSwitch="exclusive"
+					namePrice="exclusivePrice"
+					defaultChecked={STEM_file}
+					contractTitle={"Exclusive License"}
+					contractSubtext={"WAV, MP3, STEMS"}
+					type={'STEM'}
+					value={exclusivePrice}
+					file={STEM_file}
+					onCheckedChange={(newChecked) => {
+						updateFields({
+							exclusive: newChecked,
+						})
+					}}
+					onChange={(newPrice) => {
+						updateFields({
+							exclusivePrice: newPrice,
 						})
 					}}
 				/>

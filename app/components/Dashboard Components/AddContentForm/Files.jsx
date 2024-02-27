@@ -27,7 +27,11 @@ export default function Files({
 							MP3_file: fields.file,
 							MP3_fileName: fields.fileName,
 							MP3_fileSize: fields.fileSize,
-							title: fields.fileName.split(".")[0],
+							title: fields.fileName
+								? fields.fileName.split(".")[0]
+								: null,
+							basic: fields.switch,
+							basicPriceId: fields.id,
 						})
 					}
 				/>
@@ -41,7 +45,11 @@ export default function Files({
 							WAV_file: fields.file,
 							WAV_fileName: fields.fileName,
 							WAV_fileSize: fields.fileSize,
-							title: fields.fileName.split(".")[0],
+							title: fields.fileName
+								? fields.fileName.split(".")[0]
+								: null,
+							premium: fields.switch,
+							premiumPriceId: fields.id,
 						})
 					}
 				/>
@@ -55,6 +63,8 @@ export default function Files({
 							STEM_file: fields.file,
 							STEM_fileName: fields.fileName,
 							STEM_fileSize: fields.fileSize,
+							exclusive: fields.switch,
+							exclusivePriceId: fields.id,
 						})
 					}
 				/>

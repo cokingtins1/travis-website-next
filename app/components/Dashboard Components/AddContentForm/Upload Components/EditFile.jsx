@@ -18,8 +18,10 @@ export default function EditFile({
 	type,
 }) {
 	const [error, setError] = useState("")
+	const [file, setFile] = useState(!!fileProps)
 
 	const {
+		audioSrcId,
 		playing,
 		togglePlayPause,
 		tempMP3,
@@ -27,6 +29,7 @@ export default function EditFile({
 		setTempMP3,
 		setTempWAV,
 		buttonId,
+		closeDrawer,
 	} = useAudio()
 
 	useEffect(() => {
@@ -86,7 +89,7 @@ export default function EditFile({
 					audioSrc: URL.createObjectURL(newFile),
 					fileName: newFile.name,
 					fileSize: `${Math.round(newFile.size * 10e-6)}MB`,
-					title: newFile.name.split(".")[0],
+					title: newFile?.name.split(".")[0],
 					fileSrcType: "audio/mpeg",
 					type: type,
 				})
@@ -96,7 +99,7 @@ export default function EditFile({
 					audioSrc: URL.createObjectURL(newFile),
 					fileName: newFile.name,
 					fileSize: `${Math.round(newFile.size * 10e-6)}MB`,
-					title: newFile.name.split(".")[0],
+					title: newFile?.name.split(".")[0],
 					fileSrcType: "audio/wav",
 					type: type,
 				})
@@ -105,9 +108,50 @@ export default function EditFile({
 				file: newFile,
 				fileName: newFile.name,
 				fileSize: newFile.size,
-				title: newFile.name.split(".")[0],
+				title: newFile?.name.split(".")[0],
 			})
 		}
+	}
+
+	const handleRemove = (type) => {
+		updateFields({
+			file: null,
+			fileName: null,
+			fileSize: null,
+			title: null,
+			switch: false,
+		})
+
+		if (type === "MP3") {
+			if (audioSrcId === tempMP3.audioSrc) {
+				closeDrawer()
+			}
+			setTempMP3({
+				file: null,
+				audioSrc: null,
+				fileName: null,
+				fileSize: null,
+				title: null,
+				fileSrcType: null,
+				type: null,
+			})
+		}
+
+		if (type === "WAV") {
+			if (audioSrcId === tempWAV.audioSrc) {
+				closeDrawer()
+			}
+			setTempWAV({
+				file: null,
+				audioSrc: null,
+				fileName: null,
+				fileSize: null,
+				title: null,
+				fileSrcType: null,
+				type: null,
+			})
+		}
+		setFile(false)
 	}
 
 	const VisuallyHiddenInput = styled("input")({
@@ -135,9 +179,9 @@ export default function EditFile({
 					</span>
 					<div>
 						<p className="font-semibold">
-							{type === "STEM"
-								? "Track Stems"
-								: "Un-tagged audio"}
+							{(type === "MP3" && "Tagged Audio") ||
+								(type === "WAV" && "Un-Tagged Audio") ||
+								(type === "STEM" && "Track Stems")}
 						</p>
 						<p className="text-sm text-text-secondary">
 							{!fileProps ? (
@@ -158,14 +202,32 @@ export default function EditFile({
 					</div>
 				</div>
 
-				<div className="flex flex-col gap-2">
+				<div className="flex gap-2">
+					{file && (
+						<>
+							<Button
+								variant="outlined"
+								size="small"
+								onClick={() => {
+									handleRemove(type)
+								}}
+								sx={{ marginRight: "2rem" }}
+								color="warning"
+							>
+								Remove File
+							</Button>
+						</>
+					)}
+					{type === "STEM" && (
+						<div className="w-[115px] h-[40px]"></div>
+					)}
 					{type !== "STEM" && (
 						<Button
 							component="label"
 							variant="contained"
 							sx={{
-								width: "85px",
-								height: "30px",
+								width: "100px",
+								height: "35px",
 								fontSize: "x-small",
 							}}
 							disabled={!fileProps}
@@ -203,8 +265,8 @@ export default function EditFile({
 							!fileProps ? <CloudUploadIcon /> : <CachedIcon />
 						}
 						sx={{
-							width: "85px",
-							height: "30px",
+							width: "100px",
+							height: "35px",
 							fontSize: "x-small",
 						}}
 					>
@@ -223,5 +285,3 @@ export default function EditFile({
 		</>
 	)
 }
-
-

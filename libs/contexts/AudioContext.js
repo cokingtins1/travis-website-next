@@ -30,6 +30,13 @@ export const AudioContextProvider = ({ children }) => {
 		// setTempWAV(null)
 	}
 
+	const closeDrawer = () => {
+		setAudioSrcId(null)
+		setAudioSrc(null)
+		setDrawerOpen(false)
+		setRef(null)
+		setPlaying(false)
+	}
 
 	const togglePlayPause = (audioSrc, inputId = null, inputFile = null) => {
 		setAudioSrcId(audioSrc)
@@ -76,6 +83,7 @@ export const AudioContextProvider = ({ children }) => {
 		togglePlayPause,
 		getRef,
 		clearAudio,
+		closeDrawer,
 	}
 
 	return (

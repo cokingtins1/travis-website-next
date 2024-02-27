@@ -148,7 +148,7 @@ export default function BasicInfo({
 						<DatePicker
 							name="releaseDate"
 							label="Release Date"
-							value={releaseDate}
+							value={releaseDate || undefined}
 							disablePast
 							onChange={(date) => {
 								updateFields({ releaseDate: date })

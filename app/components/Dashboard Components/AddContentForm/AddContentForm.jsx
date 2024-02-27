@@ -46,12 +46,16 @@ const INITIAL_DATA = {
 	instruments: [],
 	videoLink: "",
 
-	basic: true,
+	basic: false,
 	basicPrice: 30,
-	premium: true,
+	basicPriceId: crypto.randomUUID(),
+	premium: false,
 	premiumPrice: 50,
-	exclusive: true,
+	premiumPriceId: crypto.randomUUID(),
+	exclusive: false,
 	exclusivePrice: 250,
+	exclusivePriceId: crypto.randomUUID(),
+
 	free: false,
 }
 
@@ -62,24 +66,31 @@ export default function AddContentForm() {
 	const [fileLoading, setFileLoading] = useState(false)
 	const [dataLoading, setDataLoading] = useState(false)
 	const [error, setError] = useState([])
+	const [validating, setValidating] = useState(false)
 
-	const {
-		drawerOpen,
-		setRef,
-		audioSrc,
-		audioSrcId,
-		setAudioSrcId,
-		setDrawerOpen,
-		setAudioSrc,
-		file,
-		ref,
-		buttonId,
-		clearAudio,
-	} = useAudio()
+	const { audioSrcId, buttonId, clearAudio } = useAudio()
 
 	useEffect(() => {
 		clearAudio()
 	}, [])
+
+	useEffect(() => {
+		const fileError =
+			"You must upload a .mp3, .wav, or .zip file to publish this product"
+		if (!data.MP3_file && !data.WAV_file && !data.STEM_file) {
+			addError(fileError)
+		} else {
+			removeError(fileError)
+		}
+
+		const imageError =
+			"You must upload a product image to publish this product"
+		if (data.productImage === beatKitImage) {
+			addError(imageError)
+		} else {
+			removeError(imageError)
+		}
+	}, [data.MP3_file, data.WAV_file, data.STEM_file, data.productImage])
 
 	const indices = [
 		{ index: 0, value: "Upload Files" },
@@ -93,10 +104,21 @@ export default function AddContentForm() {
 			return { ...prev, ...fields }
 		})
 	}
+	const addError = (error) => {
+		setError((prevErrors) => {
+			if (!prevErrors.includes(error)) {
+				return [...prevErrors, error]
+			} else {
+				return prevErrors
+			}
+		})
+	}
+	const removeError = (errorToRemove) => {
+		setError((prevErrors) => {
+			if (prevErrors && !prevErrors.includes(errorToRemove))
+				return prevErrors
 
-	function addError(error) {
-		setError((prev) => {
-			return [...prev, error]
+			return prevErrors.filter((error) => error !== errorToRemove)
 		})
 	}
 
@@ -119,6 +141,12 @@ export default function AddContentForm() {
 	async function handleSubmit(e) {
 		e.preventDefault()
 		if (!isLastStep) return next()
+
+		setValidating(true)
+
+		if (error.length > 0) {
+			return
+		} else setValidating(false)
 
 		const formData = createFormData(data)
 
@@ -188,39 +216,54 @@ export default function AddContentForm() {
 							)}
 						</div>
 						<Divider />
-						<div className="flex mt-4 gap-2 self-end items-center ">
-							{error && (
-								<p className="text-text-error">{error}</p>
+						<div
+							className={`flex ${
+								validating ? "justify-between" : "justify-end"
+							} items-end`}
+						>
+							{validating && error && (
+								<ul className="flex flex-col">
+									{error.map((error, index) => (
+										<li
+											key={index}
+											className="list-none text-sm text-text-error pb-2"
+										>
+											{error}
+										</li>
+									))}
+								</ul>
 							)}
-							{(fileLoading || dataLoading) && (
-								<p className="text-text-secondary italic">
-									Uploading files...
-								</p>
-							)}
-							{!isFirstStep && (
+							<div className="flex mt-4 gap-2 ">
+								{(fileLoading || dataLoading) && (
+									<p className="text-text-secondary italic">
+										Uploading files...
+									</p>
+								)}
+								{!isFirstStep && (
+									<Button
+										size="lg"
+										onClick={() => {
+											back()
+											setTabValue(currentStepIndex - 1)
+										}}
+										type="button"
+									>
+										Back
+									</Button>
+								)}
 								<Button
 									size="lg"
-									onClick={() => {
-										back()
-										setTabValue(currentStepIndex - 1)
+									disabled={fileLoading || dataLoading}
+									type={isLastStep ? "submit" : "button"}
+									onClick={(e) => {
+										handleSubmit(e)
+										!isLastStep &&
+											setTabValue(currentStepIndex + 1)
 									}}
-									type="button"
 								>
-									Back
+									{isLastStep ? "Upload" : "Next"}
 								</Button>
-							)}
-							<Button
-								size="lg"
-								disabled={fileLoading || dataLoading}
-								type={isLastStep ? "submit" : "button"}
-								onClick={(e) => {
-									handleSubmit(e)
-									!isLastStep &&
-										setTabValue(currentStepIndex + 1)
-								}}
-							>
-								{isLastStep ? "Upload" : "Next"}
-							</Button>
+							</div>
 						</div>
 					</div>
 				</form>

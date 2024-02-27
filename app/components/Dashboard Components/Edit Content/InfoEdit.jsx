@@ -9,7 +9,6 @@ import EditIcon from "@mui/icons-material/Edit"
 import { styled } from "@mui/material/styles"
 import beatKitImage from "@/public/beatKitImage.jpg"
 import Image from "next/image"
-
 import { useEffect, useState } from "react"
 import TagInput from "../AddContentForm/Upload Components/TagInput"
 import DropDown from "@/app/components/Dashboard Components/AddContentForm/Upload Components/DropDown.json"
@@ -20,6 +19,8 @@ import EditFile from "../AddContentForm/Upload Components/EditFile"
 import { createFormData } from "@/libs/utils"
 import { useAudio } from "@/libs/contexts/AudioContext"
 import AudioDrawer from "../../Audio/AudioDrawer"
+import Divider from "@mui/material/Divider"
+import UploadFile from "../AddContentForm/Upload Components/UploadFile"
 
 export default function InfoEdit({
 	product,
@@ -56,10 +57,13 @@ export default function InfoEdit({
 
 		basic: pricing.basic.isActive || true,
 		basicPrice: pricing.basic.price || 30,
+		basicPriceId: crypto.randomUUID(),
 		premium: pricing.premium.isActive || true,
 		premiumPrice: pricing.premium.price || 150,
+		premiumPriceId: crypto.randomUUID(),
 		exclusive: pricing.exclusive.isActive || true,
 		exclusivePrice: pricing.exclusive.price || 350,
+		exclusivePriceId: crypto.randomUUID(),
 		free: product.free || false,
 	}
 
@@ -68,54 +72,10 @@ export default function InfoEdit({
 	const [dataLoading, setDataLoading] = useState(false)
 	const [imageErr, setImageErr] = useState("")
 
-	const {
-		drawerOpen,
-		setRef,
-		audioSrc,
-		audioSrcId,
-		setAudioSrcId,
-		setDrawerOpen,
-		setAudioSrc,
-		setTempMP3,
-		setTempWAV,
-		file,
-		ref,
-		clearAudio,
-		buttonId,
-	} = useAudio()
+	const { audioSrcId, clearAudio, buttonId } = useAudio()
 
 	useEffect(() => {
 		clearAudio()
-		// if (data.MP3_file) {
-		// 	const blob = new Blob([JSON.stringify(data.MP3_file, null, 2)], {
-		// 		type: "application/json",
-		// 	})
-		// 	const fileUrl = URL.createObjectURL(blob)
-		// 	setTempMP3({
-		// 		file: data.MP3_file,
-		// 		audioSrc: fileUrl,
-		// 		fileName: data.MP3_fileName,
-		// 		fileSize: data.MP3_fileSize,
-		// 		title: data.MP3_fileName,
-		// 		fileSrcType: "audio/mpeg",
-		// 		type: "MP3",
-		// 	})
-		// }
-
-		// if (data.WAV_file) {
-		// 	const blob = new Blob([JSON.stringify(data.WAV_file, null, 2)], {
-		// 		type: "application/json",
-		// 	})
-		// 	const fileUrl = URL.createObjectURL(blob)
-		// 	setTempWAV({
-		// 		file: data.WAV_file,
-		// 		audioSrc: fileUrl,
-		// 		fileSize: data.WAV_fileSize,
-		// 		title: data.WAV_fileName,
-		// 		fileSrcType: "audio/wav",
-		// 		type: "WAV",
-		// 	})
-		// }
 	}, [])
 
 	function abortEditing(e) {
@@ -133,7 +93,6 @@ export default function InfoEdit({
 		e.preventDefault()
 
 		const formData = createFormData(data, "product_id", product.id)
-
 
 		// formData.forEach((value, key) => {
 		// 	console.log(key, value);
@@ -208,11 +167,6 @@ export default function InfoEdit({
 		}
 	}
 
-	const media = {
-		fileLg: "lg:col-span-4",
-		infoLg: "lg:col-span-8",
-	}
-
 	return (
 		<form>
 			<div className="flex justify-end gap-4 pt-4 pr-4">
@@ -239,9 +193,13 @@ export default function InfoEdit({
 					</>
 				)}
 			</div>
-			<div className="max-w-[1200px] grid grid-cols-12 gap-4 p-4">
-				<div className={`col-span-12 ${media.fileLg}`}>
-					<div className="flex justify-center items-center flex-col mb-4">
+			<p className="text-xl font-bold text-center mb-4">Product Files</p>
+			<Divider variant="middle" />
+			<div className={`max-w-[1200px] flex flex-col p-4`}>
+				<div className={`flex flex-col gap-4 lg:flex-row `}>
+					<div
+						className={`flex flex-col items-center justify-center mb-4`}
+					>
 						<div className="relative w-[250px] h-[300px]">
 							<Image
 								alt=""
@@ -282,9 +240,10 @@ export default function InfoEdit({
 							</span>
 						)}
 					</div>
-					<div className="flex flex-col gap-4">
-						<EditFile
+					<div className="flex flex-col flex-1 gap-4">
+						<UploadFile
 							type="MP3"
+							setAudioSrc={true}
 							audioSource={audioSources.MP3}
 							fileProps={data.MP3_file}
 							fileNameProps={data.MP3_fileName}
@@ -294,11 +253,14 @@ export default function InfoEdit({
 									MP3_file: fields.file,
 									MP3_fileName: fields.fileName,
 									MP3_fileSize: fields.fileSize,
+									basic: fields.switch,
+									basicPriceId: fields.id
 								})
 							}
 						/>
 
-						<EditFile
+						<UploadFile
+							setAudioSrc={true}
 							type="WAV"
 							audioSource={audioSources.WAV}
 							fileProps={data.WAV_file}
@@ -309,10 +271,13 @@ export default function InfoEdit({
 									WAV_file: fields.file,
 									WAV_fileName: fields.fileName,
 									WAV_fileSize: fields.fileSize,
+									premium: fields.switch,
+									premiumPriceId: fields.id
 								})
 							}
 						/>
-						<EditFile
+						<UploadFile
+							setAudioSrc={true}
 							type="STEM"
 							fileProps={data.STEM_file}
 							fileNameProps={data.STEM_fileName}
@@ -322,14 +287,29 @@ export default function InfoEdit({
 									STEM_file: fields.file,
 									STEM_fileName: fields.fileName,
 									STEM_fileSize: fields.fileSize,
+									exclusive: fields.switch,
+									exclusivePriceId: fields.id
 								})
 							}
 						/>
 					</div>
 				</div>
-				<div
-					className={`flex flex-col gap-4 col-span-12 ${media.infoLg}`}
-				>
+				<div className="h-[110px]">
+					{audioSrcId && (
+						<AudioDrawer
+							key={audioSrcId}
+							audioSrc={audioSrcId}
+							srcType={"audio/mpeg"}
+							buttonId={buttonId}
+							file={true}
+						/>
+					)}
+				</div>
+				<div className={`flex flex-col gap-4 mt-8`}>
+					<p className="text-xl font-bold text-center">
+						Product Metadata
+					</p>
+					<Divider />
 					<div className="flex items-center">
 						<label
 							htmlFor="title"
@@ -563,33 +543,16 @@ export default function InfoEdit({
 					<div>
 						<div className="flex items-start flex-col gap-4 pl-16">
 							<PricingSwitch
-								width="w-full"
-								disabled={!editing}
-								nameSwitch="exclusive"
-								namePrice="exclusivePrice"
-								defaultChecked={data.exclusive}
-								contractTitle={"Exclusive License"}
-								contractSubtext={"WAV, MP3, STEMS"}
-								value={data.exclusivePrice}
-								onCheckedChange={(newChecked) => {
-									updateFields({
-										exclusive: newChecked,
-									})
-								}}
-								onChange={(newPrice) => {
-									updateFields({
-										exclusivePrice: Number(newPrice),
-									})
-								}}
-							/>
-							<PricingSwitch
+								key={data.basicPriceId}
 								width="w-full"
 								disabled={!editing}
 								nameSwitch="basic"
 								namePrice="basicPrice"
-								defaultChecked={data.basic}
+								defaultChecked={data.MP3_file}
+								file={data.MP3_file}
 								contractTitle={"Basic License"}
 								contractSubtext={"MP3"}
+								type={"MP3"}
 								value={data.basicPrice}
 								onCheckedChange={(newChecked) => {
 									updateFields({
@@ -603,14 +566,17 @@ export default function InfoEdit({
 								}}
 							/>
 							<PricingSwitch
+								key={data.premiumPriceId}
 								width="w-full"
 								disabled={!editing}
 								nameSwitch="premium"
 								namePrice="premiumPrice"
-								defaultChecked={data.premium}
-								contractTitle={"Exclusive License"}
+								defaultChecked={data.WAV_file}
+								file={data.WAV_file}
+								contractTitle={"Premium License"}
 								contractSubtext={"WAV, MP3"}
 								value={data.premiumPrice}
+								type={"WAV"}
 								onCheckedChange={(newChecked) => {
 									updateFields({
 										premium: newChecked,
@@ -619,6 +585,29 @@ export default function InfoEdit({
 								onChange={(newPrice) => {
 									updateFields({
 										premiumPrice: Number(newPrice),
+									})
+								}}
+							/>
+							<PricingSwitch
+								key={data.exclusivePriceId}
+								width="w-full"
+								disabled={!editing}
+								nameSwitch="exclusive"
+								namePrice="exclusivePrice"
+								defaultChecked={data.STEM_file}
+								file={data.STEM_file}
+								contractTitle={"Exclusive License"}
+								contractSubtext={"WAV, MP3, STEMS"}
+								value={data.exclusivePrice}
+								type={"STEM"}
+								onCheckedChange={(newChecked) => {
+									updateFields({
+										exclusive: newChecked,
+									})
+								}}
+								onChange={(newPrice) => {
+									updateFields({
+										exclusivePrice: Number(newPrice),
 									})
 								}}
 							/>
@@ -649,17 +638,6 @@ export default function InfoEdit({
 						</div>
 					</div>
 				</div>
-			</div>
-			<div className="h-[110px]">
-				{audioSrcId && (
-					<AudioDrawer
-						key={audioSrcId}
-						audioSrc={audioSrcId}
-						srcType={"audio/mpeg"}
-						buttonId={buttonId}
-						file={true}
-					/>
-				)}
 			</div>
 		</form>
 	)

@@ -13,16 +13,28 @@ export default function PricingSwitch({
 	onChange,
 	onCheckedChange,
 	nameSwitch,
+	file,
+	type,
 	namePrice,
 	disabled = false,
 	width,
 }) {
 	const [inputValue, setInputValue] = useState(value || "")
-	const [isChecked, setIsChecked] = useState(defaultChecked)
+	const [isChecked, setIsChecked] = useState(!!defaultChecked)
+	const [touched, setTouched] = useState(false)
+	const [error, setError] = useState("")
 
 	useEffect(() => {
 		onChange && onChange(inputValue)
-	}, [inputValue])
+	}, [file])
+
+	useEffect(() => {
+		if (!file) {
+			setError(`You must upload a ${type} file first`)
+		} else {
+			setError("")
+		}
+	}, [file])
 
 	return (
 		<div
@@ -38,6 +50,11 @@ export default function PricingSwitch({
 						value={isChecked}
 						checked={isChecked}
 						onChange={() => {
+							if (!file) {
+								setTouched(true)
+								return
+							}
+							setError("")
 							const newChecked = !isChecked
 							setIsChecked(newChecked)
 							onCheckedChange && onCheckedChange(newChecked)
@@ -50,6 +67,9 @@ export default function PricingSwitch({
 						{contractSubtext}
 					</p>
 				</div>
+				{error && touched && (
+					<p className=" text-sm text-text-error mt-auto">{error}</p>
+				)}
 			</div>
 
 			<div className="flex items-center gap-2">
@@ -58,7 +78,7 @@ export default function PricingSwitch({
 				</InputLabel>
 				<TextField
 					name={namePrice}
-					disabled={disabled}
+					disabled={!isChecked}
 					size="small"
 					type="number"
 					id="outlined-start-adornment"

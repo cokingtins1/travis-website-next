@@ -14,11 +14,15 @@ export default function UploadFile({
 	fileNameProps,
 	fileSizeProps,
 	updateFields,
+	audioSource = null,
+	setAudioSrc = false,
 	type,
 }) {
 	const [error, setError] = useState("")
+	const [file, setFile] = useState(!!fileProps)
 
 	const {
+		audioSrcId,
 		playing,
 		togglePlayPause,
 		tempMP3,
@@ -26,6 +30,7 @@ export default function UploadFile({
 		setTempMP3,
 		setTempWAV,
 		buttonId,
+		closeDrawer,
 	} = useAudio()
 
 	let typeExt
@@ -45,7 +50,36 @@ export default function UploadFile({
 			break
 	}
 
+	useEffect(() => {
+		if (!setAudioSrc || !audioSource) {
+			return
+		}
+
+		if (type === "MP3") {
+			setTempMP3({
+				file: fileProps,
+				audioSrc: audioSource,
+				fileName: fileNameProps,
+				fileSize: fileSizeProps,
+				title: fileNameProps,
+				fileSrcType: "audio/mpeg",
+				type: "MP3",
+			})
+		} else if (type === "WAV") {
+			setTempWAV({
+				file: fileProps,
+				audioSrc: audioSource,
+				fileName: fileNameProps,
+				fileSize: fileSizeProps,
+				title: fileNameProps,
+				fileSrcType: "audio/wav",
+				type: "WAV",
+			})
+		}
+	}, [setAudioSrc])
+
 	function handleChange(e) {
+		if (!e.target.files) return
 		if (e.target.files[0].type !== fileType) {
 			setError(`Please upload files of type ${typeExt}`)
 			return
@@ -79,8 +113,53 @@ export default function UploadFile({
 				fileName: newFile.name,
 				fileSize: newFile.size,
 				title: newFile.name.split(".")[0],
+				switch: true,
+				id: crypto.randomUUID(),
 			})
 		}
+		setFile(true)
+	}
+
+	const handleRemove = (type) => {
+		updateFields({
+			file: null,
+			fileName: null,
+			fileSize: null,
+			title: null,
+			switch: false,
+			id: crypto.randomUUID(),
+		})
+
+		if (type === "MP3") {
+			if (audioSrcId === tempMP3.audioSrc) {
+				closeDrawer()
+			}
+			setTempMP3({
+				file: null,
+				audioSrc: null,
+				fileName: null,
+				fileSize: null,
+				title: null,
+				fileSrcType: null,
+				type: null,
+			})
+		}
+
+		if (type === "WAV") {
+			if (audioSrcId === tempWAV.audioSrc) {
+				closeDrawer()
+			}
+			setTempWAV({
+				file: null,
+				audioSrc: null,
+				fileName: null,
+				fileSize: null,
+				title: null,
+				fileSrcType: null,
+				type: null,
+			})
+		}
+		setFile(false)
 	}
 
 	const VisuallyHiddenInput = styled("input")({
@@ -97,20 +176,20 @@ export default function UploadFile({
 
 	return (
 		<>
-			<div className="flex justify-between items-center rounded-lg border border-border-primary p-2">
-				<div className="flex gap-2">
-					<span className="flex items-center rounded-full border border-border-primary p-2">
+			<div className="h-[82px] flex justify-between items-center rounded-lg border border-border-primary p-2">
+				<div className="flex items-center gap-2">
+					<div className="flex items-center rounded-full border border-border-primary justify-center p-2">
 						{type === "STEM" ? (
 							<FolderIcon sx={{ fontSize: 40 }} />
 						) : (
 							<MusicNoteIcon sx={{ fontSize: 40 }} />
 						)}
-					</span>
-					<div>
+					</div>
+					<div className="w-fit">
 						<p className="font-semibold">
-							{type === "STEM"
-								? "Track Stems"
-								: "Un-tagged audio"}
+							{(type === "MP3" && "Tagged Audio") ||
+								(type === "WAV" && "Un-Tagged Audio") ||
+								(type === "STEM" && "Track Stems")}
 						</p>
 						<p className="text-sm text-text-secondary">
 							{!fileProps ? (
@@ -132,6 +211,27 @@ export default function UploadFile({
 				</div>
 
 				<div className="flex gap-2">
+					{file && (
+						<>
+							<Button
+								variant="outlined"
+								size="small"
+								onClick={() => {
+									handleRemove(type)
+								}}
+								sx={{
+									marginRight: "2rem",
+									whiteSpace: "nowrap",
+								}}
+								color="warning"
+							>
+								Remove File
+							</Button>
+						</>
+					)}
+					{type === "STEM" && (
+						<div className="w-[115px] h-[40px]"></div>
+					)}
 					{type !== "STEM" && (
 						<Button
 							component="label"
