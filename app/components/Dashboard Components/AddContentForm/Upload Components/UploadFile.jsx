@@ -115,6 +115,7 @@ export default function UploadFile({
 				title: newFile.name.split(".")[0],
 				switch: true,
 				id: crypto.randomUUID(),
+				delete: false,
 			})
 		}
 		setFile(true)
@@ -128,6 +129,7 @@ export default function UploadFile({
 			title: null,
 			switch: false,
 			id: crypto.randomUUID(),
+			delete: true,
 		})
 
 		if (type === "MP3") {

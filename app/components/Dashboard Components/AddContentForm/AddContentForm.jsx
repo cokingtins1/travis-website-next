@@ -166,7 +166,6 @@ export default function AddContentForm() {
 			)
 			if (res.ok) {
 				setDataLoading(false)
-				console.log(await res.json())
 			} else {
 				addError("There was an error uploading the product data")
 				setDataLoading(false)

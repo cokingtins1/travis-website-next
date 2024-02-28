@@ -16,8 +16,6 @@ export default async function Page({ params: { id } }) {
 	const imageSrc = await getImageSrc(id)
 	const { filteredPricing } = await getPricingById(id)
 
-	// add url to database and write function to grab it
-
 	const DynamicPricing = dynamic(
 		() =>
 			import(

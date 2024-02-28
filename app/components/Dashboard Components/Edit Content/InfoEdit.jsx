@@ -15,31 +15,36 @@ import DropDown from "@/app/components/Dashboard Components/AddContentForm/Uploa
 import { toast } from "react-toastify"
 import PricingSwitch from "../AddContentForm/Upload Components/PricingSwitch"
 import SubmitModal from "../../UI/SubmitModal"
-import EditFile from "../AddContentForm/Upload Components/EditFile"
 import { createFormData } from "@/libs/utils"
 import { useAudio } from "@/libs/contexts/AudioContext"
 import AudioDrawer from "../../Audio/AudioDrawer"
 import Divider from "@mui/material/Divider"
 import UploadFile from "../AddContentForm/Upload Components/UploadFile"
+import { useRouter } from "next/navigation"
+import { revalidatePath } from "next/cache"
 
 export default function InfoEdit({
 	product,
 	productFiles,
 	pricing,
 	audioSources,
-}) {
+}) 
+{
 	const INITIAL_DATA = {
 		MP3_file: productFiles.MP3_file || null,
 		MP3_fileName: product.title || null,
 		MP3_fileSize: productFiles.MP3_file?.metadata?.size || null,
+		MP3_update: !!productFiles.MP3_file,
 
 		WAV_file: productFiles.WAV_file || null,
 		WAV_fileName: product.title || null,
 		WAV_fileSize: productFiles.WAV_file?.metadata?.size || null,
+		WAV_update: !!productFiles.WAV_file,
 
 		STEM_file: productFiles.STEM_file || null,
 		STEM_fileName: product.title || null,
 		STEM_fileSize: productFiles.STEM_file?.metadata?.size || null,
+		STEM_update: !!productFiles.STEM_file,
 
 		productImage: productFiles.productImage,
 		productImageSrc: productFiles.productImage,
@@ -55,15 +60,21 @@ export default function InfoEdit({
 		keys: product.keys || "",
 		bpm: product.bpm || "",
 
-		basic: pricing.basic.isActive || true,
-		basicPrice: pricing.basic.price || 30,
+		basic: pricing.basic?.isActive || false,
+		basicPrice: pricing.basic?.price || 30,
 		basicPriceId: crypto.randomUUID(),
-		premium: pricing.premium.isActive || true,
-		premiumPrice: pricing.premium.price || 150,
+		basicFileDelete: false,
+
+		premium: pricing.premium?.isActive || false,
+		premiumPrice: pricing.premium?.price || 150,
 		premiumPriceId: crypto.randomUUID(),
-		exclusive: pricing.exclusive.isActive || true,
-		exclusivePrice: pricing.exclusive.price || 350,
+		premiumFileDelete: false,
+
+		exclusive: pricing.exclusive?.isActive || false,
+		exclusivePrice: pricing.exclusive?.price || 350,
 		exclusivePriceId: crypto.randomUUID(),
+		exclusiveFileDelete: false,
+
 		free: product.free || false,
 	}
 
@@ -71,6 +82,7 @@ export default function InfoEdit({
 	const [editing, setEditing] = useState(false)
 	const [dataLoading, setDataLoading] = useState(false)
 	const [imageErr, setImageErr] = useState("")
+	const router = useRouter()
 
 	const { audioSrcId, clearAudio, buttonId } = useAudio()
 
@@ -84,44 +96,67 @@ export default function InfoEdit({
 		setData(INITIAL_DATA)
 	}
 
-	async function deleteProduct(e) {
-		e.preventDefault()
-		console.log("deleting product")
+	async function deleteProduct() {
+		try {
+			setDataLoading(true)
+			const res = await toast.promise(
+				fetch("/api/deleteProduct", {
+					method: "DELETE",
+					body: JSON.stringify(product.id),
+				}),
+				{
+					pending: "Deleting product",
+					success: "Product deleted successfully",
+					error: "Error deleting product",
+				}
+			)
+
+			if (res.ok) {
+				setDataLoading(false)
+				setEditing(false)
+				router.push("/dashboard")
+			} else {
+				setDataLoading(false)
+				throw new Error("There was an error updating the files")
+			}
+		} catch (error) {
+			console.log(error)
+		}
+		revalidatePath("/")
 	}
 
-	async function handleSubmit(e) {
-		e.preventDefault()
-
+	async function handleSubmit() {
 		const formData = createFormData(data, "product_id", product.id)
 
-		// formData.forEach((value, key) => {
-		// 	console.log(key, value);
-		//   });
+		for (var pair of formData.entries()) {
+			console.log(pair[0] + ", " + pair[1])
+		}
 
-		// try {
-		// 	setDataLoading(true)
-		// 	const res = await toast.promise(
-		// 		fetch("/api/updateData", {
-		// 			method: "PUT",
-		// 			body: formData,
-		// 		}),
-		// 		{
-		// 			pending: "Upadating fields",
-		// 			success: "Fields updated successfully",
-		// 			error: "Error updating filds",
-		// 		}
-		// 	)
+		try {
+			setDataLoading(true)
+			const res = await toast.promise(
+				fetch("/api/updateData", {
+					method: "PUT",
+					body: formData,
+				}),
+				{
+					pending: "Upadating fields",
+					success: "Fields updated successfully",
+					error: "Error updating filds",
+				}
+			)
 
-		// 	if (res.ok) {
-		// 		setDataLoading(false)
-		// 		setEditing(false)
-		// 	} else {
-		// 		setDataLoading(false)
-		// 		throw new Error("There was an error updating the files")
-		// 	}
-		// } catch (error) {
-		// 	console.log(error)
-		// }
+			if (res.ok) {
+				setDataLoading(false)
+				setEditing(false)
+			} else {
+				setDataLoading(false)
+				throw new Error("There was an error updating the files")
+			}
+		} catch (error) {
+			console.log(error)
+		}
+		revalidatePath("/")
 	}
 
 	const VisuallyHiddenInput = styled("input")({
@@ -186,10 +221,22 @@ export default function InfoEdit({
 					</Button>
 				) : (
 					<>
-						<Button color="warning" onClick={abortEditing}>
+						<Button
+							color="warning"
+							callback={(e) => {
+								e.preventDefault()
+								abortEditing()
+							}}
+						>
 							Discard Changes
 						</Button>
-						<SubmitModal variant="update" callback={handleSubmit} />
+						<SubmitModal
+							variant="update"
+							callback={(e) => {
+								e.preventDefault()
+								handleSubmit()
+							}}
+						/>
 					</>
 				)}
 			</div>
@@ -254,7 +301,8 @@ export default function InfoEdit({
 									MP3_fileName: fields.fileName,
 									MP3_fileSize: fields.fileSize,
 									basic: fields.switch,
-									basicPriceId: fields.id
+									basicPriceId: fields.id,
+									basicFileDelete: fields.delete,
 								})
 							}
 						/>
@@ -272,7 +320,8 @@ export default function InfoEdit({
 									WAV_fileName: fields.fileName,
 									WAV_fileSize: fields.fileSize,
 									premium: fields.switch,
-									premiumPriceId: fields.id
+									premiumPriceId: fields.id,
+									premiumFileDelete: fields.delete,
 								})
 							}
 						/>
@@ -288,7 +337,8 @@ export default function InfoEdit({
 									STEM_fileName: fields.fileName,
 									STEM_fileSize: fields.fileSize,
 									exclusive: fields.switch,
-									exclusivePriceId: fields.id
+									exclusivePriceId: fields.id,
+									exclusiveFileDelete: fields.delete,
 								})
 							}
 						/>

@@ -1,3 +1,5 @@
+//app\dashboard\[id]\page.jsx
+
 import { useSession } from "@/libs/supabase/useSession"
 import { notFound, redirect } from "next/navigation"
 import {
@@ -15,9 +17,13 @@ export default async function Page({ params: { id } }) {
 		redirect("/login")
 	}
 
-	const { pricingId } = await getProductFilePathById(id)
+	const productFilePath = await getProductFilePathById(id)
+	const pricingId = productFilePath ? productFilePath.pricingId : null
+
 	const productImage = await getImageSrc(id)
 	const pricing = await getPricingById(id)
+
+	console.log(pricing)
 
 	if (!pricingId) {
 		notFound()

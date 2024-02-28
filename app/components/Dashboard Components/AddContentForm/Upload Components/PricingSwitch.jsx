@@ -25,10 +25,6 @@ export default function PricingSwitch({
 	const [error, setError] = useState("")
 
 	useEffect(() => {
-		onChange && onChange(inputValue)
-	}, [file])
-
-	useEffect(() => {
 		if (!file) {
 			setError(`You must upload a ${type} file first`)
 		} else {
@@ -88,9 +84,11 @@ export default function PricingSwitch({
 							<InputAdornment position="start">$</InputAdornment>
 						),
 					}}
+					
 					value={inputValue}
 					onChange={(e) => {
 						setInputValue(e.target.value)
+						onChange && onChange(e.target.value)
 					}}
 				/>
 			</div>

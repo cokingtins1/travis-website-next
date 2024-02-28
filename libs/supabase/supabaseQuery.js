@@ -44,6 +44,7 @@ export async function getProductFilePathById(id) {
 		if (error) {
 			console.error("Error:", error)
 		} else {
+			
 			return { pricingId: url[0].file_ext, url_file: url }
 		}
 	} catch (error) {
@@ -108,7 +109,7 @@ export async function getAudioSrcById(product_id) {
 			const storeSrcType = srcType_MP3 || srcType_MP3
 
 			return {
-				storeSrc,
+				storeSrc, //defaults to the MP3 file, but will return the WAV file
 				storeSrcType,
 				audioSrc_MP3,
 				srcType_MP3,

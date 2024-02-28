@@ -1,18 +1,17 @@
 import { NextResponse } from "next/server"
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
-import { cookies } from "next/headers"
 import dayjs from "dayjs"
-import { cache } from "react"
-import { returnArray } from '@/libs/utils'
+import { returnArray } from "@/libs/utils"
+import { revalidatePath } from "next/cache"
+import { useSession } from "@/libs/supabase/useSession"
 
 export async function POST(req) {
-	const createServerClient = cache(() => {
-		const cookieStore = cookies()
-		return createServerComponentClient({ cookies: () => cookieStore })
-	})
-	const supabase = createServerClient()
+	const { supabase } = await useSession()
 
 	const formData = await req.formData()
+
+	console.log(formData.get("basic"))
+	console.log(formData.get("premium"))
+	console.log(formData.get("exclusive"))
 
 	async function uploadFile(path, file) {
 		try {
@@ -61,7 +60,7 @@ export async function POST(req) {
 				instruments: returnArray("instruments", formData),
 				keys: formData.get("keys"),
 				bpm: formData.get("bpm"),
-				video_link: formData.get('videoLink'),
+				video_link: formData.get("videoLink"),
 
 				free: formData.get("free"),
 			})
@@ -148,6 +147,7 @@ export async function POST(req) {
 			)
 		}
 	}
+	revalidatePath("/")
 
 	return NextResponse.json({ message: "Missing form data" }, { status: 400 })
 }
