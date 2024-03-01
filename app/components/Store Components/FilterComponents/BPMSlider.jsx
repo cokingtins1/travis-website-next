@@ -32,10 +32,11 @@ export default function BPMSlider() {
 				href={
 					pathname +
 					"?" +
-					createQueryString('bpm',`${value[0]},${value[1]}`)
+					createQueryString("bpm", `${value[0]},${value[1]}`)
 				}
 			>
 				<Slider
+					sx={{ color: "#1976D2" }}
 					value={value}
 					max={200}
 					onChange={handleChange}

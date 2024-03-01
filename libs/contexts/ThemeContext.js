@@ -5,15 +5,10 @@ import { ThemeProvider as MuiThemeProvider } from "@mui/material/styles"
 
 const theme = createTheme({
 	components: {
-		MuiTextField: {
-			styleOverrides: {
-				root: {},
-			},
-		},
-		MuiDivider: {
+		MuiList: {
 			styleOverrides: {
 				root: {
-					// backgroundColor:'#FF0000'
+					padding: 0,
 				},
 			},
 		},

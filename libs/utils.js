@@ -62,33 +62,3 @@ export function formatDurationDisplay(duration) {
 
 	return formatted
 }
-
-// function addError(error) {
-// 	setError((prevErrors) => {
-// 		if (!prevErrors.includes(error)) {
-// 			return [...prevErrors, error]
-// 		} else return [...prevErrors, error]
-// 	})
-// }
-
-// const removeError = (errorToRemove) => {
-// 	setError((prevErrors) => {
-// 		if (!prevErrors || !prevErrors.includes(error)) return prevErrors
-// 		return prevErrors.filter((error) => error !== errorToRemove)
-// 	})
-// }
-
-// if (!data.MP3_file && !data.WAV_file && !data.STEM_file) {
-// 	const error = "You must upload a file to publish this product"
-// 	addError(error)
-// } else {
-// 	removeError(error)
-// }
-
-// if (!data.productImage) {
-// 	const error =
-// 		"You must upload a product image to publish this product"
-// 	addError(error)
-// } else {
-// 	removeError(error)
-// }

@@ -1,6 +1,6 @@
 "use client"
 
-import getPosts from "@/libs/getPosts"
+// import getPosts from "@/libs/getPosts"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import SearchBar from "./SearchBar"
 import SearchResultList from "./SearchResultList"
@@ -39,15 +39,15 @@ export default function SearchComponent() {
 
 
 	useEffect(() => {
-		const fetchPost = async () => {
-			const json = await getPosts()
-			setPosts(json)
-		}
-		fetchPost()
-		// getPosts().then((json) => {
+		// const fetchPost = async () => {
+		// 	const json = await getPosts()
 		// 	setPosts(json)
-		// 	setSearchResults(json)
-		// })
+		// }
+		// fetchPost()
+		// // getPosts().then((json) => {
+		// // 	setPosts(json)
+		// // 	setSearchResults(json)
+		// // })
 	}, [])
 
 	return (

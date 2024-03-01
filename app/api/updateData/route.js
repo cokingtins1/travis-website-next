@@ -1,4 +1,4 @@
-import { getProductFilePathById } from "@/libs/supabase/supabaseQuery"
+import { getPricingIdById } from "@/libs/supabase/supabaseQuery"
 import { useSession } from "@/libs/supabase/useSession"
 import { returnArray } from "@/libs/utils"
 import { NextResponse } from "next/server"
@@ -9,7 +9,7 @@ export async function PUT(req) {
 	const { supabase } = await useSession()
 	const formData = await req.formData()
 	const product_id = await formData.get("product_id")
-	const { pricingId } = await getProductFilePathById(product_id)
+	const pricingId = await getPricingIdById(product_id)
 	const [MP3_file_id, WAV_file_id, STEM_file_id] = pricingId
 
 	const file_url_mp3 = `${product_id}/${MP3_file_id}`
@@ -61,6 +61,7 @@ export async function PUT(req) {
 	}
 
 	if (formData) {
+
 		try {
 			await supabase
 				.from("products")
@@ -73,12 +74,19 @@ export async function PUT(req) {
 					moods: returnArray("moods", formData),
 					instruments: returnArray("instruments", formData),
 					keys: formData.get("keys"),
-					bpm: formData.get("bpm"),
+					bpm: formData.get("bpm") === "" ? 0 : formData.get("bpm"),
 					video_link: formData.get("videoLink"),
 
 					free: formData.get("free"),
 				})
 				.eq("id", product_id)
+				.then((res) => {
+					if (res.error) {
+						console.log(res.error.message)
+					} else {
+						console.log("update successfull")
+					}
+				})
 		} catch (error) {
 			console.log(error)
 		}
@@ -135,7 +143,7 @@ export async function PUT(req) {
 					} else if (value.type.split("/")[0] == "image") {
 						const imagePath = `${product_id}/productImage/${value.name}`
 						await modifyStorage(imagePath, value, true)
-					} else if (value.name.endsWith(".mp3ss")) {
+					} else if (value.name.endsWith(".mp3")) {
 						await modifyStorage(
 							file_url_mp3,
 							value,
@@ -150,7 +158,7 @@ export async function PUT(req) {
 							formData.get("WAV_update"),
 							formData.get("premiumFileDelete")
 						)
-					} else if (value.name.endsWith(".zipss")) {
+					} else if (value.name.endsWith(".zip")) {
 						await modifyStorage(
 							file_url_zip,
 							value,

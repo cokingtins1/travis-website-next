@@ -5,9 +5,12 @@ import IconButton from "@mui/material/IconButton"
 import Divider from "@mui/material/Divider"
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder"
 import IosShareIcon from "@mui/icons-material/IosShare"
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart"
+import { getLikes } from "@/libs/supabase/supabaseQuery"
+import LikeButton from "../../UI/LikeButton"
 
-export default function ProductMeta({ product, imageSrc }) {
+export default async function ProductMeta({ product, imageSrc }) {
+	const { likes } = await getLikes(product.id)
+
 	return (
 		<>
 			<div className="bg-bg-elevated rounded-xl p-4">
@@ -18,10 +21,6 @@ export default function ProductMeta({ product, imageSrc }) {
 							alt="product image"
 							fill={true}
 							style={{ objectFit: "cover" }}
-							// style={{
-							// 	width: "100%",
-							// 	height: "auto",
-							// }}
 							sizes="(max-width: 430px), 250px"
 						/>
 					</div>
@@ -29,10 +28,12 @@ export default function ProductMeta({ product, imageSrc }) {
 				</div>
 
 				<div className={styles.metaInfo}>
-					<div className={styles.iconCont}>
-						<IconButton>
-							<FavoriteBorderIcon />
-						</IconButton>
+					<div className='flex justify-center gap-1 mt-1 mb-2'>
+						<LikeButton
+							productId={product.id}
+							likes={likes}
+							variant="bottom"
+						/>
 						<IconButton>
 							<IosShareIcon />
 						</IconButton>

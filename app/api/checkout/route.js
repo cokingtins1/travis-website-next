@@ -15,7 +15,13 @@ export async function POST(req) {
 			product_data: {
 				name: item.product_name,
 				metadata: {
+					productId: item.product_id,
+					pricingId: item.pricing_id,
+					productName: item.product_name,
 					filePath: `${item.product_id}/${item.pricing_id}`,
+					type: item.type,
+					price: item.price,
+					imageSrc: item.imageSrc,
 				},
 			},
 			unit_amount: item.price * 100,

@@ -4,8 +4,11 @@ import { headers } from "next/headers"
 import { cookies } from "next/headers"
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
 import { cache } from "react"
+import dayjs from "dayjs"
 
+import EmailBody from "@/app/components/Email Components/EmailBody"
 import sgMail from "@sendgrid/mail"
+import { getDownloadUrls, insertOrderData } from "@/libs/supabase/supabaseQuery"
 
 export async function POST(req) {
 	const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
@@ -23,57 +26,100 @@ export async function POST(req) {
 		return NextResponse.json({ status: 400 }, { message: error })
 	}
 
-	function getProductPaths(lineItems) {
-		let productPaths = []
+	function logOrderInfo(lineItems) {
+		const productsSold = []
 		const lineItemsData = lineItems.data
-		lineItemsData.forEach((lineItem) => {
-			productPaths.push(lineItem.price.product.metadata.filePath)
+		lineItemsData.forEach((lineItem, index) => {
+			const {
+				productId,
+				pricingId,
+				productName,
+				type,
+				price,
+				filePath,
+				imageSrc,
+			} = lineItem.price.product.metadata
+
+			const product = {
+				[`Product ${index + 1}`]: {
+					productId,
+					pricingId,
+					productName,
+					type,
+					price,
+					filePath,
+					imageSrc,
+				},
+			}
+
+			productsSold.push(product)
 		})
 
-		return productPaths
+		return productsSold
 	}
 
 	async function fulfillOrder(lineItems, sessionData) {
 		if (!lineItems || !sessionData) return
 
-		const productPaths = getProductPaths(lineItems)
+		const productsSold = logOrderInfo(lineItems)
 
-		//SUPABASE
-		const createServerClient = cache(() => {
-			const cookieStore = cookies()
-			return createServerComponentClient({ cookies: () => cookieStore })
-		})
-		const supabase = createServerClient()
+		const orderDetails = {
+			stripe_order_id: sessionData.id,
+			created_at: new Date(sessionData.created * 1000).toISOString(),
+			created_at_long: dayjs
+				.unix(sessionData.created)
+				.format("dddd, MMMM D, YYYY h:mm A"),
+			order_total: sessionData.amount_total / 100,
+			customer_name: sessionData.customer_details.name,
+			payment_method: sessionData.payment_method_types,
+			customer_email: sessionData.customer_details.email,
+			products_sold: JSON.stringify(productsSold),
+			productsSoldArray: productsSold
+		}
 
-		await supabase.from("orders").insert({
+		const supabaseData = {
 			stripe_order_id: sessionData.id,
 			created_at: new Date(sessionData.created * 1000).toISOString(),
 			order_total: sessionData.amount_total / 100,
 			customer_name: sessionData.customer_details.name,
 			payment_method: sessionData.payment_method_types,
 			customer_email: sessionData.customer_details.email,
-			products_sold: productPaths,
-		})
+			products_sold: [JSON.stringify(productsSold)],
+		}
 
+		//SUPABASE
+		// await insertOrderData(supabaseData)
+		const downloadUrls = await getDownloadUrls(productsSold)
+
+		// console.log(productsSold)
 		// EMAIL
 
 		const customer_email = sessionData.customer_details.email
-		// if (customer_email) {
-		// 	sgMail.setApiKey(process.env.SENDGRID_API_KEY)
-		// 	const msg = {
-		// 		to: customer_email,
-		// 		from: "cokingtins1@gmail.com",
-		// 		subject: "Payment Successful",
-		// 		text: "Thank you for your purchase!",
-		// 		html: "<p>Thank you for your purchase!</p>",
-		// 	}
-		// 	try {
-		// 		await sgMail.send(msg)
-		// 		console.log("email sent")
-		// 	} catch (error) {
-		// 		console.log(error)
-		// 	}
-		// }
+		if (customer_email) {
+			sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+			const msg = {
+				to: customer_email,
+				from: "cokingtins1@gmail.com",
+				subject: "Beats Download",
+				html: "<p style=\"color:#FF0000\">Hello World<p>",
+				personalizations: [
+					{
+						dynamic_template_data: {
+							order_id: orderDetails.stripe_order_id,
+							order_date: orderDetails.created_at_long,
+							order_total: orderDetails.order_total,
+							url: downloadUrls[0],
+						},
+					},
+				],
+			}
+			try {
+				await sgMail.send(msg)
+				console.log("email sent")
+			} catch (error) {
+				console.log(error)
+			}
+		}
 	}
 
 	switch (event.type) {

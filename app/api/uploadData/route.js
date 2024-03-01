@@ -35,14 +35,10 @@ export async function POST(req) {
 			const pricing_id_wav = crypto.randomUUID()
 			const pricing_id_zip = crypto.randomUUID()
 
-			const product_file_id_mp3 = crypto.randomUUID()
-			const product_file_id_wav = crypto.randomUUID()
-			const product_file_id_zip = crypto.randomUUID()
-
 			// Storage Foreign Keys:
-			const file_url_mp3 = `${product_id}/${product_file_id_mp3}`
-			const file_url_wav = `${product_id}/${product_file_id_wav}`
-			const file_url_zip = `${product_id}/${product_file_id_zip}`
+			const file_url_mp3 = `${product_id}/${pricing_id_mp3}`
+			const file_url_wav = `${product_id}/${pricing_id_wav}`
+			const file_url_zip = `${product_id}/${pricing_id_zip}`
 
 			await supabase.from("products").insert({
 				id: product_id,
@@ -90,7 +86,6 @@ export async function POST(req) {
 			})
 
 			await supabase.from("product_files").insert({
-				product_file_id: product_file_id_mp3,
 				product_id: product_id,
 				pricing_id: pricing_id_mp3,
 				file_extension: ".mp3",
@@ -98,7 +93,6 @@ export async function POST(req) {
 			})
 
 			await supabase.from("product_files").insert({
-				product_file_id: product_file_id_wav,
 				product_id: product_id,
 				pricing_id: pricing_id_wav,
 				file_extension: ".wav",
@@ -106,11 +100,16 @@ export async function POST(req) {
 			})
 
 			await supabase.from("product_files").insert({
-				product_file_id: product_file_id_zip,
 				product_id: product_id,
 				pricing_id: pricing_id_zip,
 				file_extension: ".zip",
 				file_url: file_url_zip,
+			})
+
+			await supabase.from("product_likes").insert({
+				product_id: product_id,
+				likes: 0,
+				liked_by: null,
 			})
 
 			for (const e of formData) {

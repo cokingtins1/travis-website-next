@@ -2,6 +2,7 @@
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
 import { cookies } from "next/headers"
 import { cache } from "react"
+import JSZip from "jszip"
 
 import supabaseClient from "@/libs/supabase/config/supabaseClient"
 
@@ -10,6 +11,39 @@ export const createServerClient = cache(() => {
 	return createServerComponentClient({ cookies: () => cookieStore })
 })
 
+export async function getLikes(id) {
+	try {
+		const { data } = await supabaseClient
+			.from("product_likes")
+			.select("likes")
+			.match({ product_id: id })
+			.single()
+		return data
+	} catch (error) {
+		console.log(error)
+	}
+}
+
+export async function addLike(id) {
+	const { likes } = await getLikes(id)
+
+	try {
+		const addLike = likes + 1
+
+		await supabaseClient
+			.from("product_likes")
+			.update({ likes: addLike })
+			.match({ product_id: id })
+			.then((res) => {
+				if (res.error) {
+					console.log(res.error.message)
+				}
+			})
+	} catch (error) {
+		console.log(error)
+	}
+}
+
 export async function getAllProductData() {
 	const { data: products } = await supabaseClient.from("products").select()
 
@@ -17,18 +51,24 @@ export async function getAllProductData() {
 }
 
 export async function getProductById(id) {
-	const { data: product } = await supabaseClient
-		.from("products")
-		.select()
-		.match({ id })
-		.single()
+	try {
+		const { data: product } = await supabaseClient
+			.from("products")
+			.select()
+			.match({ id })
+			.single()
 
-	return product
+		if (product) {
+			return product
+		}
+	} catch (error) {
+		console.log(error)
+	}
 }
 
 // File Getting Functions:
 
-export async function getProductFilePathById(id) {
+export async function getPricingIdById(id) {
 	// path to file is product_id/pricing_id
 	// will have product_id from params ->
 
@@ -44,80 +84,127 @@ export async function getProductFilePathById(id) {
 		if (error) {
 			console.error("Error:", error)
 		} else {
-			
-			return { pricingId: url[0].file_ext, url_file: url }
+			return url[0].file_ext
 		}
 	} catch (error) {
 		console.log(error)
 	}
 }
 
+export async function insertOrderData(data) {
+	const supabase = createServerClient()
+
+	await supabase
+		.from("orders")
+		.insert(data)
+		.then((res) => {
+			if (res.error) {
+				console.log(res.error.message)
+			}
+		})
+}
+
+export async function getDownloadUrls(productsSold) {
+	const supabase = createServerClient()
+
+	const filePaths = productsSold.map(
+		(product) => Object.values(product)[0].filePath
+	)
+
+	const processFilePaths = async (filePaths) => {
+		const expiresIn = 60 * 60 * 24 // 1 day
+		const result = []
+
+		for (const path of filePaths) {
+			console.log("path:", path)
+			const { data } = await supabase.storage
+				.from("all_products")
+				.createSignedUrl(path, expiresIn, { download: true })
+			console.log("data:", data)
+			result.push(data)
+		}
+		return result
+	}
+
+	const downloadUrls = await processFilePaths(filePaths)
+
+	return downloadUrls
+}
+
 export async function getAudioSrcById(product_id) {
 	const supabase = createServerClient()
 
-	const { data } = await supabase.storage
-		.from(`all_products`)
-		.list(`${product_id}`, {
-			offset: 0,
-		})
+	try {
+		const { data, error } = await supabase.storage
+			.from(`all_products`)
+			.list(`${product_id}`, {
+				offset: 0,
+			})
 
-	if (data) {
-		const audioFiles = data.filter(
-			(item) =>
-				item?.metadata?.mimetype === "audio/mpeg" ||
-				item?.metadata?.mimetype === "audio/wav" ||
-				item?.metadata?.mimetype === "application/x-zip-compressed"
-		)
+		if (data) {
+			const audioFiles = data.filter(
+				(item) =>
+					item?.metadata?.mimetype === "audio/mpeg" ||
+					item?.metadata?.mimetype === "audio/wav" ||
+					item?.metadata?.mimetype === "application/x-zip-compressed"
+			)
 
-		let audioFile_MP3 = null
-		let audioFile_WAV = null
-		let audioFile_STEM = null
+			let audioFile_MP3 = null
+			let audioFile_WAV = null
+			let audioFile_STEM = null
 
-		audioFiles.forEach((audioFile) => {
-			if (audioFile?.metadata?.mimetype === "audio/mpeg") {
-				audioFile_MP3 = audioFile
-			} else if (audioFile?.metadata?.mimetype === "audio/wav") {
-				audioFile_WAV = audioFile
-			} else if (
-				audioFile?.metadata?.mimetype === "application/x-zip-compressed"
-			) {
-				audioFile_STEM = audioFile
+			audioFiles.forEach((audioFile) => {
+				if (audioFile?.metadata?.mimetype === "audio/mpeg") {
+					audioFile_MP3 = audioFile
+				} else if (audioFile?.metadata?.mimetype === "audio/wav") {
+					audioFile_WAV = audioFile
+				} else if (
+					audioFile?.metadata?.mimetype ===
+					"application/x-zip-compressed"
+				) {
+					audioFile_STEM = audioFile
+				}
+			})
+
+			if (audioFile_MP3 || audioFile_WAV || audioFile_STEM) {
+				const productFileURL =
+					"https://njowjcfiaxbnflrcwcep.supabase.co/storage/v1/object/public/all_products"
+
+				const audioSrc_MP3 =
+					audioFile_MP3 &&
+					`${productFileURL}/${product_id}/${audioFile_MP3.name}`
+				const audioSrc_WAV =
+					audioFile_WAV &&
+					`${productFileURL}/${product_id}/${audioFile_WAV.name}`
+
+				const audioSrc_STEM =
+					audioFile_STEM &&
+					`${productFileURL}/${product_id}/${audioFile_STEM.name}`
+
+				// Send the store the MP3 src by default
+				const srcType_MP3 = audioFile_MP3?.metadata?.mimetype
+				const srcType_WAV = audioFile_WAV?.metadata?.mimetype
+				const srcType_STEM = audioFile_WAV?.metadata?.mimetype
+
+				const storeSrc = audioSrc_MP3 || audioSrc_WAV
+				const storeSrcType = srcType_MP3 || srcType_WAV
+
+				return {
+					storeSrc,
+					storeSrcType,
+					audioSrc_MP3,
+					srcType_MP3,
+					audioSrc_WAV,
+					srcType_WAV,
+					audioSrc_STEM,
+				}
 			}
-		})
-
-		if (audioFile_MP3 || audioFile_WAV || audioFile_STEM) {
-			const productFileURL =
-				"https://njowjcfiaxbnflrcwcep.supabase.co/storage/v1/object/public/all_products"
-
-			const audioSrc_MP3 =
-				audioFile_MP3 &&
-				`${productFileURL}/${product_id}/${audioFile_MP3.name}`
-			const audioSrc_WAV =
-				audioFile_WAV &&
-				`${productFileURL}/${product_id}/${audioFile_WAV.name}`
-
-			const audioSrc_STEM =
-				audioFile_STEM &&
-				`${productFileURL}/${product_id}/${audioFile_STEM.name}`
-
-			// Send the store the MP3 src by default
-			const srcType_MP3 = audioFile_MP3?.metadata?.mimetype
-			const srcType_WAV = audioFile_WAV?.metadata?.mimetype
-			const srcType_STEM = audioFile_WAV?.metadata?.mimetype
-
-			const storeSrc = audioSrc_MP3 || audioSrc_WAV
-			const storeSrcType = srcType_MP3 || srcType_MP3
-
-			return {
-				storeSrc, //defaults to the MP3 file, but will return the WAV file
-				storeSrcType,
-				audioSrc_MP3,
-				srcType_MP3,
-				audioSrc_WAV,
-				srcType_WAV,
-				audioSrc_STEM,
-			}
+			return
+		} else {
+			console.log(error)
 		}
+	} catch (error) {
+		console.log(error)
 	}
 }
 
@@ -129,6 +216,12 @@ export async function getPricingById(id) {
 				p_product_id: id,
 			}
 		)
+
+		const { data: free } = await supabaseClient
+			.from("products")
+			.select("free")
+			.match({ id })
+			.single()
 
 		if (error) {
 			console.error("Error:", error)
@@ -185,6 +278,7 @@ export async function getPricingById(id) {
 				pricing: sortedArray,
 				pricingShort: pricingShort,
 				filteredPricing: filteredArray,
+				free: free.free,
 			}
 		}
 
@@ -193,6 +287,22 @@ export async function getPricingById(id) {
 		console.error("Unexpected error:", error.message)
 		return [] // Return an empty array in case of an error
 	}
+}
+
+export async function getDownloadableImage(product_id){
+	const supabase = createServerClient()
+	const productFileURL =
+		"https://njowjcfiaxbnflrcwcep.supabase.co/storage/v1/object/public/all_products"
+
+	const { data } = await supabase.storage
+		.from(`all_products`)
+		.download(`${product_id}/productImage`, {
+			transform: {
+				width: 100,
+				height:100,
+				quality: 80
+			}
+		})
 }
 
 export async function getImageSrc(product_id) {

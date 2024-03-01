@@ -24,20 +24,21 @@ export default function SubmitModal({ variant, callback }) {
 
 	let btnDisplay
 	let modalHeader
-  let modalText
-  let color
+	let modalText
+	let color
 	switch (variant) {
 		case "update":
-      color = 'success'
+			color = "success"
 			btnDisplay = "submit changes"
 			modalHeader = "Update fields"
-      modalText = 'Are you sure you want to submit changes?'
+			modalText = "Are you sure you want to submit changes?"
 			break
 		case "delete":
-      color = 'error'
+			color = "error"
 			btnDisplay = "delete product"
 			modalHeader = "Delete Product"
-      modalText = 'Are you sure you want to delete this product? This action cannot be undone.'
+			modalText =
+				"Are you sure you want to delete this product? This action cannot be undone."
 			break
 		default:
 			btnDisplay = "submit"
@@ -75,7 +76,6 @@ export default function SubmitModal({ variant, callback }) {
 						<Button
 							type="submit"
 							onClick={(e) => {
-								e.preventDefault()
 								callback(e)
 								setOpen(false)
 							}}

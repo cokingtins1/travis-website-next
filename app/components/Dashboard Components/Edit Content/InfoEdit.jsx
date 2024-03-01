@@ -28,8 +28,7 @@ export default function InfoEdit({
 	productFiles,
 	pricing,
 	audioSources,
-}) 
-{
+}) {
 	const INITIAL_DATA = {
 		MP3_file: productFiles.MP3_file || null,
 		MP3_fileName: product.title || null,
@@ -58,7 +57,7 @@ export default function InfoEdit({
 		instruments: product.instruments || [],
 		videoLink: product.video_link || "",
 		keys: product.keys || "",
-		bpm: product.bpm || "",
+		bpm: product.bpm,
 
 		basic: pricing.basic?.isActive || false,
 		basicPrice: pricing.basic?.price || 30,
@@ -91,7 +90,6 @@ export default function InfoEdit({
 	}, [])
 
 	function abortEditing(e) {
-		e.preventDefault()
 		setEditing(!editing)
 		setData(INITIAL_DATA)
 	}
@@ -125,12 +123,10 @@ export default function InfoEdit({
 		revalidatePath("/")
 	}
 
-	async function handleSubmit() {
-		const formData = createFormData(data, "product_id", product.id)
+	async function handleSubmit(e) {
+		e.preventDefault()
 
-		for (var pair of formData.entries()) {
-			console.log(pair[0] + ", " + pair[1])
-		}
+		const formData = createFormData(data, "product_id", product.id)
 
 		try {
 			setDataLoading(true)
@@ -156,7 +152,7 @@ export default function InfoEdit({
 		} catch (error) {
 			console.log(error)
 		}
-		revalidatePath("/")
+		// revalidatePath("/")
 	}
 
 	const VisuallyHiddenInput = styled("input")({
@@ -206,7 +202,10 @@ export default function InfoEdit({
 		<form>
 			<div className="flex justify-end gap-4 pt-4 pr-4">
 				{editing || (
-					<SubmitModal variant="delete" callback={deleteProduct} />
+					<SubmitModal
+						variant="delete"
+						callbackfuncFunc={deleteProduct}
+					/>
 				)}
 				{!editing ? (
 					<Button
@@ -223,18 +222,15 @@ export default function InfoEdit({
 					<>
 						<Button
 							color="warning"
-							callback={(e) => {
-								e.preventDefault()
-								abortEditing()
-							}}
+							type="button"
+							onClick={abortEditing}
 						>
 							Discard Changes
 						</Button>
 						<SubmitModal
 							variant="update"
 							callback={(e) => {
-								e.preventDefault()
-								handleSubmit()
+								handleSubmit(e)
 							}}
 						/>
 					</>
@@ -485,7 +481,7 @@ export default function InfoEdit({
 								name="moods"
 								update={true}
 								addFunctionality
-								hashtag={true}
+								hashtag={false}
 								dropDownList={DropDown.Moods}
 								disabled={!editing}
 								value={data.moods}
@@ -586,7 +582,9 @@ export default function InfoEdit({
 							}}
 							value={data.bpm}
 							onChange={(e) => {
-								updateFields({ bpm: e.target.value })
+								updateFields({
+									bpm: e.target.value,
+								})
 							}}
 						/>
 					</div>
@@ -670,7 +668,6 @@ export default function InfoEdit({
 											checked={data.free}
 											value={data.free}
 											onChange={() => {
-												setFreeChecked(!data.free)
 												updateFields({
 													free: !data.free,
 												})

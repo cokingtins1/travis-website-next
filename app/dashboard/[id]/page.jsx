@@ -1,4 +1,3 @@
-//app\dashboard\[id]\page.jsx
 
 import { useSession } from "@/libs/supabase/useSession"
 import { notFound, redirect } from "next/navigation"
@@ -6,7 +5,7 @@ import {
 	getAudioSrcById,
 	getImageSrc,
 	getPricingById,
-	getProductFilePathById,
+	getPricingIdById,
 } from "@/libs/supabase/supabaseQuery"
 import InfoEdit from "@/app/components/Dashboard Components/Edit Content/InfoEdit"
 
@@ -17,18 +16,15 @@ export default async function Page({ params: { id } }) {
 		redirect("/login")
 	}
 
-	const productFilePath = await getProductFilePathById(id)
-	const pricingId = productFilePath ? productFilePath.pricingId : null
+	const productFilePaths = await getPricingIdById(id)
 
 	const productImage = await getImageSrc(id)
 	const pricing = await getPricingById(id)
 
-	console.log(pricing)
-
-	if (!pricingId) {
+	if (!productFilePaths) {
 		notFound()
 	}
-	const [MP3_file_id, WAV_file_id, STEM_file_id] = pricingId
+	const [MP3_file_id, WAV_file_id, STEM_file_id] = productFilePaths
 
 	const { data: product } = await supabase
 		.from("products")

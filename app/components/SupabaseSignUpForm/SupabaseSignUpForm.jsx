@@ -1,3 +1,5 @@
+"use client"
+
 import styles from "./styles.module.css"
 import TextField from "@mui/material/TextField"
 import Link from "next/link"
@@ -6,6 +8,18 @@ import createFormik from "@/libs/supabase/createSupaFormik"
 
 export default function SupabaseSignUpForm() {
 	const formik = createFormik("signup")
+
+	const primaryAccent = "#ffeec2"
+
+	const buttonStyles = {
+		width: "120px",
+		height: "36px",
+		color: primaryAccent,
+		borderColor: primaryAccent,
+		"&:hover": {
+			borderColor: primaryAccent,
+		},
+	}
 
 	return (
 		<>
@@ -63,6 +77,7 @@ export default function SupabaseSignUpForm() {
 				/>
 
 				<Button
+					sx={buttonStyles}
 					disabled={
 						!formik.values.email ||
 						!formik.values.password ||

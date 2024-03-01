@@ -6,7 +6,6 @@ import Divider from "@mui/material/Divider"
 import Fade from "@mui/material/Fade"
 
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart"
-import styles from "../styles.module.css"
 import { useShoppingCart } from "@/libs/contexts/CartContext"
 import { useState } from "react"
 import CartItem from "./CartItem"
@@ -57,24 +56,37 @@ export default function ShoppingCart() {
 		}
 	}
 
+	const primaryAccent = "#ffeec2"
+
+	const buttonStyles = {
+		width: "120px",
+		height: "36px",
+		// color: primaryAccent,
+		// borderColor: primaryAccent,
+		// "&:hover": {
+		// 	borderColor: primaryAccent,
+		// },
+	}
+
 	return (
 		<>
-			<button onClick={handleClick} className={styles.iconBtn}>
-				<ShoppingCartIcon />
-				<label className={styles.label}>Cart</label>
-				<p>{shoppingCart && shoppingCart.length}</p>
-			</button>
+			<Button
+				sx={buttonStyles}
+				variant="outlined"
+				startIcon={<ShoppingCartIcon />}
+				onClick={handleClick}
+			>
+				<div className="flex pointer gap-2">
+					<p>Cart</p>
+					<p>{shoppingCart && shoppingCart.length}</p>
+				</div>
+			</Button>
+
 			<Menu
 				anchorEl={anchorEl}
 				open={open}
 				onClose={handleClose}
 				TransitionComponent={Fade}
-				sx={{
-					".MuiPaper-root": {
-						backgroundColor: "#121212",
-						padding: 0,
-					},
-				}}
 			>
 				<div className="flex flex-col gap-4 bg-bg-elevated p-8 w-[400px]">
 					<p className="text-text-primary">{`Your Cart (${shoppingCart.length})`}</p>

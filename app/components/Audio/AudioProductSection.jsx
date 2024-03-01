@@ -7,6 +7,7 @@ export default function AudioProductSection({
 	imageSrc,
 	product = null,
 	startingPrice = null,
+	free = false,
 }) {
 	const { file } = useAudio()
 	return (
@@ -36,6 +37,7 @@ export default function AudioProductSection({
 							startingPrice={startingPrice}
 							imageSrc={imageSrc}
 							product={product}
+							free={free}
 						/>
 					)}
 				</div>

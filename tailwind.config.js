@@ -24,6 +24,7 @@ module.exports = {
 				"icon-primary": "#b3b3b3",
 			},
 			backgroundColor: {
+				"bg-free": "#3ECF8E",
 				"bg-accent-blue": "#007FFF",
 				"bg-accent-khaki": "#ffeec2",
 				"bg-disabled": "#929292",

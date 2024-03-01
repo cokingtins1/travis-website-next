@@ -20,9 +20,11 @@ export default function AudioDrawer({
 	srcType, //required
 	buttonId,
 	file = false,
+	playOnMount = true,
 	product = null,
 	startingPrice = null,
 	imageSrc = null,
+	free = false,
 }) {
 	const audioRef = useRef(null)
 	const [isReady, setIsReady] = useState(false)
@@ -49,13 +51,14 @@ export default function AudioDrawer({
 	}, [])
 
 	useEffect(() => {
+		getRef(audioRef)
+
+		if (!playOnMount) return
 		audioRef.current?.pause()
 
 		const timeOut = setTimeout(() => {
 			audioRef.current?.play()
 		}, 500)
-
-		getRef(audioRef)
 
 		return () => {
 			clearTimeout(timeOut)
@@ -158,6 +161,7 @@ export default function AudioDrawer({
 						imageSrc={imageSrc}
 						product={product}
 						startingPrice={startingPrice}
+						free={free}
 					/>
 					<div className="justify-self-center">
 						<div className="flex items-center justify-center">
@@ -205,15 +209,17 @@ export default function AudioDrawer({
 						</div>
 					</div>
 					<div className="hidden lg:flex justify-self-end items-center w-[200px] gap-4 mt-8">
-						<div className="absolute top-0 right-4">
-							<Tooltip title={"Close Player"} placement="top">
-								<IconButton
-									onClick={() => closePlayer(audioSrc)}
-								>
-									<CloseIcon />
-								</IconButton>
-							</Tooltip>
-						</div>
+						{playOnMount && (
+							<div className="absolute top-0 right-4">
+								<Tooltip title={"Close Player"} placement="top">
+									<IconButton
+										onClick={() => closePlayer(audioSrc)}
+									>
+										<CloseIcon />
+									</IconButton>
+								</Tooltip>
+							</div>
+						)}
 						<Tooltip
 							title={volume === 0 ? "Unmute" : "Mute"}
 							placement="top"

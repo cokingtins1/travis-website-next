@@ -1,20 +1,25 @@
 import Link from "next/link"
 import Divider from "@mui/material/Divider"
-import IconButton from "@mui/material/IconButton"
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder"
+
 import {
 	getAudioSrcById,
 	getImageSrc,
+	getLikes,
 	getPricingById,
 } from "@/libs/supabase/supabaseQuery"
 import AddToCartBtn from "../UI/AddToCartBtn"
 import ProductCardImage from "./ProductCardImage"
+import LikeButton from "../UI/LikeButton"
 
 export default async function ProductCard({ product }) {
-	const { startingPrice } = await getPricingById(product.id)
+	const { startingPrice, free } = await getPricingById(product.id)
 	const imageSrc = await getImageSrc(product.id)
 	const { storeSrc, storeSrcType } = await getAudioSrcById(product.id)
+	const { likes } = await getLikes(product.id)
 
+	if (!storeSrc) {
+		return null
+	}
 
 	return (
 		<>
@@ -27,6 +32,7 @@ export default async function ProductCard({ product }) {
 							product={product}
 							startingPrice={startingPrice}
 							srcType={storeSrcType}
+							free={free}
 						/>
 						<Link href={`/store/${product.id}`}>
 							<div>
@@ -53,13 +59,10 @@ export default async function ProductCard({ product }) {
 								startingPrice={startingPrice}
 								imageSrc={imageSrc}
 								product={product}
+								free={free}
 							/>
 						)}
-						<div>
-							<IconButton>
-								<FavoriteBorderIcon />
-							</IconButton>
-						</div>
+						<LikeButton likes={likes} productId={product.id} />
 						<button className="text-text-secondary text-lg font-bold">
 							...
 						</button>

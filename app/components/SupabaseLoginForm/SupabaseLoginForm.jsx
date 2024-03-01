@@ -1,6 +1,5 @@
 "use client"
 
-import styles from "./styles.module.css"
 import TextField from "@mui/material/TextField"
 import Link from "next/link"
 import Button from "@mui/material/Button"
@@ -10,12 +9,24 @@ import { redirect } from "next/navigation"
 export default function SupabaseLoginForm({ session = null }) {
 	const formik = createFormik("login")
 
+	const primaryAccent = "#ffeec2"
+
+	const buttonStyles = {
+		width: "120px",
+		height: "36px",
+		color: primaryAccent,
+		borderColor: primaryAccent,
+		"&:hover": {
+			borderColor: primaryAccent,
+		},
+	}
+
 	return session ? (
 		redirect("/dashboard")
 	) : (
 		<>
 			<form
-				className={styles.loginForm}
+				className="min-w-[324px] flex items-center flex-col gap-4"
 				onSubmit={(e) => {
 					e.preventDefault()
 					formik.submitForm(formik.values)
@@ -32,6 +43,7 @@ export default function SupabaseLoginForm({ session = null }) {
 					error={Boolean(formik.touched.email && formik.errors.email)}
 					helperText={formik.touched.email && formik.errors.email}
 				/>
+
 				<TextField
 					fullWidth
 					id="password"
@@ -53,11 +65,11 @@ export default function SupabaseLoginForm({ session = null }) {
 					<p className="text-rose-500">{formik.status.message}</p>
 				)}
 
-				<Button type={"submit"} variant="outlined">
+				<Button sx={buttonStyles} type={"submit"} variant="outlined">
 					Log In
 				</Button>
 			</form>
-			<div className="flex gap-4 align-middle">
+			<div className="flex gap-4 align-middle mt-2">
 				<p>Need an account?</p>
 				<Link href={"/signup"}>
 					<u className="text-blue-700">Sign Up</u>

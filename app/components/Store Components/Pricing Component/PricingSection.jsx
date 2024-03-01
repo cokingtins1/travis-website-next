@@ -54,7 +54,7 @@ export default function PricingSection({ product, pricing, imageSrc }) {
 				key={pricing_id}
 				type="button"
 				value={price}
-				className={`flex items-center border rounded-xl p-4 flex-1 ${
+				className={`flex items-center border rounded-xl p-4 w-1/3 ${
 					selected === name
 						? "border-border-btn-select bg-bg-btn-select hover:none "
 						: "border-border-primary hover:bg-bg-hover"

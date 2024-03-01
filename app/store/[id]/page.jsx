@@ -3,6 +3,7 @@ import ProductMedia from "@/app/components/Store Components/Media Components/Pro
 
 import ProductMeta from "@/app/components/Store Components/ProductMeta/ProductMeta"
 import {
+	getAudioSrcById,
 	getImageSrc,
 	getPricingById,
 	getProductById,
@@ -10,11 +11,14 @@ import {
 import { notFound } from "next/navigation"
 import { Suspense } from "react"
 import dynamic from "next/dynamic"
+import AudioPlayStore from "@/app/components/Audio/AudioPlayStore"
 
 export default async function Page({ params: { id } }) {
 	const product = await getProductById(id)
 	const imageSrc = await getImageSrc(id)
 	const { filteredPricing } = await getPricingById(id)
+	const storeSrc = await getAudioSrcById(product.id)
+	const storeSrcType = await getAudioSrcById(product.id)
 
 	const DynamicPricing = dynamic(
 		() =>
@@ -50,11 +54,21 @@ export default async function Page({ params: { id } }) {
 				<section
 					className={`grid content-start col-span-8 px-10 gap-4 ${media.pricingLg} `}
 				>
+					<section className="bg-bg-elevated rounded-xl p-4">
+						{storeSrc && storeSrcType && (
+							<AudioPlayStore
+								audioSrc={storeSrc.storeSrc}
+								audioSrcType={storeSrcType.storeSrcType}
+								product={product}
+							/>
+						)}
+					</section>
 					<DynamicPricing
 						product={product}
 						pricing={filteredPricing}
 						imageSrc={imageSrc}
 					/>
+
 					<section>
 						<Comments />
 					</section>
