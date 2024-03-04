@@ -63,7 +63,19 @@ export function formatDurationDisplay(duration) {
 	return formatted
 }
 
-function generateEmailTemplate(){
+export function returnFileType(type) {
+	let fileType
+	switch (type) {
+		case "BASIC":
+			fileType = "MP3"
+			break
+		case "PREMIUM":
+			fileType = "WAV"
+			break
+		case "STEM" || "ZIP":
+			fileType = "STEMs"
+			break
+	}
 
-
+	return fileType
 }

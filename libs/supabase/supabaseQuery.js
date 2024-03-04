@@ -2,7 +2,6 @@
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
 import { cookies } from "next/headers"
 import { cache } from "react"
-import JSZip from "jszip"
 
 import supabaseClient from "@/libs/supabase/config/supabaseClient"
 
@@ -10,6 +9,38 @@ export const createServerClient = cache(() => {
 	const cookieStore = cookies()
 	return createServerComponentClient({ cookies: () => cookieStore })
 })
+
+// Order getting functions:
+
+export async function getSupabaseOrderData(order_id) {
+	try {
+		const { data } = await supabaseClient
+			.from("orders")
+			.select("*, order_id_alias")
+			.match({ stripe_order_id: order_id })
+			.select()
+
+		console.log("data", data)
+
+		if (data && data.length > 0) {
+			const rawData = JSON.parse(data[0].products_sold)
+
+			const orderData = rawData.map((productGroup) => {
+				const productName = Object.keys(productGroup)[0]
+				const productDetails = productGroup[productName]
+				return { name: productName, ...productDetails }
+			})
+
+			return { orderData: orderData, orderAlias: data[0].order_id_alias }
+		} else {
+			return null
+		}
+	} catch (error) {
+		console.log(error)
+	}
+
+	// console.log("customer:", session.customer_details)
+}
 
 export async function getLikes(id) {
 	try {

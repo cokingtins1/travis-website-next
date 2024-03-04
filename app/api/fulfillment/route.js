@@ -90,37 +90,36 @@ export async function POST(req) {
 		}
 
 		//SUPABASE
-		// await insertOrderData(supabaseData)
+		await insertOrderData(supabaseData)
 
-		// console.log(productsSold)
 		// EMAIL
 
 		const customer_email = sessionData.customer_details.email
-		if (customer_email) {
-			sgMail.setApiKey(process.env.SENDGRID_API_KEY)
-			const msg = {
-				from: "cokingtins1@gmail.com",
-				personalizations: [
-					{
-						to: customer_email,
-						dynamic_template_data: {
-							subject: `Beats Download - Order#: ${orderDetails.stripe_order_id}`,
-							order_id: orderDetails.stripe_order_id,
-							order_date: orderDetails.created_at_long,
-							order_total: orderDetails.order_total,
-							order: productsSold,
-						},
-					},
-				],
-				template_id: process.env.SENDGRID_TEMPLATE_ID,
-			}
-			try {
-				const res = await sgMail.send(msg)
-				console.log("response:", res)
-			} catch (error) {
-				console.log(error)
-			}
-		}
+		// if (customer_email) {
+		// 	sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+		// 	const msg = {
+		// 		from: "cokingtins1@gmail.com",
+		// 		personalizations: [
+		// 			{
+		// 				to: customer_email,
+		// 				dynamic_template_data: {
+		// 					subject: `Beats Download - Order#: ${orderDetails.stripe_order_id}`,
+		// 					order_id: orderDetails.stripe_order_id,
+		// 					order_date: orderDetails.created_at_long,
+		// 					order_total: orderDetails.order_total,
+		// 					order: productsSold,
+		// 				},
+		// 			},
+		// 		],
+		// 		template_id: process.env.SENDGRID_TEMPLATE_ID,
+		// 	}
+		// 	try {
+		// 		const res = await sgMail.send(msg)
+		// 		console.log("response:", res)
+		// 	} catch (error) {
+		// 		console.log(error)
+		// 	}
+		// }
 	}
 
 	switch (event.type) {

@@ -4,6 +4,8 @@ import { useShoppingCart } from "@/libs/contexts/CartContext"
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart"
 import DownloadIcon from "@mui/icons-material/Download"
 import Tooltip from "@mui/material/Tooltip"
+import FreeDownloadModal from "./FreeDownloadModal"
+import { useState } from "react"
 
 export default function AddToCartBtn({
 	startingPrice,
@@ -12,20 +14,27 @@ export default function AddToCartBtn({
 	free = false,
 }) {
 	const { addToCart } = useShoppingCart()
+	const [openModal, setOpenModal] = useState(false)
 
 	return (
 		<div className="flex gap-2">
+			{openModal && <FreeDownloadModal openModal={openModal} setModal={setOpenModal} />}
 			{free && (
 				<>
 					<Tooltip title={"Free tagged MP3 download"}>
-						<button className="bg-bg-free rounded-md hover:ring-1 ring-white px-2">
+						<button
+							onClick={() => {
+								setOpenModal(true)
+							}}
+							className="bg-bg-free rounded-md hover:ring-1 ring-white px-2"
+						>
 							<DownloadIcon sx={{ fontSize: "1rem" }} />{" "}
 							<span className="pointer text-xs">FREE</span>
 						</button>
 					</Tooltip>
 				</>
 			)}
-			<Tooltip title={'Add to cart'}>
+			<Tooltip title={"Add to cart"}>
 				<button
 					className="flex whitespace-nowrap items-center gap-2 border bg-bg-secondary hover:bg-bg-accent-khaki hover:text-black text-sm hover:ring-1 ring-white rounded-md p-1"
 					onClick={() => {

@@ -87,8 +87,9 @@ export default function ShoppingCart() {
 				open={open}
 				onClose={handleClose}
 				TransitionComponent={Fade}
+				MenuListProps={{ sx: { py: 0 } }}
 			>
-				<div className="flex flex-col gap-4 bg-bg-elevated p-8 w-[400px]">
+				<div className="flex flex-col gap-4 bg-bg-elevated p-8 w-[400px] border border-slate-600">
 					<p className="text-text-primary">{`Your Cart (${shoppingCart.length})`}</p>
 					{shoppingCart.map((item, index) => (
 						<CartItem key={index} cartItem={item} />
