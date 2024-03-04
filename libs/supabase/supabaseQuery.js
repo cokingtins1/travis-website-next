@@ -108,7 +108,7 @@ export async function getDownloadUrls(productsSold) {
 	const supabase = createServerClient()
 
 	const filePaths = productsSold.map(
-		(product) => Object.values(product)[0].filePath
+		(product) => `${product.product_id}/${product.pricing_id}`
 	)
 
 	const processFilePaths = async (filePaths) => {
@@ -116,12 +116,10 @@ export async function getDownloadUrls(productsSold) {
 		const result = []
 
 		for (const path of filePaths) {
-			console.log("path:", path)
 			const { data } = await supabase.storage
 				.from("all_products")
 				.createSignedUrl(path, expiresIn, { download: true })
-			console.log("data:", data)
-			result.push(data)
+			result.push(data.signedUrl)
 		}
 		return result
 	}
@@ -289,7 +287,7 @@ export async function getPricingById(id) {
 	}
 }
 
-export async function getDownloadableImage(product_id){
+export async function getDownloadableImage(product_id) {
 	const supabase = createServerClient()
 	const productFileURL =
 		"https://njowjcfiaxbnflrcwcep.supabase.co/storage/v1/object/public/all_products"
@@ -299,9 +297,9 @@ export async function getDownloadableImage(product_id){
 		.download(`${product_id}/productImage`, {
 			transform: {
 				width: 100,
-				height:100,
-				quality: 80
-			}
+				height: 100,
+				quality: 80,
+			},
 		})
 }
 

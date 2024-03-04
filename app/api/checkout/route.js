@@ -2,12 +2,18 @@ import { NextResponse } from "next/server"
 import { headers } from "next/headers"
 
 import Stripe from "stripe"
+import { getDownloadUrls } from "@/libs/supabase/supabaseQuery"
 
 export async function POST(req) {
 	const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 	const data = await req.json()
 
 	const origin = headers().get("origin")
+	const signedUrls = await getDownloadUrls(data)
+
+	for (let i = 0; i < data.length && i < signedUrls.length; i++) {
+		data[i].signedUrl = signedUrls[i]
+	}
 
 	const lineItems = data.map((item) => ({
 		price_data: {
@@ -19,9 +25,10 @@ export async function POST(req) {
 					pricingId: item.pricing_id,
 					productName: item.product_name,
 					filePath: `${item.product_id}/${item.pricing_id}`,
-					type: item.type,
-					price: item.price,
+					productType: item.type,
+					productPrice: item.price,
 					imageSrc: item.imageSrc,
+					signedUrl: item.signedUrl,
 				},
 			},
 			unit_amount: item.price * 100,

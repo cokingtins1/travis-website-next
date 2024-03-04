@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+	</head>
+	<body>
+		<div style="padding-left: 16px; margin-top: 16px; width: fit-content">
+			<div style="display: flex; flex-direction: column; row-gap: 16px">
+				{{#each order}}
+				<p style="font-family: inherit; text-align: inherit">
+					{{productName}} ({{productType}}) - ${{price}}
+				</p>
+				{{/each}}
+			</div>
+			<div
+				style="
+					height: 1px;
+					background-color: #a7a7a7;
+					border: none;
+					margin-top: 4px;
+					margin-bottom: 10px;
+					width: 100%;
+				"
+			></div>
+
+			<p>Order Total: ${{order_total}}</p>
+		</div>
+		<br />
+	</body>
+</html>

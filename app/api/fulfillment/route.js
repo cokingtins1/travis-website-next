@@ -8,7 +8,7 @@ import dayjs from "dayjs"
 
 import EmailBody from "@/app/components/Email Components/EmailBody"
 import sgMail from "@sendgrid/mail"
-import { getDownloadUrls, insertOrderData } from "@/libs/supabase/supabaseQuery"
+import { insertOrderData } from "@/libs/supabase/supabaseQuery"
 
 export async function POST(req) {
 	const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
@@ -34,10 +34,11 @@ export async function POST(req) {
 				productId,
 				pricingId,
 				productName,
-				type,
-				price,
+				productType,
+				productPrice,
 				filePath,
 				imageSrc,
+				signedUrl,
 			} = lineItem.price.product.metadata
 
 			const product = {
@@ -45,10 +46,11 @@ export async function POST(req) {
 					productId,
 					pricingId,
 					productName,
-					type,
-					price,
+					productType,
+					productPrice,
 					filePath,
 					imageSrc,
+					signedUrl,
 				},
 			}
 
@@ -74,7 +76,7 @@ export async function POST(req) {
 			payment_method: sessionData.payment_method_types,
 			customer_email: sessionData.customer_details.email,
 			products_sold: JSON.stringify(productsSold),
-			productsSoldArray: productsSold
+			productsSoldArray: productsSold,
 		}
 
 		const supabaseData = {
@@ -89,7 +91,6 @@ export async function POST(req) {
 
 		//SUPABASE
 		// await insertOrderData(supabaseData)
-		const downloadUrls = await getDownloadUrls(productsSold)
 
 		// console.log(productsSold)
 		// EMAIL
@@ -98,24 +99,24 @@ export async function POST(req) {
 		if (customer_email) {
 			sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 			const msg = {
-				to: customer_email,
 				from: "cokingtins1@gmail.com",
-				subject: "Beats Download",
-				html: "<p style=\"color:#FF0000\">Hello World<p>",
 				personalizations: [
 					{
+						to: customer_email,
 						dynamic_template_data: {
+							subject: `Beats Download - Order#: ${orderDetails.stripe_order_id}`,
 							order_id: orderDetails.stripe_order_id,
 							order_date: orderDetails.created_at_long,
 							order_total: orderDetails.order_total,
-							url: downloadUrls[0],
+							order: productsSold,
 						},
 					},
 				],
+				template_id: process.env.SENDGRID_TEMPLATE_ID,
 			}
 			try {
-				await sgMail.send(msg)
-				console.log("email sent")
+				const res = await sgMail.send(msg)
+				console.log("response:", res)
 			} catch (error) {
 				console.log(error)
 			}

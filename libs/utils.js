@@ -62,3 +62,8 @@ export function formatDurationDisplay(duration) {
 
 	return formatted
 }
+
+function generateEmailTemplate(){
+
+
+}
