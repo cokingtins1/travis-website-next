@@ -6,7 +6,7 @@ import Divider from "@mui/material/Divider"
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder"
 import IosShareIcon from "@mui/icons-material/IosShare"
 import { getLikes } from "@/libs/supabase/supabaseQuery"
-import LikeButton from "../../UI/LikeButton"
+import LikeButton from "../../Like Button/LikeButton"
 
 export default async function ProductMeta({ product, imageSrc }) {
 	const { likes } = await getLikes(product.id)
@@ -28,7 +28,7 @@ export default async function ProductMeta({ product, imageSrc }) {
 				</div>
 
 				<div className={styles.metaInfo}>
-					<div className='flex justify-center gap-1 mt-1 mb-2'>
+					<div className="flex justify-center gap-1 mt-1 mb-2">
 						<LikeButton
 							productId={product.id}
 							likes={likes}

@@ -9,13 +9,16 @@ import {
 } from "@/libs/supabase/supabaseQuery"
 import AddToCartBtn from "../UI/AddToCartBtn"
 import ProductCardImage from "./ProductCardImage"
-import LikeButton from "../UI/LikeButton"
+import LikeButton from "../Like Button/LikeButton"
+import { useSession } from "@/libs/supabase/useSession"
 
 export default async function ProductCard({ product }) {
 	const { startingPrice, free } = await getPricingById(product.id)
 	const imageSrc = await getImageSrc(product.id)
 	const { storeSrc, storeSrcType } = await getAudioSrcById(product.id)
 	const { likes } = await getLikes(product.id)
+
+	const { session } = await useSession()
 
 	if (!storeSrc) {
 		return null
@@ -62,7 +65,11 @@ export default async function ProductCard({ product }) {
 								free={free}
 							/>
 						)}
-						<LikeButton likes={likes} productId={product.id} />
+						<LikeButton
+							likes={likes}
+							productId={product.id}
+							session={session}
+						/>
 						<button className="text-text-secondary text-lg font-bold">
 							...
 						</button>

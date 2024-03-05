@@ -115,7 +115,6 @@ export async function POST(req) {
 		// 	}
 		// 	try {
 		// 		const res = await sgMail.send(msg)
-		// 		console.log("response:", res)
 		// 	} catch (error) {
 		// 		console.log(error)
 		// 	}

@@ -20,8 +20,6 @@ export async function getSupabaseOrderData(order_id) {
 			.match({ stripe_order_id: order_id })
 			.select()
 
-		console.log("data", data)
-
 		if (data && data.length > 0) {
 			const rawData = JSON.parse(data[0].products_sold)
 
@@ -38,8 +36,6 @@ export async function getSupabaseOrderData(order_id) {
 	} catch (error) {
 		console.log(error)
 	}
-
-	// console.log("customer:", session.customer_details)
 }
 
 export async function getLikes(id) {

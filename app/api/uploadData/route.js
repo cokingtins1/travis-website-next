@@ -9,10 +9,6 @@ export async function POST(req) {
 
 	const formData = await req.formData()
 
-	console.log(formData.get("basic"))
-	console.log(formData.get("premium"))
-	console.log(formData.get("exclusive"))
-
 	async function uploadFile(path, file) {
 		try {
 			const { error } = await supabase.storage

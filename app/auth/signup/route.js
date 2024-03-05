@@ -13,13 +13,28 @@ export async function POST(request) {
 			cookies: () => cookieStore,
 		})
 
-		await supabase.auth.signUp({
-			email,
-			password,
-			options: {
-				emailRedirectTo: `${requestUrl.origin}/auth/callback`,
-			},
-		})
+		const { data: users } = await supabase.from("users").select("email")
+
+		const emailExists = users.some((user) => user.email === email)
+
+		if (!emailExists) {
+			await supabase.auth
+				.signUp({
+					email,
+					password,
+					options: {
+						emailRedirectTo: `${requestUrl.origin}/store`,
+					},
+				})
+				.then((res) => {
+					console.log(res)
+				})
+		} else {
+			return NextResponse.json(
+				{ message: "Email alread in use" },
+				{ status: 409 }
+			)
+		}
 
 		return NextResponse.redirect(requestUrl.origin, {
 			status: 301,

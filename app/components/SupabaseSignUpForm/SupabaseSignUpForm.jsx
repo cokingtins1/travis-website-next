@@ -9,18 +9,6 @@ import createFormik from "@/libs/supabase/createSupaFormik"
 export default function SupabaseSignUpForm() {
 	const formik = createFormik("signup")
 
-	const primaryAccent = "#ffeec2"
-
-	const buttonStyles = {
-		width: "120px",
-		height: "36px",
-		color: primaryAccent,
-		borderColor: primaryAccent,
-		"&:hover": {
-			borderColor: primaryAccent,
-		},
-	}
-
 	return (
 		<>
 			<form
@@ -77,12 +65,7 @@ export default function SupabaseSignUpForm() {
 				/>
 
 				<Button
-					sx={buttonStyles}
-					disabled={
-						!formik.values.email ||
-						!formik.values.password ||
-						!formik.values.passVerify
-					}
+					disabled={!formik.isValid}
 					type="submit"
 					variant="outlined"
 				>

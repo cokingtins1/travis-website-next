@@ -38,14 +38,28 @@ export default function createFormik(formType) {
 					},
 					body: JSON.stringify(values),
 				})
-				
+
 				if (res.ok) {
-					form.setStatus(null)
+					form.setStatus({
+						code: 202,
+						message: "Success",
+					})
 					setSubmitting(true)
 					resetForm()
 					router.refresh()
 				} else {
-					form.setStatus({ message: "Invalid email or password" })
+					if (res.status === 409) {
+						form.setStatus({
+							code: 409,
+							message:
+								"This email is already in use. Please login here:",
+						})
+					} else {
+						form.setStatus({
+							code: 402,
+							message: "Invalid email or password",
+						})
+					}
 				}
 			} catch (error) {
 				console.error("Error:", error)

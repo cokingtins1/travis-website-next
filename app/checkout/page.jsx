@@ -3,14 +3,11 @@
 import React, { useEffect, useState } from "react"
 import { loadStripe } from "@stripe/stripe-js"
 import {
-	Elements,
 	EmbeddedCheckoutProvider,
 	EmbeddedCheckout,
 } from "@stripe/react-stripe-js"
 import { useShoppingCart } from "@/libs/contexts/CartContext"
-import CartItem from '../components/Header/Shopping Cart Components/CartItem'
-
-// const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
+import CartItem from "../components/Header/Shopping Cart Components/CartItem"
 
 export default function Page() {
 	const { shoppingCart } = useShoppingCart()
@@ -60,9 +57,9 @@ export default function Page() {
 						className={`grid content-start col-span-8 px-10 ${media.cartLg} `}
 					>
 						{/* <Elements stripe={stripePromise}> */}
-							{shoppingCart.map((item, index) => (
-								<CartItem key={index} cartItem={item} />
-							))}
+						{shoppingCart.map((item, index) => (
+							<CartItem key={index} cartItem={item} />
+						))}
 						{/* </Elements> */}
 					</section>
 					<section

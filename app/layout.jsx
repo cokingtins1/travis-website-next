@@ -7,7 +7,6 @@ import { ToastContainer, toast } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import { ShoppingCartProvider } from "@/libs/contexts/CartContext"
 import { AudioContextProvider } from "@/libs/contexts/AudioContext"
-import 'font-awesome/css/font-awesome.min.css';
 
 
 

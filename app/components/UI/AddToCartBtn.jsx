@@ -18,7 +18,7 @@ export default function AddToCartBtn({
 
 	return (
 		<div className="flex gap-2">
-			{openModal && <FreeDownloadModal openModal={openModal} setModal={setOpenModal} />}
+			{openModal && <FreeDownloadModal openModal={openModal} setModal={setOpenModal} productId={product.id} imageSrc={imageSrc} />}
 			{free && (
 				<>
 					<Tooltip title={"Free tagged MP3 download"}>

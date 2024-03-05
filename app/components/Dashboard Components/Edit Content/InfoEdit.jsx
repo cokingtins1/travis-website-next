@@ -204,7 +204,7 @@ export default function InfoEdit({
 				{editing || (
 					<SubmitModal
 						variant="delete"
-						callbackfuncFunc={deleteProduct}
+						callback={deleteProduct}
 					/>
 				)}
 				{!editing ? (

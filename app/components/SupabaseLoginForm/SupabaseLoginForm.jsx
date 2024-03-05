@@ -61,11 +61,15 @@ export default function SupabaseLoginForm({ session = null }) {
 					}
 				/>
 
-				{formik.status && (
+				{formik.status?.message && (
 					<p className="text-rose-500">{formik.status.message}</p>
 				)}
 
-				<Button type={"submit"} variant="outlined">
+				<Button
+					type={"submit"}
+					variant="outlined"
+					disabled={!formik.dirty || !formik.isValid}
+				>
 					Log In
 				</Button>
 			</form>
