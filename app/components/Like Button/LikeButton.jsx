@@ -9,6 +9,7 @@ import FollowModal from "./FollowModal"
 export default function LikeButton({
 	productId,
 	session,
+	likedByUser,
 	likes,
 	variant = "left",
 }) {
@@ -18,6 +19,7 @@ export default function LikeButton({
 			return state + 1
 		}
 	)
+
 	const [openModal, setOpenModal] = useState(false)
 
 	return (
@@ -41,6 +43,7 @@ export default function LikeButton({
 						setOpenModal(true)
 						return
 					}
+					if (likedByUser) return
 					addOptimisticLikes({
 						id: Math.random(),
 						content: formData.get("id"),
@@ -52,21 +55,21 @@ export default function LikeButton({
 					<input
 						className="hidden"
 						name="id"
-						value={productId}
+						value={productId || ""}
 						readOnly={true}
 					/>
 					<input
 						className="hidden"
 						name="user_id"
 						type="text"
-						value={session?.user.id}
+						value={session?.user.id || ""}
 						readOnly={true}
 					/>
 					<input
 						className="hidden"
 						name="user_email"
 						type="text"
-						value={session?.user.email}
+						value={session?.user.email || ""}
 						readOnly={true}
 					/>
 

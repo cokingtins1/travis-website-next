@@ -4,6 +4,7 @@ import { cookies } from "next/headers"
 import { cache } from "react"
 
 import supabaseClient from "@/libs/supabase/config/supabaseClient"
+import { useSession } from "./useSession"
 
 export const createServerClient = cache(() => {
 	const cookieStore = cookies()
@@ -38,12 +39,12 @@ export async function getSupabaseOrderData(order_id) {
 	}
 }
 
-export async function getLikes(id) {
+export async function getLikes(product_id) {
 	try {
 		const { data } = await supabaseClient
 			.from("product_likes")
-			.select("likes")
-			.match({ product_id: id })
+			.select("likes, liked_by_id, liked_by_email")
+			.match({ product_id: product_id })
 			.single()
 		return data
 	} catch (error) {
@@ -51,16 +52,24 @@ export async function getLikes(id) {
 	}
 }
 
-export async function addLike(id) {
-	const { likes } = await getLikes(id)
+export async function addLike(product_id, user_id, user_email) {
+	const { likes, liked_by_id, liked_by_email } = await getLikes(product_id)
+
+	if (liked_by_id && liked_by_id?.some((user) => user === user_id)) return
 
 	try {
 		const addLike = likes + 1
+		const addedLikedById = [...liked_by_id, user_id]
+		const addedLikedByEmail = [...liked_by_email, user_email]
 
 		await supabaseClient
 			.from("product_likes")
-			.update({ likes: addLike })
-			.match({ product_id: id })
+			.update({
+				likes: addLike,
+				liked_by_id: addedLikedById,
+				liked_by_email: addedLikedByEmail,
+			})
+			.match({ product_id: product_id })
 			.then((res) => {
 				if (res.error) {
 					console.log(res.error.message)
@@ -69,6 +78,28 @@ export async function addLike(id) {
 	} catch (error) {
 		console.log(error)
 	}
+}
+
+export async function getLikedByUser(user_id, product_id) {
+	const { liked_by_id } = await getLikes(product_id)
+
+	let likedByUser = false
+	if (liked_by_id && user_id) {
+		likedByUser = liked_by_id?.some((user) => user === user_id)
+	}
+
+	return likedByUser
+}
+
+export async function getUserId() {
+	const { session } = await useSession()
+
+	if (session) {
+		const userId = session.user.id
+		return userId
+	}
+
+	return null
 }
 
 export async function getAllProductData() {

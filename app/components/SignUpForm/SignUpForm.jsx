@@ -6,20 +6,33 @@ import FormHelperText from "@mui/material/FormHelperText"
 
 import createFormik from "@/libs/supabase/createSupaFormik"
 import Link from "next/link"
+import { useEffect } from "react"
 
-export default function SignUpForm({ submit, setSubmit }) {
+export default function SignUpForm({ setSignUp, setStatusCode }) {
 	const formik = createFormik("signup")
+
+	useEffect(() => {
+		setStatusCode(formik.status?.code)
+		if (formik.status?.code) {
+			console.log("code:", formik.status.code)
+		}
+		if (formik.status?.code === 202) {
+			setSignUp(true)
+		}
+	}, [formik.status?.code])
+
+	async function handleSubmit(e) {
+		e.preventDefault()
+
+		await formik.submitForm()
+	}
 
 	return (
 		<>
 			<form
 				action="/auth/sign-up"
 				method="post"
-				onSubmit={(e) => {
-					e.preventDefault()
-					formik.submitForm(formik.values)
-					setSubmit(true)
-				}}
+				onSubmit={(e) => handleSubmit(e)}
 				className="flex flex-col"
 			>
 				<div className="flex flex-col gap-2">
@@ -93,10 +106,10 @@ export default function SignUpForm({ submit, setSubmit }) {
 						)}
 					</div>
 
-					{formik.status?.code !== 202 && (
+					{formik.status?.code && formik.status?.code !== 202 && (
 						<div className="flex gap-2 items-start">
 							<FormHelperText error>
-								{formik.status.message}
+								{formik.status?.message}
 							</FormHelperText>
 							<Link href={"/login"}>
 								<Button size="small">Login</Button>

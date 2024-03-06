@@ -7,6 +7,7 @@ import {
 	getImageSrc,
 	getPricingById,
 	getProductById,
+	getUserId,
 } from "@/libs/supabase/supabaseQuery"
 import { notFound } from "next/navigation"
 import { Suspense } from "react"
@@ -19,6 +20,9 @@ export default async function Page({ params: { id } }) {
 	const { filteredPricing } = await getPricingById(id)
 	const storeSrc = await getAudioSrcById(product.id)
 	const storeSrcType = await getAudioSrcById(product.id)
+
+	const userId = await getUserId()
+
 
 	const DynamicPricing = dynamic(
 		() =>
@@ -70,7 +74,7 @@ export default async function Page({ params: { id } }) {
 					/>
 
 					<section>
-						<Comments />
+						<Comments productId={product.id} userId={userId} />
 					</section>
 
 					<Suspense fallback={<p>Loading video...</p>}>

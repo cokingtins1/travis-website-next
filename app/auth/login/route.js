@@ -22,9 +22,9 @@ export async function POST(request) {
 
 		if (user) {
 			return NextResponse.json(
-				{ redirectUrl: `${requestUrl.origin}/dashboard` },
+				{ redirectUrl: `${requestUrl.origin}/store` },
 				{ message: "Successful authentication" },
-				{ status: 200 }
+				{ status: 202 }
 			)
 		} else {
 			return NextResponse.json(

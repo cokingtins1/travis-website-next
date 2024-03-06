@@ -6,6 +6,7 @@ import {
 	getImageSrc,
 	getLikes,
 	getPricingById,
+	getLikedByUser,
 } from "@/libs/supabase/supabaseQuery"
 import AddToCartBtn from "../UI/AddToCartBtn"
 import ProductCardImage from "./ProductCardImage"
@@ -19,6 +20,7 @@ export default async function ProductCard({ product }) {
 	const { likes } = await getLikes(product.id)
 
 	const { session } = await useSession()
+	const likedByUser = await getLikedByUser(session?.user.id, product.id)
 
 	if (!storeSrc) {
 		return null
@@ -69,6 +71,7 @@ export default async function ProductCard({ product }) {
 							likes={likes}
 							productId={product.id}
 							session={session}
+							likedByUser={likedByUser}
 						/>
 						<button className="text-text-secondary text-lg font-bold">
 							...

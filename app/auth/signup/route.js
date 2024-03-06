@@ -27,8 +27,24 @@ export async function POST(request) {
 					},
 				})
 				.then((res) => {
-					console.log(res)
+					if (res.error) {
+						console.log(res)
+					}
 				})
+
+			await supabase.auth.signInWithPassword({
+				email,
+				password,
+			})
+
+			const user = (await supabase.auth.getUser()).data.user
+
+			if (user) {
+				return NextResponse.json(
+					{ message: "Successful authentication" },
+					{ status: 202 }
+				)
+			}
 		} else {
 			return NextResponse.json(
 				{ message: "Email alread in use" },

@@ -24,7 +24,7 @@ export default function SupabaseSignUpForm() {
 					fullWidth
 					id="email"
 					name="email"
-					label="email"
+					label="Email"
 					value={formik.values.email}
 					onChange={formik.handleChange}
 					onBlur={formik.handleBlur}
@@ -35,7 +35,7 @@ export default function SupabaseSignUpForm() {
 					fullWidth
 					id="password"
 					name="password"
-					label="password"
+					label="Password"
 					type="password"
 					value={formik.values.password}
 					onChange={formik.handleChange}
@@ -51,7 +51,7 @@ export default function SupabaseSignUpForm() {
 					fullWidth
 					id="passVerify"
 					name="passVerify"
-					label="verify password"
+					label="Verify Password"
 					type="password"
 					value={formik.values.passVerify}
 					onChange={formik.handleChange}
@@ -65,7 +65,7 @@ export default function SupabaseSignUpForm() {
 				/>
 
 				<Button
-					disabled={!formik.isValid}
+					disabled={!formik.dirty ||!formik.isValid}
 					type="submit"
 					variant="outlined"
 				>
