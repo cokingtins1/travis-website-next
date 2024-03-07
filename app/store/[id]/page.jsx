@@ -1,12 +1,14 @@
-import Comments from "@/app/components/Store Components/Comments Component/Comments"
+import CommentSection from "@/app/components/Store Components/Comments Component/CommentSection"
 import ProductMedia from "@/app/components/Store Components/Media Components/ProductMedia"
 
 import ProductMeta from "@/app/components/Store Components/ProductMeta/ProductMeta"
 import {
 	getAudioSrcById,
+	getComments,
 	getImageSrc,
 	getPricingById,
 	getProductById,
+	getReplys,
 	getUserId,
 } from "@/libs/supabase/supabaseQuery"
 import { notFound } from "next/navigation"
@@ -19,11 +21,11 @@ export default async function Page({ params: { id } }) {
 	const product = await getProductById(id)
 	const imageSrc = await getImageSrc(id)
 	const { filteredPricing } = await getPricingById(id)
-	const storeSrc = await getAudioSrcById(product.id)
-	const storeSrcType = await getAudioSrcById(product.id)
+	const storeSrc = await getAudioSrcById(id)
+	const storeSrcType = await getAudioSrcById(id)
 	const { session } = await useSession()
-
-	const userId = await getUserId()
+	const comments = await getComments(id)
+	const replies = await getReplys(id)
 
 	const DynamicPricing = dynamic(
 		() =>
@@ -68,19 +70,26 @@ export default async function Page({ params: { id } }) {
 							/>
 						)}
 					</section>
-					<DynamicPricing
-						product={product}
-						pricing={filteredPricing}
-						imageSrc={imageSrc}
-					/>
+					<Suspense fallback={<div className="h-[280px]"></div>}>
+						<DynamicPricing
+							product={product}
+							pricing={filteredPricing}
+							imageSrc={imageSrc}
+						/>
+					</Suspense>
 
 					<section>
-						<Comments
-							productId={product.id}
-							userId={userId}
+						<CommentSection
+							productId={id}
 							session={session}
+							comments={comments}
+							replies={replies}
+							activeUser_email={session?.user.email}
+							activeUser_id={session?.user.id}
 						/>
 					</section>
+
+					<section className="bg-bg-elevated h-[300px]"></section>
 
 					<Suspense fallback={<p>Loading video...</p>}>
 						{/* <ProductMedia url="btyS_uiRLnU" /> */}

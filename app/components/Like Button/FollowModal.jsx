@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 import SignUpForm from "../SignUpForm/SignUpForm"
 import SignUpSuccess from "./SignUpSuccess"
 
-export default function FollowModal({ openModal, setModal, productId }) {
+export default function FollowModal({ openModal, setModal }) {
 	const [submit, setSubmit] = useState(false)
 	const [statusCode, setStatusCode] = useState(undefined)
 	const [signup, setSignup] = useState(false)

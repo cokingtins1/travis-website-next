@@ -12,6 +12,8 @@ import AddToCartBtn from "../UI/AddToCartBtn"
 import ProductCardImage from "./ProductCardImage"
 import LikeButton from "../Like Button/LikeButton"
 import { useSession } from "@/libs/supabase/useSession"
+import { submitLike } from "@/app/actions/submitLike"
+
 
 export default async function ProductCard({ product }) {
 	const { startingPrice, free } = await getPricingById(product.id)
@@ -69,9 +71,11 @@ export default async function ProductCard({ product }) {
 						)}
 						<LikeButton
 							likes={likes}
-							productId={product.id}
+							likeId={product.id}
 							session={session}
 							likedByUser={likedByUser}
+							submitCallback={submitLike}
+							variant={'left'}
 						/>
 						<button className="text-text-secondary text-lg font-bold">
 							...

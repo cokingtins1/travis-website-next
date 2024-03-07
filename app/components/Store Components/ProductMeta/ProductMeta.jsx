@@ -32,7 +32,6 @@ export default async function ProductMeta({ product, imageSrc }) {
 						<LikeButton
 							productId={product.id}
 							likes={likes}
-							variant="bottom"
 						/>
 						<IconButton>
 							<IosShareIcon />

@@ -18,6 +18,7 @@ module.exports = {
 				"text-secondary": "#a7a7a7",
 				"text-tag": "#131A20",
 				"text-error": "#F44336",
+				"blue-accent": "#1976D2",
 				"bg-base": "#000000",
 				"border-primary": "#a9a9a980",
 				"border-btn-select": "#005FF8",

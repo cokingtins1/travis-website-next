@@ -2,16 +2,17 @@
 
 import IconButton from "@mui/material/IconButton"
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder"
-import { submitLike } from "@/app/actions/submitLike"
 import { useOptimistic, useState } from "react"
 import FollowModal from "./FollowModal"
 
 export default function LikeButton({
-	productId,
-	session,
-	likedByUser,
 	likes,
-	variant = "left",
+	likeId,
+	product_id,
+	likedByUser,
+	session,
+	submitCallback,
+	variant,
 	fontSize = "1rem",
 	icon = <FavoriteBorderIcon />,
 }) {
@@ -30,13 +31,9 @@ export default function LikeButton({
 				variant === "bottom" && "flex-col"
 			}`}
 		>
-			{variant === "left" && <p>{optimisticLikes}</p>}
+			{variant && variant === "left" && <p>{optimisticLikes}</p>}
 			{openModal && (
-				<FollowModal
-					openModal={openModal}
-					setModal={setOpenModal}
-					productId={productId}
-				/>
+				<FollowModal openModal={openModal} setModal={setOpenModal} />
 			)}
 
 			<form
@@ -50,14 +47,20 @@ export default function LikeButton({
 						id: Math.random(),
 						content: formData.get("id"),
 					})
-					await submitLike(formData)
+					await submitCallback(formData)
 				}}
 			>
 				<IconButton type="submit">
 					<input
 						className="hidden"
 						name="product_id"
-						value={productId || ""}
+						value={product_id || ""}
+						readOnly={true}
+					/>
+					<input
+						className="hidden"
+						name="likedId"
+						value={likeId || ""}
 						readOnly={true}
 					/>
 					<input
@@ -78,10 +81,9 @@ export default function LikeButton({
 					{icon}
 				</IconButton>
 			</form>
-			{variant === "bottom" ||
-				(variant === "right" && (
-					<p style={{ fontSize: fontSize }}>{optimisticLikes}</p>
-				))}
+			{((variant && variant === "bottom") || variant === "right") && (
+				<p style={{ fontSize: fontSize }}>{optimisticLikes}</p>
+			)}
 		</div>
 	)
 }

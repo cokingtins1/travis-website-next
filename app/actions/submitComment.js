@@ -13,11 +13,17 @@ export const submitComment = async (formData) => {
 
 	try {
 		if (user_id !== "" && user_email !== "") {
-			await addComment(comment_id, user_id, user_email, product_id, comment)
+			await addComment(
+				comment_id,
+				user_id,
+				user_email,
+				product_id,
+				comment
+			)
 		}
 	} catch (error) {
 		console.log(error)
 	}
 
-	// revalidatePath("/store")
+	revalidatePath(`/store/${product_id}`)
 }
