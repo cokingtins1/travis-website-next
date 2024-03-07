@@ -13,6 +13,7 @@ import { notFound } from "next/navigation"
 import { Suspense } from "react"
 import dynamic from "next/dynamic"
 import AudioPlayStore from "@/app/components/Audio/AudioPlayStore"
+import { useSession } from "@/libs/supabase/useSession"
 
 export default async function Page({ params: { id } }) {
 	const product = await getProductById(id)
@@ -20,9 +21,9 @@ export default async function Page({ params: { id } }) {
 	const { filteredPricing } = await getPricingById(id)
 	const storeSrc = await getAudioSrcById(product.id)
 	const storeSrcType = await getAudioSrcById(product.id)
+	const { session } = await useSession()
 
 	const userId = await getUserId()
-
 
 	const DynamicPricing = dynamic(
 		() =>
@@ -74,7 +75,11 @@ export default async function Page({ params: { id } }) {
 					/>
 
 					<section>
-						<Comments productId={product.id} userId={userId} />
+						<Comments
+							productId={product.id}
+							userId={userId}
+							session={session}
+						/>
 					</section>
 
 					<Suspense fallback={<p>Loading video...</p>}>

@@ -80,6 +80,46 @@ export async function addLike(product_id, user_id, user_email) {
 	}
 }
 
+export async function getComments(product_id) {
+	try {
+		const { data } = await supabaseClient
+			.from("comments")
+			.select("comment_id, user_id, user_email, created_at, comment")
+			.match({ product_id: product_id })
+			.single()
+		return data
+	} catch (error) {
+		console.log(error)
+	}
+}
+
+export async function addComment(
+	comment_id,
+	user_id,
+	user_email,
+	product_id,
+	comment
+) {
+	try {
+		await supabaseClient
+			.from("comments")
+			.insert({
+				comment_id: comment_id,
+				user_id: user_id,
+				user_email: user_email,
+				product_id: product_id,
+				comment: comment,
+			})
+			.then((res) => {
+				if (res.error) {
+					console.log(res.error.message)
+				}
+			})
+	} catch (error) {
+		console.log(error)
+	}
+}
+
 export async function getLikedByUser(user_id, product_id) {
 	const { liked_by_id } = await getLikes(product_id)
 

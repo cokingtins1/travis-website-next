@@ -12,6 +12,8 @@ export default function LikeButton({
 	likedByUser,
 	likes,
 	variant = "left",
+	fontSize = "1rem",
+	icon = <FavoriteBorderIcon />,
 }) {
 	const [optimisticLikes, addOptimisticLikes] = useOptimistic(
 		likes,
@@ -54,7 +56,7 @@ export default function LikeButton({
 				<IconButton type="submit">
 					<input
 						className="hidden"
-						name="id"
+						name="product_id"
 						value={productId || ""}
 						readOnly={true}
 					/>
@@ -73,10 +75,13 @@ export default function LikeButton({
 						readOnly={true}
 					/>
 
-					<FavoriteBorderIcon />
+					{icon}
 				</IconButton>
 			</form>
-			{variant === "bottom" && <p>{optimisticLikes}</p>}
+			{variant === "bottom" ||
+				(variant === "right" && (
+					<p style={{ fontSize: fontSize }}>{optimisticLikes}</p>
+				))}
 		</div>
 	)
 }
