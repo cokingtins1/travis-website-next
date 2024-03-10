@@ -17,53 +17,66 @@ export async function getSupabaseOrderData(order_id) {
 	try {
 		const { data } = await supabaseClient
 			.from("orders")
-			.select("*, order_id_alias")
+			.select("*")
 			.match({ stripe_order_id: order_id })
-			.select()
+			.single()
 
-		if (data && data.length > 0) {
-			const rawData = JSON.parse(data[0].products_sold)
+		const rawData = JSON.parse(data.products_sold)
 
-			const orderData = rawData.map((productGroup) => {
-				const productName = Object.keys(productGroup)[0]
-				const productDetails = productGroup[productName]
-				return { name: productName, ...productDetails }
-			})
+		const orderData = rawData.map((productGroup) => {
+			const productName = Object.keys(productGroup)[0]
+			const productDetails = productGroup[productName]
+			return { name: productName, ...productDetails }
+		})
 
-			return { orderData: orderData, orderAlias: data[0].order_id_alias }
-		} else {
-			return null
-		}
+		return orderData
+
+		// if (data) {
+
+		// 	// orderAlias: data[0].order_id_alias
+		// 	return orderData
+		// } else {
+		// 	return null
+		// }
 	} catch (error) {
 		console.log(error)
 	}
 }
 
-export async function getLikes(
-	primaryKey,
-	table = "product_likes",
-	query = "likes, liked_by_id, liked_by_email",
-	primaryKeyKey = "product_id"
-) {
+export async function getLikes(product_id) {
 	try {
-		const matchObj = { [primaryKeyKey]: primaryKey }
-
-		console.log(
-			"primaryKey",
-			primaryKey,
-			"table",
-			table,
-			"query",
-			query,
-			"primaryKeyKey",
-			primaryKeyKey,
-			"matchObj",
-			matchObj
-		)
 		const { data } = await supabaseClient
-			.from(table)
-			.select(query)
-			.match(matchObj)
+			.from("product_likes")
+			.select("likes, liked_by_id, liked_by_email")
+			.match({ product_id: product_id })
+			.single()
+
+		return data
+	} catch (error) {
+		console.log(error)
+	}
+}
+
+export async function getCommentLikes(comment_id) {
+	try {
+		const { data } = await supabaseClient
+			.from("comments")
+			.select("comment_likes, liked_by_id, liked_by_email")
+			.match({ comment_id: comment_id })
+			.single()
+
+		return data
+	} catch (error) {
+		console.log(error)
+	}
+}
+
+export async function getReplyLikes(reply_id) {
+	try {
+		const { data } = await supabaseClient
+			.from("replies")
+			.select("reply_likes, liked_by_id, liked_by_email")
+			.match({ reply_id: reply_id })
 			.single()
 
 		return data
@@ -78,47 +91,41 @@ export async function addLike(
 	user_email,
 	table = "product_likes"
 ) {
-	let likes, liked_by_id, liked_by_email
-
-	const likesData = await getLikes(
-		likedId,
-		"comments",
-		"comment_likes, liked_by_id, liked_by_email",
-		"comment_id"
-	)
-
-	console.log(likesData)
-
-	if (likesData) {
-		;({ likes, liked_by_id, liked_by_email } = likesData)
-	}
-
-	if (liked_by_id && liked_by_id?.some((user) => user === user_id)) return
-
+	let result
 	let likesName
 	let primaryKey
-	switch (table) {
-		case "product_likes":
-			;(likesName = "likes"), (primaryKey = "product_id")
-			break
-		case "comments":
-			likesName = "comment_likes"
-			primaryKey = "comment_id"
+	let likes
 
-			break
-		case "replies":
-			likesName = "reply_likes"
-			primaryKey = "reply_id"
-			break
+	if (table === "product_likes") {
+		result = await getLikes(likedId)
+		likes = result.likes
+		likesName = "likes"
+		primaryKey = "product_id"
+	} else if (table === "comments") {
+		result = await getCommentLikes(likedId)
+		likes = result.comment_likes
+		likesName = "comment_likes"
+		primaryKey = "comment_id"
+	} else if (table === "replies") {
+		result = await getReplyLikes(likedId)
+		likes = result.reply_likes
+		likesName = "reply_likes"
+		primaryKey = "reply_id"
 	}
+
+	if (
+		result?.liked_by_id &&
+		result?.liked_by_id?.some((user) => user === user_id)
+	)
+		return
 
 	try {
 		const addLike = likes + 1
-		const addedLikedById = [...liked_by_id, user_id]
-		const addedLikedByEmail = [...liked_by_email, user_email]
+		const addedLikedById = [...result.liked_by_id, user_id]
+		const addedLikedByEmail = [...result.liked_by_email, user_email]
 
 		await supabaseClient
-			.from("product_likes")
+			.from(table)
 			.update({
 				[likesName]: addLike,
 				liked_by_id: addedLikedById,
@@ -198,9 +205,9 @@ export async function addReply(
 	reply_by_user_email,
 	reply_to_user_id,
 	reply_to_user_email,
+	reply_to_reply,
 	reply_id
 ) {
-	console.log(reply_by_user_email, reply_by_user_id)
 	try {
 		await supabaseClient
 			.from("replies")
@@ -212,6 +219,7 @@ export async function addReply(
 				reply_by_user_id: reply_by_user_id,
 				reply_to_user_email: reply_to_user_email,
 				reply_to_user_id: reply_to_user_id,
+				reply_to_reply: reply_to_reply,
 				reply: reply,
 			})
 			.then((res) => {
@@ -226,6 +234,9 @@ export async function addReply(
 
 export async function getLikedByUser(user_id, product_id) {
 	const { liked_by_id } = await getLikes(product_id)
+	// const data = await getLikes(product_id)
+
+	// const liked_by_id = data?.liked_by_id
 
 	let likedByUser = false
 	if (liked_by_id && user_id) {

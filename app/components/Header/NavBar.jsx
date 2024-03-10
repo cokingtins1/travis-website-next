@@ -3,11 +3,13 @@
 import Tabs from "@mui/material/Tabs"
 import Tab from "@mui/material/Tab"
 import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 import ThemeProvider from "@/libs/contexts/ThemeContext"
 
 export default function NavBar() {
-	const [tabValue, setTabValue] = useState(0)
+	const path = usePathname()
+	const page = path.replace(/^[^/]*\/([^/]*)\/?.*$/, "$1")
+
 	const router = useRouter()
 
 	const indices = [
@@ -17,6 +19,10 @@ export default function NavBar() {
 		{ index: 3, value: "Dashboard", href: "dashboard" },
 	]
 
+	const [tabValue, setTabValue] = useState(() => {
+		const foundIndex = indices.find((index) => index.href === page)
+		return foundIndex ? foundIndex.index : 0
+	})
 	const primaryAccent = "#1976D2"
 
 	const tabsStyles = {

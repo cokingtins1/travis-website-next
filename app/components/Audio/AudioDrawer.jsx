@@ -31,7 +31,6 @@ export default function AudioDrawer({
 	const [duration, setDuration] = useState(0)
 	const [currentProgress, setCurrentProgress] = useState(0)
 	const [buffered, setBuffered] = useState(0)
-	const [volume, setVolume] = useState(0.2)
 
 	const {
 		audioSrcId,
@@ -42,6 +41,8 @@ export default function AudioDrawer({
 		getRef,
 		drawerOpen,
 		setDrawerOpen,
+		volume,
+		setVolume,
 	} = useAudio()
 
 	useEffect(() => {

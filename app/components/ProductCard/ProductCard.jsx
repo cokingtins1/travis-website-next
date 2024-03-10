@@ -14,12 +14,16 @@ import LikeButton from "../Like Button/LikeButton"
 import { useSession } from "@/libs/supabase/useSession"
 import { submitLike } from "@/app/actions/submitLike"
 
-
 export default async function ProductCard({ product }) {
 	const { startingPrice, free } = await getPricingById(product.id)
 	const imageSrc = await getImageSrc(product.id)
 	const { storeSrc, storeSrcType } = await getAudioSrcById(product.id)
-	const { likes } = await getLikes(product.id)
+	const {likes} = await getLikes(product.id)
+
+	// const data = await getLikes(product.id)
+	// const likes = data?.likes
+
+	// console.log(data)
 
 	const { session } = await useSession()
 	const likedByUser = await getLikedByUser(session?.user.id, product.id)
@@ -72,10 +76,11 @@ export default async function ProductCard({ product }) {
 						<LikeButton
 							likes={likes}
 							likeId={product.id}
+							product_id={product.id}
 							session={session}
 							likedByUser={likedByUser}
 							submitCallback={submitLike}
-							variant={'left'}
+							variant={"left"}
 						/>
 						<button className="text-text-secondary text-lg font-bold">
 							...

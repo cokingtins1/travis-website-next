@@ -12,6 +12,7 @@ export const AudioContextProvider = ({ children }) => {
 	const [drawerOpen, setDrawerOpen] = useState(false)
 	const [file, setFile] = useState({})
 	const [buttonId, setButtonId] = useState(null)
+	const [volume, setVolume] = useState(0.2)
 
 	const [tempMP3, setTempMP3] = useState({})
 	const [tempWAV, setTempWAV] = useState({})
@@ -72,6 +73,8 @@ export const AudioContextProvider = ({ children }) => {
 		tempWAV,
 		ref,
 		buttonId,
+		volume,
+		setVolume,
 		setRef,
 		setTempMP3,
 		setTempWAV,

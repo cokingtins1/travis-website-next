@@ -28,7 +28,7 @@
 html{
   background-color: var(--bg-base);
   color: #fff;
-  /* padding: .5rem; */
+  scroll-behavior: smooth;
 }
 
 * {

@@ -11,11 +11,11 @@ import AccordionDetails from "@mui/material/AccordionDetails"
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 import ExpandLess from "@mui/icons-material/ExpandLess"
 
-import { returnCommentAge } from "@/libs/utils"
-import { useState } from "react"
+import { returnCommentAge, secondsSince } from "@/libs/utils"
+import { useEffect, useState } from "react"
 import ReplyInput from "./ReplyInput"
 import Reply from "./Reply"
-import { submitLikeComment } from '@/app/actions/submitLikeComment'
+import { submitLikeComment } from "@/app/actions/submitLike"
 
 export default function Comment({
 	created_at,
@@ -32,10 +32,45 @@ export default function Comment({
 	activeUser_email,
 }) {
 	const [replying, setReplying] = useState(false)
+	const [replyingToReply, setReplyingToReply] = useState(false)
+	const [firstReplyBtnClicked, setFirstReplyBtnClicked] = useState(null)
+
+
 	const [expandReplies, setExpandReplies] = useState(false)
+	const [pulse, setPulse] = useState(false)
 
 	const commentAge = returnCommentAge(created_at)
 	const userName = user_email?.split("@")[0]
+
+	useEffect(() => {
+		const secondsValue = secondsSince(created_at)
+
+		if (secondsValue <= 1) {
+			setPulse(true)
+			const timer = setTimeout(() => {
+				setPulse(false)
+			}, 1000)
+			return () => {
+				clearTimeout(timer)
+			}
+		}
+	}, [])
+
+	function handleChange() {
+		if (replyingToReply) {
+			setExpandReplies(true)
+			setReplying(false)
+			setReplyingToReply(false)
+			return
+		}
+
+		if (!replying) {
+			setExpandReplies(!expandReplies)
+		} else {
+			setExpandReplies(replying && true)
+			setReplying(false)
+		}
+	}
 
 	const replyProps = {
 		comment_id: comment_id,
@@ -47,7 +82,13 @@ export default function Comment({
 	}
 
 	return (
-		<div className="flex justify-between">
+		<div
+			className={`flex justify-between rounded-lg ${
+				pulse
+					? "transition-colors ease-in-out duration-1000 bg-bg-hover"
+					: "transition-colors ease-in-out duration-1000 bg-bg-elevated "
+			}`}
+		>
 			<div className="flex">
 				<AccountCircle
 					fontSize="large"
@@ -91,12 +132,22 @@ export default function Comment({
 					</div>
 					{replying && (
 						<div>
-							<ReplyInput session={session} {...replyProps} />
+							<ReplyInput
+								session={session}
+								handleChange={handleChange}
+								setReplyBtnClicked={setFirstReplyBtnClicked}
+								replyToReply={false}
+								{...replyProps}
+							/>
 						</div>
 					)}
 					{replies && replies.length > 0 && (
 						<div>
-							<Accordion sx={{ boxShadow: "none" }}>
+							<Accordion
+								expanded={expandReplies}
+								onChange={handleChange}
+								sx={{ boxShadow: "none" }}
+							>
 								<AccordionSummary
 									sx={{
 										backgroundColor: "#121212",
@@ -106,13 +157,10 @@ export default function Comment({
 										"& > .MuiAccordionSummary-content": {
 											margin: "0px",
 										},
-										'&.Mui-expanded': {
-											minHeight: '36px',
-										  },
+										"&.Mui-expanded": {
+											minHeight: "36px",
+										},
 										minHeight: "36px",
-									}}
-									onClick={() => {
-										setExpandReplies(!expandReplies)
 									}}
 								>
 									<Button
@@ -145,6 +193,11 @@ export default function Comment({
 										<Reply
 											key={reply.reply_id}
 											{...reply}
+											handleChange={handleChange}
+											replyingToReply={replyingToReply}
+											setReplyingToReply={
+												setReplyingToReply
+											}
 											session={session}
 											activeUser_id={activeUser_id}
 											activeUser_email={activeUser_email}

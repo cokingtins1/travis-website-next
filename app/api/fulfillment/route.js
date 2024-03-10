@@ -6,7 +6,6 @@ import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
 import { cache } from "react"
 import dayjs from "dayjs"
 
-import EmailBody from "@/app/components/Email Components/EmailBody"
 import sgMail from "@sendgrid/mail"
 import { insertOrderData } from "@/libs/supabase/supabaseQuery"
 
@@ -90,35 +89,36 @@ export async function POST(req) {
 		}
 
 		//SUPABASE
+
 		await insertOrderData(supabaseData)
 
 		// EMAIL
 
 		const customer_email = sessionData.customer_details.email
-		// if (customer_email) {
-		// 	sgMail.setApiKey(process.env.SENDGRID_API_KEY)
-		// 	const msg = {
-		// 		from: "cokingtins1@gmail.com",
-		// 		personalizations: [
-		// 			{
-		// 				to: customer_email,
-		// 				dynamic_template_data: {
-		// 					subject: `Beats Download - Order#: ${orderDetails.stripe_order_id}`,
-		// 					order_id: orderDetails.stripe_order_id,
-		// 					order_date: orderDetails.created_at_long,
-		// 					order_total: orderDetails.order_total,
-		// 					order: productsSold,
-		// 				},
-		// 			},
-		// 		],
-		// 		template_id: process.env.SENDGRID_TEMPLATE_ID,
-		// 	}
-		// 	try {
-		// 		const res = await sgMail.send(msg)
-		// 	} catch (error) {
-		// 		console.log(error)
-		// 	}
-		// }
+		if (customer_email) {
+			sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+			const msg = {
+				from: "cokingtins1@gmail.com",
+				personalizations: [
+					{
+						to: customer_email,
+						dynamic_template_data: {
+							subject: `Beats Download - Order#: ${orderDetails.stripe_order_id}`,
+							order_id: orderDetails.stripe_order_id,
+							order_date: orderDetails.created_at_long,
+							order_total: orderDetails.order_total,
+							order: productsSold,
+						},
+					},
+				],
+				template_id: process.env.SENDGRID_TEMPLATE_ID,
+			}
+			try {
+				const res = await sgMail.send(msg)
+			} catch (error) {
+				console.log(error)
+			}
+		}
 	}
 
 	switch (event.type) {

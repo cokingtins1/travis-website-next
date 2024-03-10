@@ -59,7 +59,7 @@ export default function LikeButton({
 					/>
 					<input
 						className="hidden"
-						name="likedId"
+						name="liked_id"
 						value={likeId || ""}
 						readOnly={true}
 					/>

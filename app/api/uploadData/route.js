@@ -105,7 +105,8 @@ export async function POST(req) {
 			await supabase.from("product_likes").insert({
 				product_id: product_id,
 				likes: 0,
-				liked_by: null,
+				liked_by_id: [],
+				liked_by_email: [],
 			})
 
 			for (const e of formData) {

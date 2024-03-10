@@ -11,6 +11,7 @@ export const submitReply = async (formData) => {
 	const reply_by_user_email = formData.get("reply_by_user_email")
 	const reply_to_user_id = formData.get("reply_to_user_id")
 	const reply_to_user_email = formData.get("reply_to_user_email")
+	const reply_to_reply = formData.get("replyToReply")
 	const product_id = formData.get("product_id")
 
 	const reply_id = crypto.randomUUID()
@@ -25,6 +26,7 @@ export const submitReply = async (formData) => {
 				reply_by_user_email,
 				reply_to_user_id,
 				reply_to_user_email,
+				reply_to_reply,
 				reply_id, 
 			)
 		}

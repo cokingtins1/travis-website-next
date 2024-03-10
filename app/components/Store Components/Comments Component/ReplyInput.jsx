@@ -8,7 +8,13 @@ import AccountCircle from "@mui/icons-material/AccountCircle"
 import { useState } from "react"
 import { submitReply } from "@/app/actions/submitReply"
 
-export default function ReplyInput({ session, ...replyProps }) {
+export default function ReplyInput({
+	session,
+	handleChange,
+	setReplyBtnClicked,
+	replyToReply,
+	...replyProps
+}) {
 	const [reply, setReply] = useState("")
 
 	async function handleSubmit(formData) {
@@ -16,6 +22,8 @@ export default function ReplyInput({ session, ...replyProps }) {
 
 		await submitReply(formData)
 		setReply("")
+		setReplyBtnClicked(null)
+		handleChange()
 	}
 
 	return (
@@ -26,6 +34,7 @@ export default function ReplyInput({ session, ...replyProps }) {
 					style={{ marginRight: "8px" }}
 				/>
 				<TextField
+					autoFocus={true}
 					style={{ paddingBottom: "10px" }}
 					variant="standard"
 					name="reply"
@@ -47,6 +56,14 @@ export default function ReplyInput({ session, ...replyProps }) {
 						readOnly={true}
 					/>
 				))}
+
+				<input
+					className="hidden"
+					name="replyToReply"
+					type="text"
+					value={replyToReply}
+					readOnly={true}
+				/>
 
 				<IconButton
 					disabled={!reply}

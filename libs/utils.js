@@ -84,32 +84,42 @@ export function returnFileType(type) {
 export function returnCommentAge(timeStamp) {
 	const secondsSince = dayjs().diff(dayjs(timeStamp), "second")
 
-	const secondsInMinute = 60
-	const secondsInHour = 60 * secondsInMinute
-	const secondsInDay = 24 * secondsInHour
-	const secondsInWeek = 7 * secondsInDay
-	const secondsInYear = 365 * secondsInDay
+	//need to set allowance for server/client rendering times
+	const timeIncrement = 15
 
-	if (secondsSince < secondsInMinute) {
-		return `${secondsSince} ${
-			secondsSince === 1 ? "second" : "seconds"
+	const roundedSecondsSince =
+		Math.round(secondsSince / timeIncrement) * timeIncrement
+
+	if (roundedSecondsSince < timeIncrement) {
+		return `${roundedSecondsSince} ${
+			roundedSecondsSince === 1 ? "second" : "seconds"
 		} ago`
-	} else if (secondsSince < secondsInHour) {
-		const minutesSince = Math.round(secondsSince / secondsInMinute)
+	} else if (roundedSecondsSince < 60) {
+		return `${roundedSecondsSince} seconds ago`
+	} else if (roundedSecondsSince < 60 * 15) {
+		const minutesSince = Math.round(roundedSecondsSince / 60)
 		return `${minutesSince} ${
 			minutesSince === 1 ? "minute" : "minutes"
 		} ago`
-	} else if (secondsSince < secondsInDay) {
-		const hours = Math.round(secondsSince / secondsInHour)
+	} else if (roundedSecondsSince < 60 * 60) {
+		const minutesSince = Math.round(roundedSecondsSince / 60)
+		return `${minutesSince} minutes ago`
+	} else if (roundedSecondsSince < 60 * 60 * 24) {
+		const hours = Math.round(roundedSecondsSince / (60 * 60))
 		return `${hours} ${hours === 1 ? "hour" : "hours"} ago`
-	} else if (secondsSince < secondsInWeek) {
-		const days = Math.round(secondsSince / secondsInDay)
+	} else if (roundedSecondsSince < 60 * 60 * 24 * 7) {
+		const days = Math.round(roundedSecondsSince / (60 * 60 * 24))
 		return `${days} ${days === 1 ? "day" : "days"} ago`
-	} else if (secondsSince < secondsInYear) {
-		const weeks = Math.round(secondsSince / secondsInWeek)
+	} else if (roundedSecondsSince < 60 * 60 * 24 * 365) {
+		const weeks = Math.round(roundedSecondsSince / (60 * 60 * 24 * 7))
 		return `${weeks} ${weeks === 1 ? "week" : "weeks"} ago`
 	} else {
-		const years = Math.round(secondsSince / secondsInYear)
+		const years = Math.round(roundedSecondsSince / (60 * 60 * 24 * 365))
 		return `${years} ${years === 1 ? "year" : "years"} ago`
 	}
+}
+
+export function secondsSince(timeStamp) {
+	const result = dayjs().diff(dayjs(timeStamp), "second")
+	return result
 }
