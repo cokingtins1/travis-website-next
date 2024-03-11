@@ -1,18 +1,34 @@
 import ProductCard from "../ProductCard/ProductCard"
-import { Button } from "../UI/Button"
 import FilterSection from "./FilterComponents/FilterSection"
 import Divider from "@mui/material/Divider"
-import { Suspense } from "react"
 import Skeleton from "@mui/material/Skeleton"
 
-export default function ProductSection({
-	productData,
-	tags,
-	genres,
-	moods,
-	instruments,
-}) {
-	// const { tags, genres, moods, instruments } = filters
+export default function ProductSection({ productData, searchParams }) {
+	const filteredProducts = productData.filter((product) =>
+		Object.entries(searchParams).every(([key, value]) => {
+			if (key === "bpm") {
+				const [minBpm, maxBpm] = value.split(",").map(Number)
+				return product[key] >= minBpm && product[key] <= maxBpm
+			} else {
+				return product[key] && product[key].includes(value)
+			}
+		})
+	)
+
+	function returnFilters(array, filter) {
+		return Array.from(new Set(array.flatMap((product) => product[filter])))
+	}
+
+	const allBPM = productData
+		.map((product) => product.bpm)
+		.sort((a, b) => a - b)
+	const minBmp = Math.min(...allBPM)
+	const maxBmp = Math.max(...allBPM)
+	const bpmRange = [minBmp, maxBmp]
+
+	const filteredGenres = returnFilters(filteredProducts, "genres")
+	const filteredMoods = returnFilters(filteredProducts, "moods")
+	const filteredInstruments = returnFilters(filteredProducts, "instruments")
 
 	return (
 		<>
@@ -26,15 +42,17 @@ export default function ProductSection({
 					</div> */}
 					<div className="flex">
 						<FilterSection
-							genres={genres}
-							moods={moods}
-							instruments={instruments}
+							filteredProducts={filteredProducts}
+							genres={filteredGenres}
+							moods={filteredMoods}
+							instruments={filteredInstruments}
+							bpmRange={bpmRange}
 						/>
 					</div>
 				</div>
 				<section className="w-full">
 					<ul className="grid sm:grid-cols-2 gap-x-4 grid-cols-1 ">
-						{productData?.map((product, index) => (
+						{filteredProducts?.map((product, index) => (
 							<ProductCard key={index} product={product} />
 						))}
 					</ul>

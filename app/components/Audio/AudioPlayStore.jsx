@@ -5,14 +5,7 @@ import { useEffect } from "react"
 import AudioDrawer from "./AudioDrawer"
 
 export default function AudioPlayStore({ audioSrc, audioSrcType, product }) {
-	const {
-		audioSrcId,
-		setAudioSrcId,
-		playing,
-		togglePlayPause,
-		drawerOpen,
-		setDrawerOpen,
-	} = useAudio()
+	const { setAudioSrcId, setDrawerOpen } = useAudio()
 
 	useEffect(() => {
 		setAudioSrcId(audioSrc)
@@ -25,7 +18,7 @@ export default function AudioPlayStore({ audioSrc, audioSrcType, product }) {
 			srcType={audioSrcType}
 			product={product}
 			playOnMount={false}
-            file={true}
+			file={true}
 		/>
 	)
 }

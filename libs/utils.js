@@ -49,10 +49,25 @@ export function returnArray(keyVal, formData) {
 	let tagsArray = []
 	formData.forEach((value, key) => {
 		if (key.startsWith(keyVal)) {
-			tagsArray.push(value)
+			tagsArray.push(value.trim())
 		}
 	})
-	return tagsArray
+
+	let newArray = tagsArray.map((tag) => {
+		const wordCount = tag.split(" ").length
+		if (wordCount > 0) {
+			const wordsArray = tag.split(" ")
+			for (let i = 0; i < wordsArray.length; i++) {
+				wordsArray[i] =
+					wordsArray[i].toLowerCase().charAt(0).toUpperCase() +
+					wordsArray[i].toLowerCase().substring(1)
+			}
+			tag = wordsArray.join(" ")
+		}
+		return tag
+	})
+
+	return newArray
 }
 
 export function formatDurationDisplay(duration) {

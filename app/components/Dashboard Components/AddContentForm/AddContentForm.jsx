@@ -18,6 +18,7 @@ import { Button } from "../../UI/Button"
 import { createFormData } from "@/libs/utils"
 import AudioDrawer from "../../Audio/AudioDrawer"
 import { useAudio } from "@/libs/contexts/AudioContext"
+import { useRouter } from "next/navigation"
 
 const INITIAL_DATA = {
 	MP3_file: null,
@@ -67,6 +68,8 @@ export default function AddContentForm() {
 	const [dataLoading, setDataLoading] = useState(false)
 	const [error, setError] = useState([])
 	const [validating, setValidating] = useState(false)
+
+	const router = useRouter()
 
 	const { audioSrcId, buttonId, clearAudio } = useAudio()
 
@@ -166,6 +169,7 @@ export default function AddContentForm() {
 			)
 			if (res.ok) {
 				setDataLoading(false)
+				router.push("/dashboard")
 			} else {
 				addError("There was an error uploading the product data")
 				setDataLoading(false)

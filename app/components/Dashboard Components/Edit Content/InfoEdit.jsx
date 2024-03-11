@@ -15,7 +15,7 @@ import DropDown from "@/app/components/Dashboard Components/AddContentForm/Uploa
 import { toast } from "react-toastify"
 import PricingSwitch from "../AddContentForm/Upload Components/PricingSwitch"
 import SubmitModal from "../../UI/SubmitModal"
-import { createFormData } from "@/libs/utils"
+import { createFormData, returnArray } from "@/libs/utils"
 import { useAudio } from "@/libs/contexts/AudioContext"
 import AudioDrawer from "../../Audio/AudioDrawer"
 import Divider from "@mui/material/Divider"
@@ -123,6 +123,13 @@ export default function InfoEdit({
 		revalidatePath("/")
 	}
 
+	useEffect(() => {
+		const formData = createFormData(data, "product_id", product.id)
+		console.log(data)
+
+		// console.log(returnArray("genres", formData))
+	}, [data])
+
 	async function handleSubmit(e) {
 		e.preventDefault()
 
@@ -202,10 +209,7 @@ export default function InfoEdit({
 		<form>
 			<div className="flex justify-end gap-4 pt-4 pr-4">
 				{editing || (
-					<SubmitModal
-						variant="delete"
-						callback={deleteProduct}
-					/>
+					<SubmitModal variant="delete" callback={deleteProduct} />
 				)}
 				{!editing ? (
 					<Button

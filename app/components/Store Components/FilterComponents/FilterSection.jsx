@@ -1,46 +1,64 @@
-// import { useState } from "react"
-import FilterDropDown from "../../UI/FilterDropDown"
+"use client"
+
+import FilterDropDown from "./FilterDropDown"
 import BPMSlider from "./BPMSlider"
+import Button from "@mui/material/Button"
+import { useSearchParams } from "next/navigation"
+import { useRouter } from "next/navigation"
 
-export default function FilterSection({ genres, moods, instruments }) {
-	// const searchParams = useSearchParams()
-	// console.log(searchParams.get('moods'))
+export default function FilterSection({
+	filteredProducts,
+	genres,
+	moods,
+	instruments,
+	bpmRange
+}) {
+	const searchParams = useSearchParams()
+	const router = useRouter()
 
-	// const [filterValues, setFilterValues] = useState([])
+	function getSearchParam(query) {
+		return searchParams.get(query)
+	}
 
-	// function updateFilters(filters) {
-	// 	setFilterValues((prev) => {
-	// 		return [...prev, filters]
-	// 	})
-	// }
+	const filters = [
+		{ name: "genres", items: genres, value: getSearchParam("genres") },
+		{ name: "moods", items: moods, value: getSearchParam("moods") },
+		{
+			name: "instruments",
+			items: instruments,
+			value: getSearchParam("instruments"),
+		},
+	]
 
-	const test = ["balls", "big balls", "even bigger balls"]
+	function clearSearch() {
+		router.replace("/store", undefined, { shallow: true })
+		router.refresh()
+	}
+
+	const allBPM = filteredProducts
+		.map((product) => product.bpm)
+		.sort((a, b) => a - b)
+	const minBmp = Math.min(...allBPM)
+	const maxBmp = Math.max(...allBPM)
+
+	const BPMRange = [minBmp, maxBmp]
 
 	return (
-		<div className="w-full flex justify-start items-center gap-4 bg-bg-elevated p-4">
-			{/* {filterValues.map((filter, index) => (
-				<span key={index}>{filter}</span>
-			) )} */}
-			<FilterDropDown
-				// updateFilters={updateFilters}
-				label="GENRE"
-				items={genres}
-				type={"genres"}
-			/>
-			<FilterDropDown
-				// updateFilters={updateFilters}
-				label="MOODS"
-				items={moods}
-				type={"moods"}
-			/>
-			<FilterDropDown
-				// updateFilters={updateFilters}
-				label="INSTRUMENTS"
-				items={instruments}
-				type={"instruments"}
-			/>
+		<div className="w-full flex flex-col justify-start items-center gap-4 bg-bg-elevated p-4">
+			<div className=' w-full flex justify-start items-center gap-4 '>
+				<Button onClick={clearSearch}>Clear Search</Button>
+				{filters.map((filter) => (
+					<FilterDropDown
+						key={filter.name}
+						items={filter.items}
+						paramName={filter.name}
+						selected={filter.value}
+						filteredProducts={filteredProducts}
+					/>
+				))}
+			</div>
 
-			<BPMSlider />
+			<BPMSlider selected={BPMRange} bpms={allBPM} bpmRange={bpmRange} />
 		</div>
 	)
 }

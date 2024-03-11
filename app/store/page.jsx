@@ -14,8 +14,6 @@ export default async function Store({ searchParams }) {
 	const moods = await getAllColVals("moods")
 	const instruments = await getAllColVals("instruments")
 
-	// console.log("searParams from server:", searchParams)
-
 	if (!productData) {
 		notFound()
 	}
@@ -32,10 +30,7 @@ export default async function Store({ searchParams }) {
 				</header>
 				<ProductSection
 					productData={productData}
-					tags={tags}
-					genres={genres}
-					moods={moods}
-					instruments={instruments}
+					searchParams={searchParams}
 				/>
 			</main>
 		</>

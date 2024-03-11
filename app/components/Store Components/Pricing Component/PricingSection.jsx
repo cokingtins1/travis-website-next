@@ -17,10 +17,6 @@ export default function PricingSection({ product, pricing, imageSrc }) {
 	const [selected, setSelected] = useState("")
 	const [cartTotal, setCartTotal] = useState(() => formatCurrency(0))
 
-	if (!pricing) {
-		return null
-	}
-
 	const [selectedProduct, setSelectedProduct] = useState({
 		product_id: null,
 		pricing_id: null,
@@ -28,6 +24,10 @@ export default function PricingSection({ product, pricing, imageSrc }) {
 		type: null,
 		price: null,
 	})
+
+	if (!pricing) {
+		return null
+	}
 
 	function getFileType(name) {
 		let fileType

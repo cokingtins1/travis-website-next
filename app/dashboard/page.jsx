@@ -4,15 +4,11 @@ import styles from "./page.module.css"
 import { Button } from "../components/UI/Button"
 import Divider from "@mui/material/Divider"
 
-import { createServerActionClient } from "@supabase/auth-helpers-nextjs"
-import { cookies } from "next/headers"
-import ProductMeta from "../components/Store Components/ProductMeta/ProductMeta"
 import DashboardProductCard from "../components/Dashboard Components/DashboardProductCard"
+import { getAllProductData } from "@/libs/supabase/supabaseQuery"
 
 export default async function Page() {
-	const supabase = createServerActionClient({ cookies })
-
-	const { data: products } = await supabase.from("products").select()
+	const products = await getAllProductData()
 
 	return (
 		<>
@@ -37,8 +33,14 @@ export default async function Page() {
 					<p className="text-text-secondary text-sm">Files</p>
 				</div>
 				<Divider variant="middle" />
+				{!products && (
+					<h1>
+						Connection to Database failed. Check interenet
+						connection
+					</h1>
+				)}
 				<ul className="flex flex-col justify-center items-start">
-					{products.map((product, index) => (
+					{products?.map((product, index) => (
 						<DashboardProductCard
 							key={index}
 							index={index}
