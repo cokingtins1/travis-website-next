@@ -36,6 +36,9 @@ export default function FilterDropDown({
 		const query = search ? `?${search}` : ""
 
 		router.push(`${pathname}${query}`)
+		// router.replace(`${pathname}${query}`, undefined, { shallow: true })
+		router.refresh()
+
 	}
 
 	const onSelect = (e) => {
@@ -67,8 +70,9 @@ export default function FilterDropDown({
 					}}
 				>
 					{items.map((item) => (
-						<MenuItem key={item} value={item}>
-							{`${item} (${getOccurrence(item)}) `}
+						<MenuItem key={crypto.randomUUID()} value={item}>
+							{getOccurrence(item) >= 1 &&
+								`${item} (${getOccurrence(item)}) `}
 						</MenuItem>
 					))}
 				</TextField>

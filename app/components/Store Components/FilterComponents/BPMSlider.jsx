@@ -3,10 +3,14 @@
 import Slider from "@mui/material/Slider"
 import { usePathname, useSearchParams } from "next/navigation"
 import Link from "next/link"
-import { useCallback, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 
 export default function BPMSlider({ selected, bpms, bpmRange }) {
 	const [value, setValue] = useState([selected[0], selected[1]])
+
+	useEffect(() => {
+		setValue([selected[0], selected[1]])
+	}, [selected])
 
 	const handleChange = (event, newValue) => {
 		setValue(newValue)
@@ -45,8 +49,8 @@ export default function BPMSlider({ selected, bpms, bpmRange }) {
 						value={value}
 						step={null}
 						marks={marks}
-						min={bpmRange[0]}
-						max={bpmRange[1]}
+						min={selected[0]}
+						max={selected[1]}
 						onChange={handleChange}
 						valueLabelDisplay="auto"
 					/>

@@ -5,13 +5,15 @@ import BPMSlider from "./BPMSlider"
 import Button from "@mui/material/Button"
 import { useSearchParams } from "next/navigation"
 import { useRouter } from "next/navigation"
+import BPMSliderNoRange from "./BPMSliderNoRange"
+import { useEffect } from "react"
 
 export default function FilterSection({
 	filteredProducts,
 	genres,
 	moods,
 	instruments,
-	bpmRange
+	bpmRange,
 }) {
 	const searchParams = useSearchParams()
 	const router = useRouter()
@@ -19,6 +21,10 @@ export default function FilterSection({
 	function getSearchParam(query) {
 		return searchParams.get(query)
 	}
+
+	useEffect(() => {
+		router.refresh()
+	}, [searchParams])
 
 	const filters = [
 		{ name: "genres", items: genres, value: getSearchParam("genres") },
@@ -32,7 +38,7 @@ export default function FilterSection({
 
 	function clearSearch() {
 		router.replace("/store", undefined, { shallow: true })
-		router.refresh()
+		// router.refresh()
 	}
 
 	const allBPM = filteredProducts
@@ -45,11 +51,10 @@ export default function FilterSection({
 
 	return (
 		<div className="w-full flex flex-col justify-start items-center gap-4 bg-bg-elevated p-4">
-			<div className=' w-full flex justify-start items-center gap-4 '>
-				<Button onClick={clearSearch}>Clear Search</Button>
+			<div className=" w-full flex justify-start items-center gap-4 ">
 				{filters.map((filter) => (
 					<FilterDropDown
-						key={filter.name}
+						key={crypto.randomUUID()}
 						items={filter.items}
 						paramName={filter.name}
 						selected={filter.value}
@@ -57,8 +62,14 @@ export default function FilterSection({
 					/>
 				))}
 			</div>
-
-			<BPMSlider selected={BPMRange} bpms={allBPM} bpmRange={bpmRange} />
+			<div className="flex">
+				<Button onClick={clearSearch}>Clear Search</Button>
+				<BPMSliderNoRange
+					selected={BPMRange}
+					bpms={allBPM}
+					bpmRange={bpmRange}
+				/>
+			</div>
 		</div>
 	)
 }
