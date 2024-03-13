@@ -4,17 +4,18 @@ import Accordion from "@mui/material/Accordion"
 import AccordionSummary from "@mui/material/AccordionSummary"
 import AccordionDetails from "@mui/material/AccordionDetails"
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
-import ExpandLess from "@mui/icons-material/ExpandLess"
 import Button from "@mui/material/Button"
 import Slider from "@mui/material/Slider"
 
-import { usePathname, useSearchParams } from "next/navigation"
 import Link from "next/link"
-import { useCallback, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
+import { useSearch } from "@/libs/contexts/SearchContext"
 
 export default function BPMSliderNoRange({ selected, bpms, bpmRange }) {
 	const [value, setValue] = useState([selected[0], selected[1]])
 	const [expanded, setExpanded] = useState(false)
+
+	const { pathname, createBPMQuery } = useSearch()
 
 	useEffect(() => {
 		setValue([selected[0], selected[1]])
@@ -23,19 +24,6 @@ export default function BPMSliderNoRange({ selected, bpms, bpmRange }) {
 	const handleChange = (event, newValue) => {
 		setValue(newValue)
 	}
-
-	const pathname = usePathname()
-	const searchParams = useSearchParams()
-
-	const createQueryString = useCallback(
-		(name, value) => {
-			const params = new URLSearchParams(searchParams)
-			params.set(name, value)
-
-			return params.toString()
-		},
-		[searchParams]
-	)
 
 	return (
 		<Accordion
@@ -63,9 +51,11 @@ export default function BPMSliderNoRange({ selected, bpms, bpmRange }) {
 				}}
 			>
 				{" "}
-				<label>
-					<span className="font-bold text-sm text-text-secondary">
-						{`BPM: ${value[0]} ${
+				<label className="font-bold text-sm text-text-secondary">
+					{" "}
+					BPM:
+					<span className="font-normal">
+						{` ${value[0]} ${
 							value[0] !== value[1] ? "to " + value[1] : ""
 						} `}
 					</span>
@@ -77,7 +67,7 @@ export default function BPMSliderNoRange({ selected, bpms, bpmRange }) {
 						href={
 							pathname +
 							"?" +
-							createQueryString("bpm", `${value[0]},${value[1]}`)
+							createBPMQuery("bpm", `${value[0]},${value[1]}`)
 						}
 					>
 						<Slider

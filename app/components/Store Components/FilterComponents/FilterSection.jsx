@@ -1,30 +1,24 @@
 "use client"
 
 import FilterDropDown from "./FilterDropDown"
-import BPMSlider from "./BPMSlider"
+import Divider from "@mui/material/Divider"
+
 import Button from "@mui/material/Button"
-import { useSearchParams } from "next/navigation"
-import { useRouter } from "next/navigation"
+
 import BPMSliderNoRange from "./BPMSliderNoRange"
-import { useEffect } from "react"
+import { useSearch } from "@/libs/contexts/SearchContext"
 
 export default function FilterSection({
 	filteredProducts,
 	genres,
 	moods,
 	instruments,
+	filteredTags,
 	bpmRange,
 }) {
-	const searchParams = useSearchParams()
-	const router = useRouter()
+	const { getSearchParam, clearSearch, updateQueryParam } = useSearch()
 
-	function getSearchParam(query) {
-		return searchParams.get(query)
-	}
-
-	useEffect(() => {
-		router.refresh()
-	}, [searchParams])
+	// console.log(getSearchParam("tags"))
 
 	const filters = [
 		{ name: "genres", items: genres, value: getSearchParam("genres") },
@@ -36,11 +30,6 @@ export default function FilterSection({
 		},
 	]
 
-	function clearSearch() {
-		router.replace("/store", undefined, { shallow: true })
-		// router.refresh()
-	}
-
 	const allBPM = filteredProducts
 		.map((product) => product.bpm)
 		.sort((a, b) => a - b)
@@ -50,8 +39,26 @@ export default function FilterSection({
 	const BPMRange = [minBmp, maxBmp]
 
 	return (
-		<div className="w-full flex flex-col justify-start items-center gap-4 bg-bg-elevated p-4">
-			<div className=" w-full flex justify-start items-center gap-4 ">
+		<div className="w-full flex flex-col items-center bg-bg-elevated p-4">
+			<ul className="flex items-center gap-4 mb-4">
+				<label className="font-bold text-sm text-text-secondary">
+					TAGS:
+				</label>
+				{filteredTags?.map((tag, index) => {
+					return (
+						<li key={index}>
+							<Button
+								onClick={() => {
+									updateQueryParam("tags", tag)
+								}}
+							>
+								{tag}
+							</Button>
+						</li>
+					)
+				})}
+			</ul>
+			<div className="flex gap-4 mb-4 ">
 				{filters.map((filter) => (
 					<FilterDropDown
 						key={crypto.randomUUID()}

@@ -4,7 +4,7 @@ import Link from "next/link"
 import { getImageSrc } from "@/libs/supabase/supabaseQuery"
 
 export default async function DashboardProductCard({ product, index }) {
-	const imageSrc = await getImageSrc(product.id)
+	const imageSrc = await getImageSrc(product.product_id)
 
 	return (
 		<li
@@ -13,7 +13,7 @@ export default async function DashboardProductCard({ product, index }) {
 		>
 			<p className="text-sm text-text-secondary">{index + 1}</p>
 			<Link
-				href={`/dashboard/${product.id}`}
+				href={`/dashboard/${product.product_id}`}
 				className="flex gap-4 justify-start items-center"
 			>
 				<div className="relative size-[40px]">

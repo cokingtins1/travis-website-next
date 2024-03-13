@@ -268,7 +268,7 @@ export async function getProductById(id) {
 		const { data: product } = await supabaseClient
 			.from("products")
 			.select()
-			.match({ id })
+			.match({ product_id: id })
 			.single()
 
 		if (product) {
@@ -352,12 +352,17 @@ export async function getAudioSrcById(product_id) {
 				offset: 0,
 			})
 
+		if (error) {
+			throw new Error(error.message)
+		}
+
 		if (data) {
-			const audioFiles = data.filter(
-				(item) =>
-					item?.metadata?.mimetype === "audio/mpeg" ||
-					item?.metadata?.mimetype === "audio/wav" ||
-					item?.metadata?.mimetype === "application/x-zip-compressed"
+			const audioFiles = data.filter((item) =>
+				[
+					"audio/mpeg",
+					"audio/wav",
+					"application/x-zip-compressed",
+				].includes(item?.metadata?.mimetype)
 			)
 
 			let audioFile_MP3 = null
@@ -387,18 +392,17 @@ export async function getAudioSrcById(product_id) {
 				const audioSrc_WAV =
 					audioFile_WAV &&
 					`${productFileURL}/${product_id}/${audioFile_WAV.name}`
-
 				const audioSrc_STEM =
 					audioFile_STEM &&
 					`${productFileURL}/${product_id}/${audioFile_STEM.name}`
 
-				// Send the store the MP3 src by default
+				// Corrected assignment of srcType_STEM
 				const srcType_MP3 = audioFile_MP3?.metadata?.mimetype
 				const srcType_WAV = audioFile_WAV?.metadata?.mimetype
-				const srcType_STEM = audioFile_WAV?.metadata?.mimetype
+				const srcType_STEM = audioFile_STEM?.metadata?.mimetype
 
 				const storeSrc = audioSrc_MP3 || audioSrc_WAV
-				const storeSrcType = srcType_MP3 || srcType_WAV
+				const storeSrcType = srcType_MP3 || srcType_WAV || srcType_STEM
 
 				return {
 					storeSrc,
@@ -408,14 +412,13 @@ export async function getAudioSrcById(product_id) {
 					audioSrc_WAV,
 					srcType_WAV,
 					audioSrc_STEM,
+					srcType_STEM, 
 				}
 			}
-			return
-		} else {
-			console.log(error)
 		}
 	} catch (error) {
-		console.log(error)
+		console.error(error)
+		throw new Error("Failed to fetch audio source by ID")
 	}
 }
 
@@ -431,7 +434,7 @@ export async function getPricingById(id) {
 		const { data: free } = await supabaseClient
 			.from("products")
 			.select("free")
-			.match({ id })
+			.match({ product_id: id })
 			.single()
 
 		if (error) {

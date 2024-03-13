@@ -14,23 +14,36 @@ import LikeButton from "../Like Button/LikeButton"
 import { useSession } from "@/libs/supabase/useSession"
 import { submitLike } from "@/app/actions/submitLike"
 
-export default async function ProductCard({ product }) {
-	const { startingPrice, free } = await getPricingById(product.id)
-	const imageSrc = await getImageSrc(product.id)
-	const { storeSrc, storeSrcType } = await getAudioSrcById(product.id)
-	const {likes} = await getLikes(product.id)
+export default async function ProductCard({ productData }) {
+	// const { startingPrice, free } = await getPricingById(product.product_id)
+	// const imageSrc = await getImageSrc(product.product_id)
+	// const { storeSrc, storeSrcType } = await getAudioSrcById(product.product_id)
+	// const { likes } = await getLikes(product.product_id)
 
-	// const data = await getLikes(product.id)
+	// const data = await getLikes(product.product_id)
 	// const likes = data?.likes
 
-	// console.log(data)
+	const product = productData.product_data
+	const startingPrice = productData.startingPrice
+	const free = productData.isFree
+	const imageSrc = productData.imageSrc
+	const storeSrc = productData.storeSrc
+	const storeSrcType = productData.storeSrcType
+	const likes = productData.likes
+	const likedByUser = productData.likedByUser
 
-	const { session } = await useSession()
-	const likedByUser = await getLikedByUser(session?.user.id, product.id)
+	const session = productData.session
+	
+	// console.log("productData", likedByUser)
+	// const { session } = await useSession()
+	// const likedByUser = await getLikedByUser(
+	// 	session?.user.id,
+	// 	product.product_id
+	// )
 
-	if (!storeSrc) {
-		return null
-	}
+	// if (!storeSrc) {
+	// 	return null
+	// }
 
 	return (
 		<>
@@ -45,20 +58,28 @@ export default async function ProductCard({ product }) {
 							srcType={storeSrcType}
 							free={free}
 						/>
-						<Link href={`/store/${product.id}`}>
+						<Link href={`/store/${product.product_id}`}>
 							<div>
 								<p>{product.title}</p>
 								<p className="text-sm text-text-secondary">
 									{product.bpm} BPM
 								</p>
 								<p className="text-sm text-text-secondary">
-									{product.genres.map((g, index) => (
-										<span key={index}> &#8226; {g} </span>
+									{product.genres.map((g, index, array) => (
+										<span key={index}>
+											{g}{" "}
+											{index !== array.length - 1 &&
+												" • "}{" "}
+										</span>
 									))}
 								</p>
 								<p className="text-sm text-text-secondary">
-									{product.tags.map((g, index) => (
-										<span key={index}>{g} </span>
+									{product.tags.map((tag, index, array) => (
+										<span key={index}>
+											{tag}
+											{index !== array.length - 1 &&
+												" / "}{" "}
+										</span>
 									))}
 								</p>
 							</div>
@@ -75,8 +96,8 @@ export default async function ProductCard({ product }) {
 						)}
 						<LikeButton
 							likes={likes}
-							likeId={product.id}
-							product_id={product.id}
+							likeId={product.product_id}
+							product_id={product.product_id}
 							session={session}
 							likedByUser={likedByUser}
 							submitCallback={submitLike}

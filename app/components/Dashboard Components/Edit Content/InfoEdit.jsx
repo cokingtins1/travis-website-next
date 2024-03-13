@@ -100,7 +100,7 @@ export default function InfoEdit({
 			const res = await toast.promise(
 				fetch("/api/deleteProduct", {
 					method: "DELETE",
-					body: JSON.stringify(product.id),
+					body: JSON.stringify(product.product_id),
 				}),
 				{
 					pending: "Deleting product",
@@ -124,7 +124,7 @@ export default function InfoEdit({
 	}
 
 	useEffect(() => {
-		const formData = createFormData(data, "product_id", product.id)
+		const formData = createFormData(data, "product_id", product.product_id)
 		console.log(data)
 
 		// console.log(returnArray("genres", formData))
@@ -133,7 +133,7 @@ export default function InfoEdit({
 	async function handleSubmit(e) {
 		e.preventDefault()
 
-		const formData = createFormData(data, "product_id", product.id)
+		const formData = createFormData(data, "product_id", product.product_id)
 
 		try {
 			setDataLoading(true)

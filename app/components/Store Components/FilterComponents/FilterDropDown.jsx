@@ -2,9 +2,10 @@
 
 import TextField from "@mui/material/TextField"
 import MenuItem from "@mui/material/MenuItem"
-import { useEffect, useState } from "react"
-import { usePathname, useSearchParams } from "next/navigation"
-import { useRouter } from "next/navigation"
+
+import { useState } from "react"
+
+import { useSearch } from "@/libs/contexts/SearchContext"
 
 export default function FilterDropDown({
 	items,
@@ -12,33 +13,14 @@ export default function FilterDropDown({
 	selected,
 	filteredProducts,
 }) {
-	const router = useRouter()
-	const pathname = usePathname()
-	const searchParams = useSearchParams()
 	const [value, setValue] = useState(selected || "")
+
+	const { updateQueryParam } = useSearch()
 
 	function getOccurrence(value) {
 		return filteredProducts.filter((product) =>
 			product[paramName].includes(value)
 		).length
-	}
-
-	const updateQueryParam = (paramName, value) => {
-		const current = new URLSearchParams(Array.from(searchParams.entries()))
-
-		if (!value) {
-			current.delete(paramName)
-		} else {
-			current.set(paramName, value)
-		}
-
-		const search = current.toString()
-		const query = search ? `?${search}` : ""
-
-		router.push(`${pathname}${query}`)
-		// router.replace(`${pathname}${query}`, undefined, { shallow: true })
-		router.refresh()
-
 	}
 
 	const onSelect = (e) => {
@@ -49,13 +31,14 @@ export default function FilterDropDown({
 	return (
 		<>
 			<div className="flex flex-col gap-1">
-				<label className="w-[160px] font-bold text-sm text-text-secondary">
+				<label className="font-bold text-sm text-text-secondary">
 					{paramName.toUpperCase()}
 				</label>
 				<TextField
 					key={selected}
 					fullWidth
 					size="small"
+					sx={{ width: "130px", height: "30px" }}
 					id={paramName}
 					type="text"
 					InputLabelProps={{
@@ -70,7 +53,11 @@ export default function FilterDropDown({
 					}}
 				>
 					{items.map((item) => (
-						<MenuItem key={crypto.randomUUID()} value={item}>
+						<MenuItem
+							sx={{ fontSize: "0.75rem" }}
+							key={crypto.randomUUID()}
+							value={item}
+						>
 							{getOccurrence(item) >= 1 &&
 								`${item} (${getOccurrence(item)}) `}
 						</MenuItem>

@@ -8,7 +8,7 @@ import { getLikes } from "@/libs/supabase/supabaseQuery"
 import LikeButton from "../../Like Button/LikeButton"
 
 export default async function ProductMeta({ product, imageSrc }) {
-	const { likes } = await getLikes(product.id)
+	const { likes } = await getLikes(product.product_id)
 
 	return (
 		<>
@@ -28,7 +28,10 @@ export default async function ProductMeta({ product, imageSrc }) {
 
 				<div className={styles.metaInfo}>
 					<div className="flex justify-center gap-1 mt-1 mb-2">
-						<LikeButton productId={product.id} likes={likes} />
+						<LikeButton
+							productId={product.product_id}
+							likes={likes}
+						/>
 						<IconButton>
 							<IosShareIcon />
 						</IconButton>

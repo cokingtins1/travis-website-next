@@ -8,7 +8,7 @@ export default async function DashboardProductCard({ product }) {
 
 	return (
 		<li className="flex flex-1 flex-col items-center justify-center rounded hover:bg-bg-hover p-2">
-			<Link href={`/dashboard/${product.id}`} className='flex'>
+			<Link href={`/dashboard/${product.product_id}`} className="flex">
 				<Image
 					src={imageSrc ? imageSrc : beatKitImage}
 					width={90}

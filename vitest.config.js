@@ -10,5 +10,6 @@ export default defineConfig({
 	test: {
 		includeSource: ["src/**/*./{js,ts}"],
 		environment: "jsdom",
+
 	},
 })
