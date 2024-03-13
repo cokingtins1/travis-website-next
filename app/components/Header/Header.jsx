@@ -1,6 +1,6 @@
 import styles from "./styles.module.css"
 import Image from "next/image"
-import logoImg from "@/public/Logo.png"
+import logoImg from "@/public/TravLogoBlue.png"
 import { useSession } from "@/libs/supabase/useSession"
 import dynamic from "next/dynamic"
 import NavBar from "./NavBar"
@@ -23,10 +23,11 @@ export default async function Header() {
 					<Image
 						src={logoImg}
 						alt="logo"
-						className="flex justify-self-start"
-						width={50}
+						width={125}
+						sizes="(max-width: 430px), 125px "
 					/>
-					<NavBar />
+
+					<NavBar session={session} />
 					<div className="flex justify-self-end items-center gap-4">
 						<AccountButton session={session} />
 						<DynamicShoppingCart />

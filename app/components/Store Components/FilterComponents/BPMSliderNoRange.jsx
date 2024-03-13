@@ -11,7 +11,7 @@ import Link from "next/link"
 import { useEffect, useState } from "react"
 import { useSearch } from "@/libs/contexts/SearchContext"
 
-export default function BPMSliderNoRange({ selected, bpms, bpmRange }) {
+export default function BPMSliderNoRange({ selected, allBpmRange }) {
 	const [value, setValue] = useState([selected[0], selected[1]])
 	const [expanded, setExpanded] = useState(false)
 
@@ -73,8 +73,8 @@ export default function BPMSliderNoRange({ selected, bpms, bpmRange }) {
 						<Slider
 							sx={{ color: "#1976D2" }}
 							value={value}
-							min={bpmRange[0] || 0}
-							max={bpmRange[1] || 200}
+							min={allBpmRange[0] || 0}
+							max={allBpmRange[1] || 200}
 							onChange={handleChange}
 							valueLabelDisplay="auto"
 						/>

@@ -16,10 +16,11 @@ export default async function ProductMeta({ product, imageSrc }) {
 				<div className="flex flex-col justify-center items-center gap-4 ">
 					<div className="h-[300px] w-[250px] relative">
 						<Image
+							priority={true}
 							src={imageSrc ? imageSrc : beatKitImage}
 							alt="product image"
 							fill={true}
-							style={{ objectFit: "cover" }}
+							style={{ objectFit: "cover", borderRadius: "10px" }}
 							sizes="(max-width: 430px), 250px"
 						/>
 					</div>

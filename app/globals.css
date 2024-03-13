@@ -29,14 +29,19 @@ html{
   background-color: var(--bg-base);
   color: #fff;
   scroll-behavior: smooth;
+  scrollbar-gutter: stable;
+  margin-left: 1rem;
+
 }
+
+
 
 * {
   scrollbar-color: var(--bg-secondary) var(--bg-primary);
 }
 
 *::-webkit-scrollbar {
-  width: 17px;
+  width: 1rem;
 }
 
 *::-webkit-scrollbar-track {
@@ -76,6 +81,7 @@ input[type=number] {
 /* Remove default margin */
 body {
   margin-bottom: 1rem;
+
 }
 h1,
 h2,

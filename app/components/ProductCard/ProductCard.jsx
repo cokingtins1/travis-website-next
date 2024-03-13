@@ -1,49 +1,26 @@
 import Link from "next/link"
 import Divider from "@mui/material/Divider"
 
-import {
-	getAudioSrcById,
-	getImageSrc,
-	getLikes,
-	getPricingById,
-	getLikedByUser,
-} from "@/libs/supabase/supabaseQuery"
 import AddToCartBtn from "../UI/AddToCartBtn"
 import ProductCardImage from "./ProductCardImage"
 import LikeButton from "../Like Button/LikeButton"
-import { useSession } from "@/libs/supabase/useSession"
 import { submitLike } from "@/app/actions/submitLike"
 
-export default async function ProductCard({ productData }) {
-	// const { startingPrice, free } = await getPricingById(product.product_id)
-	// const imageSrc = await getImageSrc(product.product_id)
-	// const { storeSrc, storeSrcType } = await getAudioSrcById(product.product_id)
-	// const { likes } = await getLikes(product.product_id)
-
-	// const data = await getLikes(product.product_id)
-	// const likes = data?.likes
-
+export default function ProductCard({ productData }) {
 	const product = productData.product_data
 	const startingPrice = productData.startingPrice
 	const free = productData.isFree
 	const imageSrc = productData.imageSrc
 	const storeSrc = productData.storeSrc
 	const storeSrcType = productData.storeSrcType
-	const likes = productData.likes
+	const likes = productData.product_likes.likes
 	const likedByUser = productData.likedByUser
 
 	const session = productData.session
-	
-	// console.log("productData", likedByUser)
-	// const { session } = await useSession()
-	// const likedByUser = await getLikedByUser(
-	// 	session?.user.id,
-	// 	product.product_id
-	// )
 
-	// if (!storeSrc) {
-	// 	return null
-	// }
+	if (!storeSrc) {
+		return null
+	}
 
 	return (
 		<>

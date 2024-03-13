@@ -1,8 +1,14 @@
 .headerWrapper{
+    width: 100%;
     padding: 1rem;
     height: var(--headerHeight);
     background-color: var(--bg-elevated);
     border-radius: 0.25rem;
+    position: fixed;
+    z-index: 99;
+    top: 0;
+    box-shadow: 0px 0px 25px 0px rgba(100, 100, 100, 0.5);
+
 }
 
 .headerTop{

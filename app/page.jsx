@@ -1,5 +1,5 @@
 import Image from "next/image"
-import TravLogo from "@/public/TravLogo.png"
+import TravLogo from "@/public/TravLogoBlue.png"
 import heroImg from "@/public/hero-picture.png"
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 import Link from "next/link"
@@ -10,6 +10,7 @@ export default function HomePage() {
 			<section className="w-fill h-dvh flex flex-col justify-center items-center">
 				<div className="flex flex-col justify-center items-center gap-4">
 					<Image
+						priority={true}
 						src={TravLogo}
 						width={600}
 						sizes="(max-width: 430px), 600px "
@@ -18,7 +19,7 @@ export default function HomePage() {
 					<Link href={"#about"}>
 						<ExpandMoreIcon
 							className="animate-bounce opacity-50"
-							sx={{ color: "red", fontSize: "4rem" }}
+							sx={{ color: "#1976D2", fontSize: "4rem" }}
 						/>
 					</Link>
 				</div>

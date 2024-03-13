@@ -6,7 +6,7 @@ import { useState } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import ThemeProvider from "@/libs/contexts/ThemeContext"
 
-export default function NavBar() {
+export default function NavBar({ session }) {
 	const path = usePathname()
 	const page = path.replace(/^[^/]*\/([^/]*)\/?.*$/, "$1")
 
@@ -15,9 +15,15 @@ export default function NavBar() {
 	const indices = [
 		{ index: 0, value: "Home", href: "" },
 		{ index: 1, value: "Store", href: "store" },
-		{ index: 2, value: "Sandbox", href: "sandbox" },
-		{ index: 3, value: "Dashboard", href: "dashboard" },
 	]
+
+	if (session) {
+		indices.push({
+			index: indices.length,
+			value: "Dashboard",
+			href: "dashboard",
+		})
+	}
 
 	const [tabValue, setTabValue] = useState(() => {
 		const foundIndex = indices.find((index) => index.href === page)

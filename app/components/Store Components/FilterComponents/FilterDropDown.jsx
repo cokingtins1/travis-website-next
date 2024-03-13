@@ -19,7 +19,7 @@ export default function FilterDropDown({
 
 	function getOccurrence(value) {
 		return filteredProducts.filter((product) =>
-			product[paramName].includes(value)
+			product.product_data[paramName].includes(value)
 		).length
 	}
 
@@ -49,6 +49,7 @@ export default function FilterDropDown({
 					onChange={(e) => {
 						const newValue = e.target.value
 						setValue(newValue)
+
 						onSelect(e)
 					}}
 				>

@@ -138,3 +138,45 @@ export function secondsSince(timeStamp) {
 	const result = dayjs().diff(dayjs(timeStamp), "second")
 	return result
 }
+
+export function getBPMData(data) {
+	const sortedBPM = data
+		.map((product) => product.product_data.bpm)
+		.sort((a, b) => a - b)
+	const minBmp = Math.min(...sortedBPM)
+	const maxBmp = Math.max(...sortedBPM)
+	const bpmRange = [minBmp, maxBmp]
+
+	return bpmRange
+}
+
+export function getFilterProducts(data, searchParams) {
+	const filteredProducts = data.filter((product) =>
+		Object.entries(searchParams).every(([key, value]) => {
+			if (key === "bpm") {
+				const [minBpm, maxBpm] = value.split(",").map(Number)
+				return (
+					product.product_data[key] >= minBpm &&
+					product.product_data[key] <= maxBpm
+				)
+			} else if (key === "tags") {
+				const tags = value.split(",").map((tag) => tag.trim())
+				return tags.every((tag) =>
+					product.product_data[key].includes(tag)
+				)
+			} else {
+				return (
+					product.product_data[key] &&
+					product.product_data[key].includes(value)
+				)
+			}
+		})
+	)
+	return filteredProducts
+}
+
+export function returnFilters(array, filter) {
+	return Array.from(
+		new Set(array.flatMap((product) => product.product_data[filter]))
+	)
+}

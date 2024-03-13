@@ -6,6 +6,8 @@ import Divider from "@mui/material/Divider"
 
 import DashboardProductCard from "../components/Dashboard Components/DashboardProductCard"
 import { getAllProductData } from "@/libs/supabase/supabaseQuery"
+import { Suspense } from "react"
+import DashboardCardSkeleton from "../components/Skeletons/DashboardCardSkeleton"
 
 export default async function Page() {
 	const products = await getAllProductData()
@@ -41,11 +43,16 @@ export default async function Page() {
 				)}
 				<ul className="flex flex-col justify-center items-start">
 					{products?.map((product, index) => (
-						<DashboardProductCard
+						<Suspense
 							key={index}
-							index={index}
-							product={product}
-						/>
+							fallback={<DashboardCardSkeleton />}
+						>
+							<DashboardProductCard
+								key={index}
+								index={index}
+								product={product}
+							/>
+						</Suspense>
 					))}
 				</ul>
 			</section>

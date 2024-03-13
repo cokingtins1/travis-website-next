@@ -19,13 +19,8 @@ export default function ProductCardImage({
 	startingPrice,
 	free,
 }) {
-	const {
-		audioSrcId,
-		setAudioSrcId,
-		playing,
-		togglePlayPause,
-		drawerOpen,
-	} = useAudio()
+	const { audioSrcId, setAudioSrcId, playing, togglePlayPause, drawerOpen } =
+		useAudio()
 
 	useEffect(() => {
 		setAudioSrcId(null)

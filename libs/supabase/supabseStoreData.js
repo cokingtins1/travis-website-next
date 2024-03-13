@@ -22,17 +22,10 @@ async function getAllProductData() {
 	return data
 }
 
-// Need: {startingPrice, free} , imageSrc, {storeSrc, storeSrcType}, likes, session, likedByUser
-
 export async function constructData() {
 	const data = await getAllProductData()
 	const { session } = await useSession()
 
-	const { pricing } = await getPricingById(
-		"fa6255df-90cd-4ba2-b6b5-708c86dffa39"
-	)
-
-	// console.log(pricing)
 	const userId = session?.user.id
 
 	// const data = [
@@ -462,15 +455,3 @@ export async function constructData() {
 
 	return data
 }
-
-// const data = {
-// 	startingPrice: "", //check => data[0].startingPrice = 30
-// 	free: "", // check => data[0].isFree = true
-// 	imageSrc: "", // check data[0].imageSrc = "xyz..."
-// 	storeSrc: "", // check data[0].storeSrc = "xyz..."
-// 	storeSrcType: "", // check => data[0].storeSrcType = "xyz..."
-// 	likes: "", // check => data[0].productLikes = 4
-// 	likedByUser: "",
-
-// 	session: "",
-// }

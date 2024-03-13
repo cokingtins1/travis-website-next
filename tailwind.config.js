@@ -23,6 +23,7 @@ module.exports = {
 				"border-primary": "#a9a9a980",
 				"border-btn-select": "#005FF8",
 				"icon-primary": "#b3b3b3",
+				divider: "#ffffff1f",
 			},
 			backgroundColor: {
 				"bg-free": "#3ECF8E",
