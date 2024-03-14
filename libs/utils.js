@@ -151,8 +151,44 @@ export function getBPMData(data) {
 }
 
 export function getFilterProducts(data, searchParams) {
+	const searchParamsObject = {}
+	searchParams.forEach((value, key) => {
+		if (searchParamsObject[key]) {
+			searchParamsObject[key] += `,${value}`
+		} else {
+			searchParamsObject[key] = value
+		}
+	})
+
 	const filteredProducts = data.filter((product) =>
-		Object.entries(searchParams).every(([key, value]) => {
+		Object.entries(searchParamsObject).every(([key, value]) => {
+			if (key === "bpm") {
+				const [minBpm, maxBpm] = value.split(",").map(Number)
+				return (
+					product.product_data[key] >= minBpm &&
+					product.product_data[key] <= maxBpm
+				)
+			} else if (key === "tags") {
+				const tags = value.split(",").map((tag) => tag.trim())
+				return tags.every((tag) =>
+					product.product_data[key].includes(tag)
+				)
+			} else {
+				return (
+					product.product_data[key] &&
+					product.product_data[key].includes(value)
+				)
+			}
+		})
+	)
+	return filteredProducts
+}
+
+export function productFilter(data, allFilters) {
+	if (Object.keys(allFilters).length === 0) return data
+
+	const filteredProducts = data.filter((product) =>
+		Object.entries(allFilters).every(([key, value]) => {
 			if (key === "bpm") {
 				const [minBpm, maxBpm] = value.split(",").map(Number)
 				return (
@@ -176,7 +212,8 @@ export function getFilterProducts(data, searchParams) {
 }
 
 export function returnFilters(array, filter) {
-	return Array.from(
-		new Set(array.flatMap((product) => product.product_data[filter]))
-	)
+	const allValues = array.flatMap((product) => product.product_data[filter])
+	const uniqueValues = Array.from(new Set(allValues))
+
+	return [uniqueValues, allValues]
 }

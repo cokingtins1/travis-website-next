@@ -1,15 +1,7 @@
 "use server"
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
-import { cookies } from "next/headers"
-import { cache } from "react"
 
 import supabaseClient from "@/libs/supabase/config/supabaseClient"
 import { useSession } from "./useSession"
-
-export const createServerClient = cache(() => {
-	const cookieStore = cookies()
-	return createServerComponentClient({ cookies: () => cookieStore })
-})
 
 // Order getting functions:
 
@@ -305,9 +297,7 @@ export async function getPricingIdById(id) {
 }
 
 export async function insertOrderData(data) {
-	const supabase = createServerClient()
-
-	await supabase
+	await supabaseClient
 		.from("orders")
 		.insert(data)
 		.then((res) => {
@@ -318,8 +308,6 @@ export async function insertOrderData(data) {
 }
 
 export async function getDownloadUrls(productsSold) {
-	const supabase = createServerClient()
-
 	const filePaths = productsSold.map(
 		(product) => `${product.product_id}/${product.pricing_id}`
 	)
@@ -329,7 +317,7 @@ export async function getDownloadUrls(productsSold) {
 		const result = []
 
 		for (const path of filePaths) {
-			const { data } = await supabase.storage
+			const { data } = await supabaseClient.storage
 				.from("all_products")
 				.createSignedUrl(path, expiresIn, { download: true })
 			result.push(data.signedUrl)
@@ -343,10 +331,8 @@ export async function getDownloadUrls(productsSold) {
 }
 
 export async function getAudioSrcById(product_id) {
-	const supabase = createServerClient()
-
 	try {
-		const { data, error } = await supabase.storage
+		const { data, error } = await supabaseClient.storage
 			.from(`all_products`)
 			.list(`${product_id}`, {
 				offset: 0,
@@ -412,7 +398,7 @@ export async function getAudioSrcById(product_id) {
 					audioSrc_WAV,
 					srcType_WAV,
 					audioSrc_STEM,
-					srcType_STEM, 
+					srcType_STEM,
 				}
 			}
 		}
@@ -504,11 +490,10 @@ export async function getPricingById(id) {
 }
 
 export async function getDownloadableImage(product_id) {
-	const supabase = createServerClient()
 	const productFileURL =
 		"https://njowjcfiaxbnflrcwcep.supabase.co/storage/v1/object/public/all_products"
 
-	const { data } = await supabase.storage
+	const { data } = await supabaseClient.storage
 		.from(`all_products`)
 		.download(`${product_id}/productImage`, {
 			transform: {
@@ -520,11 +505,10 @@ export async function getDownloadableImage(product_id) {
 }
 
 export async function getImageSrc(product_id) {
-	const supabase = createServerClient()
 	const productFileURL =
 		"https://njowjcfiaxbnflrcwcep.supabase.co/storage/v1/object/public/all_products"
 
-	const { data } = await supabase.storage
+	const { data } = await supabaseClient.storage
 		.from(`all_products`)
 		.list(`${product_id}/productImage`, {
 			offset: 0,
