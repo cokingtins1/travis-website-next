@@ -8,9 +8,29 @@ import { Suspense } from "react"
 // import { useSearch } from "@/libs/contexts/SearchContext"
 
 export default function ProductSection({ productData, searchParams }) {
-	// const [originalData, setOriginalData] = useState(productData)
-	// const [dataChanging, setDataChanging] = useState(false)
-	// const [filtering, setFiltering] = useState(false)
+	// const [genres, setGenres] = useState()
+	// const [moods, setMoods] = useState()
+	// const [instruments, setInstruments] = useState()
+	// const [tags, setTags] = useState()
+	// const [bpm, setBPM] = useState()
+
+	// const filters = [
+	// 	{ name: "genres", value: ["Rap"] },
+	// 	{ name: "moods", value: ["Chill"] },
+	// 	{ name: "instruments", value: ["Drums"] },
+	// 	{ name: "tags", value: ["Drake", "Party"] },
+	// 	{ name: "bpm", value: [55, 133] },
+	// ]
+
+	// const filters = useMemo(() => [
+	// 	{ name: "genres", value: genres },
+	// 	{ name: "moods", value: moods },
+	// 	{ name: "instruments", value: instruments },
+	// 	{ name: "tags", value: tags },
+	// 	{ name: "bpm", value: bpm },
+	// ])
+
+	// filteredData = useMemo(() => getFilterProducts(data, searchParams), [filters])
 
 	const filteredProducts = getFilterProducts(productData, searchParams)
 
@@ -42,9 +62,24 @@ export default function ProductSection({ productData, searchParams }) {
 				</div>
 				<section className="w-full">
 					<ul className="grid sm:grid-cols-2 gap-x-4 grid-cols-1 ">
-						{filteredProducts?.map((product, index) => (
-							<ProductCard key={index} productData={product} />
-						))}
+						<Suspense
+							key={crypto.randomUUID()}
+							fallback={
+								<ul>
+									<ProductCardSkeleton />
+									<ProductCardSkeleton />
+									<ProductCardSkeleton />
+									<ProductCardSkeleton />
+								</ul>
+							}
+						>
+							{filteredProducts?.map((product, index) => (
+								<ProductCard
+									key={index}
+									productData={product}
+								/>
+							))}
+						</Suspense>
 					</ul>
 				</section>
 			</div>

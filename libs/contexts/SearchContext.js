@@ -39,7 +39,7 @@ export const SearchContextProvider = ({ children }) => {
 
 		router.push(`${pathname}${query}`, { scroll: false })
 		// router.replace(`${pathname}${query}`, undefined, { shallow: true })
-		router.refresh()
+		// router.refresh()
 	}
 
 	const createBPMQuery = useCallback(

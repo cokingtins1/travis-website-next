@@ -1,7 +1,4 @@
 "use server"
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
-import { cookies } from "next/headers"
-import { cache } from "react"
 
 import supabaseClient from "@/libs/supabase/config/supabaseClient"
 import { useSession } from "./useSession"
@@ -11,11 +8,6 @@ import {
 	getLikedByUser,
 	getPricingById,
 } from "./supabaseQuery"
-
-export const createServerClient = cache(() => {
-	const cookieStore = cookies()
-	return createServerComponentClient({ cookies: () => cookieStore })
-})
 
 async function getAllProductData() {
 	const { data, error } = await supabaseClient.rpc("get_product_data")
