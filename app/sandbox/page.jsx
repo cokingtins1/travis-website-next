@@ -1,10 +1,10 @@
 "use client"
 
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useState } from "react"
 
-import { getFilterProducts, productFilter, returnFilters } from "@/libs/utils"
+import { productFilter, returnFilters } from "@/libs/utils"
 import NewDropDown from "../components/Store Components/FilterComponents/NewDropDown"
+import { SearchContextProvider } from "@/libs/contexts/SearchContext"
 
 export default function Page({ searchParams }) {
 	//prop:
@@ -911,20 +911,33 @@ export default function Page({ searchParams }) {
 			likedByUser: true,
 		},
 	]
-	const queryProp = "genres"
 
-	const router = useRouter()
-	const sParams = useSearchParams()
-	const path = usePathname()
-	const queryParam = sParams.get(queryProp)
+	const [allFilters, setAllFilters] = useState(searchParams)
+	const [genreFilters, setGenreFilters] = useState(() =>
+		returnFilters(data, "genres")
+	)
+	const [moodFilters, setMoodFilters] = useState(() =>
+		returnFilters(data, "moods")
+	)
 
-	const [allFilters, setAllFilters] = useState({})
-
-	// useEffect(() => {
-	// 	console.log("router changing")
-	// }, [searchParams])
+	const [filteredData, setFilteredData] = useState(() => {
+		if (Object.keys(searchParams).length > 0) {
+			return productFilter(data, searchParams)
+		} else {
+			return data
+		}
+	})
 
 	useEffect(() => {
+		const [genres, allGenres] = returnFilters(filteredData, "genres")
+		setGenreFilters([genres, allGenres])
+
+		const [moods, allMoods] = returnFilters(filteredData, "moods")
+		setMoodFilters([moods, allMoods])
+	}, [searchParams, filteredData])
+
+	useEffect(() => {
+		setAllFilters(searchParams)
 		setFilteredData(productFilter(data, searchParams))
 	}, [searchParams])
 
@@ -932,95 +945,44 @@ export default function Page({ searchParams }) {
 		setFilteredData(productFilter(filteredData, allFilters))
 	}, [allFilters])
 
-	const [filteredData, setFilteredData] = useState(() => {
-		if (Object.keys(searchParams).length > 0) {
-			return getFilterProducts(data, sParams)
-		} else {
-			return data
-		}
-	})
-
-	const [genres, allGenres] = useMemo(
-		() => returnFilters(filteredData, "genres"),
-		[searchParams]
-	)
-	const [moods, allMoods] = useMemo(
-		() => returnFilters(filteredData, "moods"),
-		[searchParams]
-	)
-	const [instruments, allInstruments] = useMemo(
-		() => returnFilters(filteredData, "instruments"),
-		[filteredData]
-	)
-	const [tags, allTags] = useMemo(
-		() => returnFilters(filteredData, "tags"),
-		[filteredData]
-	)
-
-	const [selectedGenres, setSelectedGenres] = useState([])
+	const [genres, allGenres] = genreFilters
+	const [moods, allMoods] = moodFilters
 
 	// const [bpm, setBPM] = useState()
 
-	function filterData(data, moodQuery, genreQuery) {
-		if (!moodQuery && !genreQuery) {
-			return data
-		}
-
-		return data.filter((item) => {
-			const productData = item.product_data
-			const moodIncluded =
-				!moodQuery || productData.moods.includes(moodQuery)
-			const genreIncluded =
-				!genreQuery || productData.genres.includes(genreQuery)
-			return moodIncluded && genreIncluded
-		})
-	}
-
-	function handleSubmit(e) {
-		e.preventDefault()
-		const formData = new FormData(e.currentTarget)
-		const moods = formData.get("moods")
-		const genres = formData.get("genres")
-		let queryString = `${path}?`
-
-		if (genres !== "") {
-			queryString += `genres=${encodeURIComponent(genres)}&`
-		}
-
-		router.push(queryString.slice(0, -1))
-		setFilteredData(filterData(data, moods, genres))
-	}
-
 	return (
 		<div className="flex flex-col justify-center items-center mt-[300px]">
-			<form
-				onSubmit={(e) => {
-					handleSubmit(e)
-				}}
-				className="flex gap-4"
-			>
-				<NewDropDown
-					paramName="genres"
-					filter={genres}
-					allFilters={allGenres}
-					setAllFilters={setAllFilters}
-				/>
-				<NewDropDown
-					paramName="moods"
-					filter={moods}
-					allFilters={allMoods}
-					setAllFilters={setAllFilters}
-				/>
-
-				<button type="submit">Search</button>
-			</form>
+			<div className="flex gap-4">
+				<SearchContextProvider>
+					<NewDropDown
+						paramName="genres"
+						filter={genres}
+						allFilters={allGenres}
+						setAllFilters={setAllFilters}
+						searchParams={searchParams}
+						allFiltersState={allFilters}
+					/>
+					<NewDropDown
+						paramName="moods"
+						filter={moods}
+						allFilters={allMoods}
+						setAllFilters={setAllFilters}
+						searchParams={searchParams}
+						allFiltersState={allFilters}
+					/>
+				</SearchContextProvider>
+			</div>
 
 			<ul className="mt-12">
-				{filteredData.map((g, index) => (
-					<li key={index}>
-						{JSON.stringify(g.product_data.product_id)}
-					</li>
-				))}
+				{filteredData.length > 0 ? (
+					filteredData.map((g, index) => (
+						<li key={index}>
+							{JSON.stringify(g.product_data.product_id)}
+						</li>
+					))
+				) : (
+					<p>No Products Found</p>
+				)}
 			</ul>
 		</div>
 	)

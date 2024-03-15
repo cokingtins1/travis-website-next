@@ -1,16 +1,17 @@
-import { getPricingIdById } from "@/libs/supabase/supabaseQuery"
-import { useSession } from "@/libs/supabase/useSession"
 import { returnArray } from "@/libs/utils"
 import { NextResponse } from "next/server"
 import { revalidatePath } from "next/cache"
 import { headers } from "next/headers"
+import { getPricingIdById } from "@/libs/supabase/supabaseQuery"
+import { useSession } from "@/libs/supabase/useSession"
 
 export async function PUT(req) {
-	const { supabase } = await useSession()
 	const formData = await req.formData()
 	const product_id = await formData.get("product_id")
 	const pricingId = await getPricingIdById(product_id)
 	const [MP3_file_id, WAV_file_id, STEM_file_id] = pricingId
+
+	const { supabase } = useSession()
 
 	const file_url_mp3 = `${product_id}/${MP3_file_id}`
 	const file_url_wav = `${product_id}/${WAV_file_id}`
@@ -61,7 +62,6 @@ export async function PUT(req) {
 	}
 
 	if (formData) {
-
 		try {
 			await supabase
 				.from("products")

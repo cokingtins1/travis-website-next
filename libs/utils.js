@@ -185,6 +185,7 @@ export function getFilterProducts(data, searchParams) {
 }
 
 export function productFilter(data, allFilters) {
+	//works with searchParams, not useSearchParams
 	if (Object.keys(allFilters).length === 0) return data
 
 	const filteredProducts = data.filter((product) =>
@@ -195,15 +196,10 @@ export function productFilter(data, allFilters) {
 					product.product_data[key] >= minBpm &&
 					product.product_data[key] <= maxBpm
 				)
-			} else if (key === "tags") {
-				const tags = value.split(",").map((tag) => tag.trim())
-				return tags.every((tag) =>
-					product.product_data[key].includes(tag)
-				)
 			} else {
-				return (
-					product.product_data[key] &&
-					product.product_data[key].includes(value)
+				const values = value.split(",").map((tag) => tag.trim())
+				return values.every((tag) =>
+					product.product_data[key].includes(tag)
 				)
 			}
 		})

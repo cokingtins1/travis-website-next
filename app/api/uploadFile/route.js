@@ -1,21 +1,11 @@
-export const dynamic = 'force-dynamic'
-
 import { NextResponse } from "next/server"
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
-import { cookies } from "next/headers"
-import { cache } from "react"
+
 import { revalidatePath } from "next/cache"
-
-
-export const createServerClient = cache(() => {
-	const cookieStore = cookies()
-	return createServerComponentClient({ cookies: () => cookieStore })
-})
+import { useSession } from "@/libs/supabase/useSession"
 
 export async function POST(req) {
+	const { supabase } = useSession()
 	const formData = await req.formData()
-
-	const supabase = createServerClient()
 
 	const upload_id = formData.get("upload_id")
 
@@ -49,12 +39,10 @@ export async function POST(req) {
 			}
 		}
 	}
-	revalidatePath('/', 'layout')
+	revalidatePath("/", "layout")
 
 	return NextResponse.json(
 		{ message: "Files were uploaded susccessfully" },
 		{ status: 201 }
 	)
-
-
 }

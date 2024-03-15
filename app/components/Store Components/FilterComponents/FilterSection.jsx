@@ -11,7 +11,7 @@ import Button from "@mui/material/Button"
 import BPMSliderNoRange from "./BPMSliderNoRange"
 import { useSearch } from "@/libs/contexts/SearchContext"
 import { getBPMData, returnFilters } from "@/libs/utils"
-import TagsList from "./TagsList"
+import TagsList from "./Tag"
 import { useEffect, useState } from "react"
 
 export default function FilterSection({
@@ -35,7 +35,6 @@ export default function FilterSection({
 			value: getSearchParam("instruments"),
 		},
 	]
-
 
 	// useEffect(() => {
 	// 	const tagsInParams = getSearchParam("tags")?.split(",")

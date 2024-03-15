@@ -1,7 +1,7 @@
 import { useSearch } from "@/libs/contexts/SearchContext"
 import Button from "@mui/material/Button"
 
-export default function TagsList({ tag }) {
+export default function Tag({ tag }) {
 	const { updateQueryParam } = useSearch()
 
 	return (

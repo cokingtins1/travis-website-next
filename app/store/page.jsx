@@ -1,18 +1,31 @@
+
 import SearchComponent from "../components/SearchBar/SearchComponent"
 import { getAllProductData } from "@/libs/supabase/supabaseQuery"
 import { notFound } from "next/navigation"
 import ProductSection from "../components/Store Components/ProductSection"
 import { SearchContextProvider } from "@/libs/contexts/SearchContext"
 import { constructData } from "@/libs/supabase/supabseStoreData"
+import { Suspense } from "react"
+import StoreSkeleton from "../components/Skeletons/StoreSkeleton"
 
 export default async function Store({ searchParams }) {
-	const productData = await getAllProductData()
+	// const [data, setData] = useState([])
+	// useEffect(() => {
+	// 	const fetchData = async () => {
+	// 		try {
+	// 			const data = await constructData()
+	// 			setData(data)
+	// 		} catch (error) {
+	// 			console.error("Error fetching data:", error)
+	// 		}
+	// 	}
+
+	// 	fetchData()
+	// }, [])
+
 
 	const data = await constructData()
-
-	console.log(JSON.stringify(data, null, 2))
-
-	if (!productData) {
+	if (!data) {
 		notFound()
 	}
 
@@ -22,12 +35,14 @@ export default async function Store({ searchParams }) {
 				{/* <header className="my-4">
 					<SearchComponent />
 				</header> */}
-				<SearchContextProvider>
-					<ProductSection
-						productData={data}
-						searchParams={searchParams}
-					/>
-				</SearchContextProvider>
+				<Suspense fallback={<StoreSkeleton />}>
+					<SearchContextProvider>
+						<ProductSection
+							data={data}
+							searchParams={searchParams}
+						/>
+					</SearchContextProvider>
+				</Suspense>
 			</main>
 		</>
 	)

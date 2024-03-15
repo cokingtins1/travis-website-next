@@ -1,9 +1,10 @@
-import { useSession } from "@/libs/supabase/useSession"
 import { NextResponse } from "next/server"
 import { revalidatePath } from "next/cache"
+import { useSession } from '@/libs/supabase/useSession'
 
 export async function DELETE(req) {
-	const { supabase } = await useSession()
+
+	const {supabase} = useSession()
 
 	const product_id = await req.json()
 

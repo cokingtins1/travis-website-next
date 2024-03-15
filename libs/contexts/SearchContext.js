@@ -10,50 +10,36 @@ const SearchContext = createContext()
 export const SearchContextProvider = ({ children }) => {
 	const router = useRouter()
 	const pathname = usePathname()
-	const searchParams = useSearchParams()
+	const sParams = useSearchParams()
 
-	const updateQueryParam = (paramName, value) => {
-		const current = new URLSearchParams(Array.from(searchParams.entries()))
+	const updateQueryParam = (paramName, selectedValues) => {
+		const current = new URLSearchParams(Array.from(sParams.entries()))
 
-		if (paramName === "tags") {
-			const currentTags = current.getAll("tags")
-			if (!value) {
-				current.delete("tags")
-			} else {
-				const updatedTags = value
-					.split(",")
-					.filter((tag) => tag.trim() !== "")
-				const newTags = [...new Set([...currentTags, ...updatedTags])]
-				current.set("tags", newTags.join(","))
-			}
+		if (selectedValues.length === 0) {
+			current.delete(paramName)
 		} else {
-			if (!value) {
-				current.delete(paramName)
-			} else {
-				current.set(paramName, value)
-			}
+			current.set(paramName, selectedValues)
 		}
 
 		const search = current.toString()
 		const query = search ? `?${search}` : ""
 
 		router.push(`${pathname}${query}`, { scroll: false })
-		// router.replace(`${pathname}${query}`, undefined, { shallow: true })
-		// router.refresh()
+		router.refresh()
 	}
 
 	const createBPMQuery = useCallback(
 		(name, value) => {
-			const params = new URLSearchParams(searchParams)
+			const params = new URLSearchParams(sParams)
 			params.set(name, value)
 
 			return params.toString()
 		},
-		[searchParams]
+		[sParams]
 	)
 
 	const getSearchParam = (query) => {
-		return searchParams.get(query)
+		return sParams.get(query)
 	}
 
 	const clearSearch = () => {
@@ -63,7 +49,7 @@ export const SearchContextProvider = ({ children }) => {
 	const values = {
 		router,
 		pathname,
-		searchParams,
+		sParams,
 		updateQueryParam,
 		createBPMQuery,
 		getSearchParam,
