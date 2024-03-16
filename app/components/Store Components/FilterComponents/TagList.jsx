@@ -8,6 +8,7 @@ import RefreshIcon from "@mui/icons-material/Refresh"
 import IconButton from "@mui/material/IconButton"
 import Tooltip from "@mui/material/Tooltip"
 import Button from "@mui/material/Button"
+import CloseIcon from "@mui/icons-material/Close"
 
 export default function TagList({
 	paramName,
@@ -26,14 +27,9 @@ export default function TagList({
 
 	const [limitTags, setLimitTags] = useState(filter.slice(0, 10))
 
-
 	useEffect(() => {
 		setSelected(sParams.get(paramName)?.split(",") || [])
 	}, [searchParams])
-
-	useEffect(() => {
-		updateQueryParam(paramName, selected)
-	}, [selected])
 
 	function getOccurrence(arr, value) {
 		return arr.reduce((occ, currentVal) => {
@@ -42,7 +38,8 @@ export default function TagList({
 	}
 
 	const handleClick = (value) => {
-		const selectedValues = [value]
+		const selectedValues = [...selected, value]
+
 		setSelected((prev) => [...prev, value])
 
 		if (selectedValues.length === 0) {
@@ -62,10 +59,11 @@ export default function TagList({
 				[paramName]: String(selectedValues),
 			}))
 		}
+		updateQueryParam(paramName, selectedValues)
 	}
 
 	return (
-		<ul className="flex items-center gap-4 mb-4 border-y-[1px] border-divider py-2">
+		<ul className="flex flex-wrap items-center gap-2 mb-4 border-y-[1px] border-divider py-2 w-3/4">
 			<div className="flex items-center gap-2">
 				<Tooltip title="Refresh Tags" placement="bottom">
 					<IconButton
@@ -81,20 +79,51 @@ export default function TagList({
 					TAGS:
 				</label>
 			</div>
-			{filter.map((item) => (
-				<React.Fragment key={item}>
-					{getOccurrence(allFilters, item) >= 1 && (
+			<div className="flex items-center">
+				{selected.length > 0 &&
+					selected.map((tag, index) => (
 						<Button
-							value={item}
-							onClick={() => {
-								handleClick(item)
+							key={index}
+							color="warning"
+							size="small"
+							sx={{
+								whiteSpace: "nowrap",
+								fontSize: "0.75rem",
 							}}
+							// onClick={clearSearch}
 						>
-							{item}
+							<CloseIcon
+								sx={{
+									fontSize: "0.75rem",
+									marginTop: "2.5px",
+									marginRight: "2px",
+								}}
+							/>
+							<span className="pt-1">{tag}</span>
 						</Button>
-					)}
-				</React.Fragment>
-			))}
+					))}
+			</div>
+			<div
+				className={`flex flex-grow ${
+					!selected.length ? "justify-center" : "justify-start"
+				}`}
+			>
+				{filter.map((item) => (
+					<React.Fragment key={item}>
+						{getOccurrence(allFilters, item) >= 1 && (
+							<Button
+								className="whitespace-nowrap"
+								value={item}
+								onClick={() => {
+									handleClick(item)
+								}}
+							>
+								{item}
+							</Button>
+						)}
+					</React.Fragment>
+				))}
+			</div>
 		</ul>
 	)
 }

@@ -978,14 +978,14 @@ export default function ProductSection({ data, searchParams }) {
 	return (
 		<>
 			<div className="flex flex-col justify-center items-center w-full mt-12">
-				{/* <TagList
+				<TagList
 					paramName="tags"
 					filter={tags}
 					allFilters={allTags}
 					setAllFilters={setAllFilters}
 					searchParams={searchParams}
 					allFiltersState={allFilters}
-				/> */}
+				/>
 				<div className="flex items-center justify-center gap-2 my-4 w-full">
 					<NewDropDown
 						paramName="genres"
