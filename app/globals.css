@@ -29,8 +29,9 @@ html{
   background-color: var(--bg-base);
   color: #fff;
   scroll-behavior: smooth;
-  scrollbar-gutter: stable;
+  /* scrollbar-gutter: stable; */
   margin-left: 1rem;
+  margin-right: 1rem;
 
 }
 
@@ -95,11 +96,6 @@ dd {
   margin: 0;
 }
 
-/* Remove list styles on ul, ol elements with a list role, which suggests default styling will be removed */
-/* ul[role='list'],
-ol[role='list'] {
-  list-style: none;
-} */
 
 /* Set core root defaults */
 html:focus-within {
@@ -125,9 +121,7 @@ picture {
   display: block;
 }
 
-div{
-  /* border: 1px dashed rgba(169, 169, 169, 0.5) */
-}
+
 
 /* Inherit fonts for inputs and buttons */
 input,

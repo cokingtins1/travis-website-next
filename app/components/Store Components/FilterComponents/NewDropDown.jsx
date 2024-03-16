@@ -65,6 +65,14 @@ export default function NewDropDown({
 			<Select
 				fullWidth
 				size="small"
+				MenuProps={{
+					PaperProps: {
+						style: {
+							maxHeight: "300px", // Adjust this value as needed
+                            overflowY: 'auto'
+						},
+					},
+				}}
 				name={paramName}
 				multiple
 				value={selected}

@@ -9,6 +9,7 @@ import IconButton from "@mui/material/IconButton"
 import Tooltip from "@mui/material/Tooltip"
 import Button from "@mui/material/Button"
 import CloseIcon from "@mui/icons-material/Close"
+import { shuffleArray } from "@/libs/utils"
 
 export default function TagList({
 	paramName,
@@ -25,7 +26,11 @@ export default function TagList({
 
 	//filter is unique, allFilters is all
 
-	const [limitTags, setLimitTags] = useState(filter.slice(0, 10))
+	const [limitTags, setLimitTags] = useState(filter.slice(0,10))
+
+	function shuffleTags() {
+		setLimitTags(shuffleArray(filter))
+	}
 
 	useEffect(() => {
 		setSelected(sParams.get(paramName)?.split(",") || [])
@@ -68,9 +73,7 @@ export default function TagList({
 				<Tooltip title="Refresh Tags" placement="bottom">
 					<IconButton
 						sx={{ color: "#1976D2" }}
-						onClick={() => {
-							shuffleTags(tags)
-						}}
+						onClick={shuffleTags}
 					>
 						<RefreshIcon sx={{ fontSize: "1rem" }} />
 					</IconButton>
@@ -108,7 +111,7 @@ export default function TagList({
 					!selected.length ? "justify-center" : "justify-start"
 				}`}
 			>
-				{filter.map((item) => (
+				{limitTags.map((item) => (
 					<React.Fragment key={item}>
 						{getOccurrence(allFilters, item) >= 1 && (
 							<Button

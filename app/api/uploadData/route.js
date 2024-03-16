@@ -43,7 +43,7 @@ export async function POST(req) {
 	const file_url_zip = `${product_id}/${pricing_id_zip}`
 
 	await supabase.from("products").insert({
-		id: product_id,
+		product_id: product_id,
 
 		title: formData.get("title"),
 		type: formData.get("type"),

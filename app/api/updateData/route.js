@@ -79,7 +79,7 @@ export async function PUT(req) {
 
 					free: formData.get("free"),
 				})
-				.eq("id", product_id)
+				.eq("product_id", product_id)
 				.then((res) => {
 					if (res.error) {
 						console.log(res.error.message)

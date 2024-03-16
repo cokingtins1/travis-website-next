@@ -130,9 +130,10 @@ export default function AudioDrawer({
 			<div
 				className={`${
 					file || "fixed left-0 bottom-0"
-				} w-full bg-bg-elevated transition-transform duration-300 ease-in-out ${
+				} w-full bg-bg-elevated transition-transform duration-300 ease-in-out z-50 ${
 					drawerOpen ? "translate-y-0" : "translate-y-full"
 				} `}
+				style={{ boxShadow: "0px 0px 25px 0px #64646480" }}
 			>
 				<audio
 					ref={audioRef}

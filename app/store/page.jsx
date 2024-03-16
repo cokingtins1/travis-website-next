@@ -1,3 +1,4 @@
+"use client"
 
 import SearchComponent from "../components/SearchBar/SearchComponent"
 import { getAllProductData } from "@/libs/supabase/supabaseQuery"
@@ -8,7 +9,9 @@ import { constructData } from "@/libs/supabase/supabseStoreData"
 import { Suspense } from "react"
 import StoreSkeleton from "../components/Skeletons/StoreSkeleton"
 
-export default async function Store({ searchParams }) {
+import JSONData from "./data.json"
+
+export default  function Store({ searchParams }) {
 	// const [data, setData] = useState([])
 	// useEffect(() => {
 	// 	const fetchData = async () => {
@@ -23,9 +26,9 @@ export default async function Store({ searchParams }) {
 	// 	fetchData()
 	// }, [])
 
-
-	const data = await constructData()
-	if (!data) {
+	// const data = await constructData()
+	// console.log(JSONData.map((product) => product.product_data.product_id))
+	if (!JSONData) {
 		notFound()
 	}
 
@@ -38,7 +41,7 @@ export default async function Store({ searchParams }) {
 				<Suspense fallback={<StoreSkeleton />}>
 					<SearchContextProvider>
 						<ProductSection
-							data={data}
+							data={JSONData}
 							searchParams={searchParams}
 						/>
 					</SearchContextProvider>

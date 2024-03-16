@@ -144,6 +144,7 @@ export default function AddContentForm() {
 	async function handleSubmit(e) {
 		e.preventDefault()
 		if (!isLastStep) return next()
+		setError("")
 
 		setValidating(true)
 
