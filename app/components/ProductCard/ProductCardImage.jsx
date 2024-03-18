@@ -36,6 +36,7 @@ export default function ProductCardImage({
 					style={{ objectFit: "cover" }}
 					sizes="(max-width: 430px), 85px "
 					alt="product image"
+					priority={true}
 				/>
 				<figcaption className="absolute bottom-0 text-xs bg-bg-secondary rounded p-1">
 					{product.bpm} BPM

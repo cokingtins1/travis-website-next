@@ -30,6 +30,9 @@ export async function POST(req) {
 		}
 	}
 
+	const productFileURL =
+	"https://njowjcfiaxbnflrcwcep.supabase.co/storage/v1/object/public/all_products"
+
 	// Foreign Keys:
 	const product_id = crypto.randomUUID()
 
@@ -61,6 +64,8 @@ export async function POST(req) {
 		video_link: formData.get("videoLink"),
 
 		free: formData.get("free"),
+		image_name: formData.get("productImage")?.name,
+		image_names: `${productFileURL}/${product_id}/productImage/${formData.get("productImage")?.name}`
 	})
 
 	await supabase.from("pricing").insert({

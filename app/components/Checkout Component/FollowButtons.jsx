@@ -4,6 +4,7 @@ import YouTubeIcon from "@mui/icons-material/YouTube"
 import Link from "next/link"
 import Tooltip from "@mui/material/Tooltip"
 import TwitchIcon from "../UI/TwitchIcon"
+import InstagramIcon from "@mui/icons-material/Instagram"
 
 export default function FollowButtons() {
 	const followButtons = [
@@ -11,6 +12,12 @@ export default function FollowButtons() {
 			name: "Twitter",
 			icon: <XIcon />,
 			href: "https://twitter.com/beatsbytrav_",
+			color: "#000000",
+		},
+		{
+			name: "Instagram",
+			icon: <InstagramIcon />,
+			href: "https://www.instagram.com/1trav/?hl=en",
 			color: "#000000",
 		},
 		{

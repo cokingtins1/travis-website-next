@@ -53,9 +53,9 @@ export const AudioContextProvider = ({ children }) => {
 			setPlaying(!playing)
 		} else {
 			if (!playing) {
-				ref.current.play()
+				ref.current?.play()
 			} else {
-				ref.current.pause()
+				ref.current?.pause()
 			}
 			setPlaying(!playing)
 		}

@@ -17,7 +17,8 @@ export async function PUT(req) {
 	const file_url_wav = `${product_id}/${WAV_file_id}`
 	const file_url_zip = `${product_id}/${STEM_file_id}`
 
-	const url = headers().get("referer")
+	const productFileURL =
+		"https://njowjcfiaxbnflrcwcep.supabase.co/storage/v1/object/public/all_products"
 
 	async function modifyStorage(path, file, update, deleteFlag) {
 		//if upload is true, file did not exist in the first place -> check if new file has been uploaded by checking path !== undefined
@@ -76,6 +77,9 @@ export async function PUT(req) {
 					keys: formData.get("keys"),
 					bpm: formData.get("bpm") === "" ? 0 : formData.get("bpm"),
 					video_link: formData.get("videoLink"),
+					image_name: `${productFileURL}/${product_id}/productImage/${
+						formData.get("productImage")?.name
+					}`,
 
 					free: formData.get("free"),
 				})
@@ -137,7 +141,6 @@ export async function PUT(req) {
 
 				if (value instanceof File) {
 					// catch STEM files for now. Will upgrade to pro soon.
-					console.log(value)
 					if (value.type === "application/x-zip-compressed") {
 						return NextResponse.json({ success: true })
 					} else if (value.type.split("/")[0] == "image") {
@@ -151,7 +154,6 @@ export async function PUT(req) {
 							formData.get("basicFileDelete")
 						)
 					} else if (value.name.endsWith(".wav")) {
-						console.log("updating wav")
 						await modifyStorage(
 							file_url_wav,
 							value,

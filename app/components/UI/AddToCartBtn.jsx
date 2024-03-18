@@ -36,7 +36,9 @@ export default function AddToCartBtn({
 							className="bg-bg-free rounded-md hover:ring-1 ring-white whitespace-nowrap px-2"
 						>
 							<DownloadIcon sx={{ fontSize: "1rem" }} />{" "}
-							<span className="pointer text-xs">FREE</span>
+							<span className="hidden md:inline pointer text-xs">
+								FREE
+							</span>
 						</button>
 					</Tooltip>
 				</>
@@ -55,7 +57,7 @@ export default function AddToCartBtn({
 						})
 					}}
 				>
-					<p>From ${startingPrice.price}</p>
+					<p className="hidden md:block">From ${startingPrice.price}</p>
 					<ShoppingCartIcon fontSize="small" />
 				</button>
 			</Tooltip>

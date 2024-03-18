@@ -235,3 +235,25 @@ export function shuffleArray(array) {
 
 	return array.slice(0, 10)
 }
+
+export default function getAudioFile(fileArray) {
+	const productFileURL =
+		"https://njowjcfiaxbnflrcwcep.supabase.co/storage/v1/object/public/all_products"
+
+	const storeSrc = fileArray.find(
+		(file) =>
+			file.file_extension === ".mp3" || file.file_extension === ".wav"
+	)
+
+	const result = `${productFileURL}/${storeSrc?.file_url}`
+	const srcMatch = fileArray.find(
+		(file) => file.file_url === storeSrc?.file_url
+	)
+	const storeSrcType = srcMatch
+		? storeSrc.file_extension === ".mp3"
+			? "audio/mpeg"
+			: "audio/wav"
+		: null
+
+	return [result, storeSrcType]
+}

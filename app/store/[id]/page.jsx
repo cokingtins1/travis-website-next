@@ -19,7 +19,8 @@ import { useSession } from "@/libs/supabase/useSession"
 
 export default async function Page({ params: { id } }) {
 	const product = await getProductById(id)
-	const imageSrc = await getImageSrc(id)
+	// const imageSrc = await getImageSrc(id)
+	const imageSrc = product.image_name
 	const { filteredPricing } = await getPricingById(id)
 	const storeSrc = await getAudioSrcById(id)
 	const storeSrcType = await getAudioSrcById(id)

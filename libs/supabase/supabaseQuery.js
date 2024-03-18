@@ -238,6 +238,14 @@ export async function getLikedByUser(user_id, product_id) {
 	return likedByUser
 }
 
+export async function likedByUser() {
+	const { data } = await supabaseClient
+		.from("product_likes")
+		.select("product_id, liked_by_id")
+
+	return data
+}
+
 export async function getUserId() {
 	const { session } = await useSession()
 
@@ -522,6 +530,24 @@ export async function getImageSrc(product_id) {
 	}
 
 	return null
+}
+
+export async function getImages() {
+	const productFileURL =
+		"https://njowjcfiaxbnflrcwcep.supabase.co/storage/v1/object/public/all_products"
+
+	// https://njowjcfiaxbnflrcwcep.supabase.co/storage/v1/object/public/all_products/4d337ff9-675a-4470-bd88-74b5ccfd2ace/productImage/5AM Freestyle.jpg
+
+	const { data } = await supabaseClient
+		.from("products")
+		.select("product_id, image_name")
+
+	const imageSources = data.map((product) => ({
+		...product,
+		imageSrc: `${productFileURL}/${product.product_id}/productImage/${product.image_name}`,
+	}))
+
+	return imageSources
 }
 
 // Filter and Pricing Functions:

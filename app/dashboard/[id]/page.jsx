@@ -28,7 +28,7 @@ export default async function Page({ params: { id } }) {
 	const { data: product } = await supabase
 		.from("products")
 		.select("*")
-		.match({ id })
+		.match({ product_id: id })
 		.single()
 
 	const { data: files } = await supabase.storage.from("all_products").list(id)

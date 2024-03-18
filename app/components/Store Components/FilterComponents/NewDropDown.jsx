@@ -68,8 +68,8 @@ export default function NewDropDown({
 				MenuProps={{
 					PaperProps: {
 						style: {
-							maxHeight: "300px", // Adjust this value as needed
-                            overflowY: 'auto'
+							maxHeight: "300px",
+							overflowY: "auto",
 						},
 					},
 				}}

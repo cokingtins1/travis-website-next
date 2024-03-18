@@ -44,6 +44,7 @@ export const SearchContextProvider = ({ children }) => {
 
 	const clearSearch = () => {
 		router.replace("/store", undefined, { shallow: true })
+		// router.push("/store")
 	}
 
 	const values = {

@@ -5,18 +5,20 @@ import AddToCartBtn from "../UI/AddToCartBtn"
 import ProductCardImage from "./ProductCardImage"
 import LikeButton from "../Like Button/LikeButton"
 import { submitLike } from "@/app/actions/submitLike"
+import beatKitImage from "@/public/beatKitImage.jpg"
+import getAudioFile from "@/libs/utils"
 
 export default function ProductCard({ productData }) {
 	const product = productData.product_data
 	const startingPrice = productData.startingPrice
 	const free = productData.isFree
-	const imageSrc = productData.imageSrc
-	const storeSrc = productData.storeSrc
-	const storeSrcType = productData.storeSrcType
+	const imageSrc = productData.product_data.image_name
 	const likes = productData.product_likes.likes
 	const likedByUser = productData.likedByUser
 
 	const session = productData.session
+
+	const [storeSrc, storeSrcType] = getAudioFile(productData.product_files)
 
 	if (!storeSrc) {
 		return null
