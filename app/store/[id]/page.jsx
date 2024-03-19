@@ -5,11 +5,9 @@ import ProductMeta from "@/app/components/Store Components/ProductMeta/ProductMe
 import {
 	getAudioSrcById,
 	getComments,
-	getImageSrc,
 	getPricingById,
 	getProductById,
 	getReplys,
-	getUserId,
 } from "@/libs/supabase/supabaseQuery"
 import { notFound } from "next/navigation"
 import { Suspense } from "react"
@@ -19,7 +17,6 @@ import { useSession } from "@/libs/supabase/useSession"
 
 export default async function Page({ params: { id } }) {
 	const product = await getProductById(id)
-	// const imageSrc = await getImageSrc(id)
 	const imageSrc = product.image_name
 	const { filteredPricing } = await getPricingById(id)
 	const storeSrc = await getAudioSrcById(id)
@@ -90,11 +87,11 @@ export default async function Page({ params: { id } }) {
 						/>
 					</section>
 
-					<section className="bg-bg-elevated h-[300px]"></section>
-
-					<Suspense fallback={<p>Loading video...</p>}>
-						{/* <ProductMedia url="btyS_uiRLnU" /> */}
-					</Suspense>
+					{product.video_link.includes("v=") && (
+						<section className="mb-24">
+							<ProductMedia url={product.video_link} />
+						</section>
+					)}
 				</section>
 			</main>
 		</>

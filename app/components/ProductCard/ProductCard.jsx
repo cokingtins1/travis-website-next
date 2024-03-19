@@ -5,8 +5,7 @@ import AddToCartBtn from "../UI/AddToCartBtn"
 import ProductCardImage from "./ProductCardImage"
 import LikeButton from "../Like Button/LikeButton"
 import { submitLike } from "@/app/actions/submitLike"
-import beatKitImage from "@/public/beatKitImage.jpg"
-import getAudioFile from "@/libs/utils"
+import { formatLarge, getAudioFile } from "@/libs/utils"
 
 export default function ProductCard({ productData }) {
 	const product = productData.product_data
@@ -82,9 +81,10 @@ export default function ProductCard({ productData }) {
 							submitCallback={submitLike}
 							variant={"left"}
 						/>
-						<button className="text-text-secondary text-lg font-bold">
-							...
-						</button>
+
+						<p className="text-xs text-text-secondary">
+							{formatLarge(productData.product_data.plays)} plays
+						</p>
 					</div>
 				</div>
 				<Divider />

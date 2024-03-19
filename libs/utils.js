@@ -236,7 +236,7 @@ export function shuffleArray(array) {
 	return array.slice(0, 10)
 }
 
-export default function getAudioFile(fileArray) {
+export function getAudioFile(fileArray) {
 	const productFileURL =
 		"https://njowjcfiaxbnflrcwcep.supabase.co/storage/v1/object/public/all_products"
 
@@ -256,4 +256,16 @@ export default function getAudioFile(fileArray) {
 		: null
 
 	return [result, storeSrcType]
+}
+
+export function formatLarge(num) {
+	let formattedNum = ""
+
+	if (num > 1000) {
+		formattedNum = `${(num / 1000).toFixed(1)}k`
+	} else {
+		formattedNum = num
+	}
+
+	return formattedNum
 }

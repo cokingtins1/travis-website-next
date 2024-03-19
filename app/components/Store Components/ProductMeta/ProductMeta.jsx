@@ -6,9 +6,12 @@ import Divider from "@mui/material/Divider"
 import IosShareIcon from "@mui/icons-material/IosShare"
 import { getLikes } from "@/libs/supabase/supabaseQuery"
 import LikeButton from "../../Like Button/LikeButton"
+import { formatLarge } from "@/libs/utils"
 
 export default async function ProductMeta({ product, imageSrc }) {
 	const { likes } = await getLikes(product.product_id)
+
+	const formattedPlays = formatLarge(product.plays)
 
 	return (
 		<>
@@ -51,7 +54,7 @@ export default async function ProductMeta({ product, imageSrc }) {
 						</p>
 						<p>
 							<span>Plays</span>
-							<span>420</span>
+							<span>{formattedPlays}</span>
 						</p>
 					</div>
 

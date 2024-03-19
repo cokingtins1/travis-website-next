@@ -1,6 +1,6 @@
 import Image from "next/image"
 import TravLogo from "@/public/TravLogoBlue.png"
-import heroImg from "@/public/hero-picture.png"
+import heroImg from "@/public/heroImage.jpg"
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 import Link from "next/link"
 
