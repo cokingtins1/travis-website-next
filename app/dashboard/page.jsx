@@ -31,8 +31,8 @@ export default async function Page() {
 					<p className="text-text-secondary text-sm">#</p>
 					<p className="text-text-secondary text-sm">Track Name</p>
 					<p className="text-text-secondary text-sm">Date Added</p>
-					<p className="text-text-secondary text-sm">Files</p>
-					<p className="text-text-secondary text-sm">Files</p>
+					<p className="text-text-secondary text-sm"></p>
+					<p className="text-text-secondary text-sm">Plays</p>
 				</div>
 				<Divider variant="middle" />
 				{!products && (

@@ -18,6 +18,7 @@ import AudioProductSection from "./AudioProductSection"
 export default function AudioDrawer({
 	audioSrc, //required
 	srcType, //required
+	audioList,
 	buttonId,
 	file = false,
 	playOnMount = true,
@@ -43,10 +44,18 @@ export default function AudioDrawer({
 		setDrawerOpen,
 		volume,
 		setVolume,
+		listLength,
+		setListLength,
+		currentIndex,
+		setCurrentIndex,
 	} = useAudio()
 
 	useEffect(() => {
 		if (audioRef.current) {
+			const currentSong = audioList.find((item) => item.src === audioSrc)
+			const currentIndex = currentSong?.index
+			setCurrentIndex(currentIndex)
+			setListLength(Object.entries(audioList).length)
 			setDuration(audioRef.current.duration)
 		}
 	}, [])
@@ -66,9 +75,35 @@ export default function AudioDrawer({
 		}
 	}, [audioSrcId])
 
-	// const handleNext = () => {
-	// 	onNext()
-	// }
+	const handleNextPrev = (step) => {
+		setAudioSrcId(() => {
+			if (currentIndex === listLength && step === 1) {
+				return audioList.find((item) => item.index === 1).src
+			} else if (currentIndex === listLength && step === -1) {
+				return audioList.find(
+					(item) => item.index === currentIndex + step
+				).src
+			} else if (currentIndex === 1 && step === -1) {
+				return audioList.find((item) => item.index === listLength).src
+			} else {
+				return audioList.find(
+					(item) => item.index === currentIndex + step
+				).src
+			}
+		})
+
+		setCurrentIndex((prev) => {
+			if (currentIndex === listLength && step === 1) {
+				return 1
+			} else if (currentIndex === listLength && step === -1) {
+				prev + step
+			} else if (currentIndex === 1 && step === -1) {
+				return listLength
+			} else {
+				return prev + step
+			}
+		})
+	}
 
 	// const handlePrev = () => {
 	// 	audioRef.current?.pause()
@@ -167,7 +202,10 @@ export default function AudioDrawer({
 					/>
 					<div className="justify-self-center">
 						<div className="flex items-center justify-center">
-							<IconButton sx={{ fontSize: "2.5rem" }}>
+							<IconButton
+								sx={{ fontSize: "2.5rem" }}
+								onClick={() => handleNextPrev(-1)}
+							>
 								<SkipPreviousIcon
 									sx={{ color: "#a7a7a7" }}
 									fontSize="inherit"
@@ -187,7 +225,10 @@ export default function AudioDrawer({
 									<PauseCircleFilledIcon fontSize="inherit" />
 								)}
 							</IconButton>
-							<IconButton sx={{ fontSize: "2.5rem" }}>
+							<IconButton
+								sx={{ fontSize: "2.5rem" }}
+								onClick={() => handleNextPrev(1)}
+							>
 								<SkipNextIcon
 									sx={{ color: "#a7a7a7" }}
 									fontSize="inherit"

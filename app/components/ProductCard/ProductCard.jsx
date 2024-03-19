@@ -7,7 +7,7 @@ import LikeButton from "../Like Button/LikeButton"
 import { submitLike } from "@/app/actions/submitLike"
 import { formatLarge, getAudioFile } from "@/libs/utils"
 
-export default function ProductCard({ productData }) {
+export default function ProductCard({ productData, audioList }) {
 	const product = productData.product_data
 	const startingPrice = productData.startingPrice
 	const free = productData.isFree
@@ -35,6 +35,7 @@ export default function ProductCard({ productData }) {
 							startingPrice={startingPrice}
 							srcType={storeSrcType}
 							free={free}
+							audioList={audioList}
 						/>
 						<Link href={`/store/${product.product_id}`}>
 							<div>

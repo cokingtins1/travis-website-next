@@ -269,3 +269,29 @@ export function formatLarge(num) {
 
 	return formattedNum
 }
+
+export function getAudioList(fileArrays) {
+	const productFileURL =
+		"https://njowjcfiaxbnflrcwcep.supabase.co/storage/v1/object/public/all_products"
+
+	const audioList = []
+	let indexCounter = 0
+
+	for (const files of fileArrays) {
+		const storeSrc = files.find(
+			(file) =>
+				file.file_extension === ".mp3" || file.file_extension === ".wav"
+		)
+
+		if (storeSrc) {
+			const src = `${productFileURL}/${storeSrc.file_url}`
+			const srcType =
+				storeSrc.file_extension === ".mp3" ? "audio/mpeg" : "audio/wav"
+			const product_id = storeSrc.product_id
+			const index = ++indexCounter
+			audioList.push({ product_id, src, srcType, index })
+		}
+	}
+
+	return audioList
+}

@@ -2,6 +2,7 @@
 
 import supabaseClient from "@/libs/supabase/config/supabaseClient"
 import { useSession } from "./useSession"
+import supabaseServer from "./supabaseServer"
 
 // Order getting functions:
 
@@ -321,7 +322,7 @@ export async function getDownloadUrls(productsSold) {
 	)
 
 	const processFilePaths = async (filePaths) => {
-		const expiresIn = 60 * 60 * 24 // 1 day
+		const expiresIn = 60 * 60 * 24 * 7 // 7 days
 		const result = []
 
 		for (const path of filePaths) {
@@ -579,4 +580,39 @@ export async function getAllColVals(columnName) {
 		}, [])
 	}
 	return null
+}
+
+export async function testRENAME() {
+	// const filePaths = productsSold.map(
+	// 	(product) => `${product.product_id}/${product.pricing_id}`
+	// )
+
+	const test = ["TEST/123456", "TEST/78910"]
+
+	for (const path in test) {
+		// const newPath = `${path}/TEMP_${crypto.randomUUID()}`
+		const newPath = "TEST FOLDER"
+		const { data, error } = await supabaseClient.storage
+			.from("all_products")
+			.copy(path, newPath)
+
+		console.log(data)
+	}
+
+	// const processFilePaths = async (filePaths) => {
+	// 	const expiresIn = 60 * 60 * 24 * 7 // 7 days
+	// 	const result = []
+
+	// 	for (const path of filePaths) {
+	// 		const { data } = await supabaseClient.storage
+	// 			.from("all_products")
+	// 			.createSignedUrl(path, expiresIn, { download: true })
+	// 		result.push(data.signedUrl)
+	// 	}
+	// 	return result
+	// }
+
+	// const downloadUrls = await processFilePaths(test)
+
+	// return downloadUrls
 }

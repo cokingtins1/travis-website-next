@@ -18,6 +18,7 @@ export default function ProductCardImage({
 	product,
 	startingPrice,
 	free,
+	audioList,
 }) {
 	const { audioSrcId, setAudioSrcId, playing, togglePlayPause, drawerOpen } =
 		useAudio()
@@ -25,6 +26,10 @@ export default function ProductCardImage({
 	useEffect(() => {
 		setAudioSrcId(null)
 	}, [])
+
+	const srcFromList = audioList.find(
+		(item) => item.product_id === product.product_id
+	)?.src
 
 	return (
 		<>
@@ -47,7 +52,7 @@ export default function ProductCardImage({
 							sx={{ fontSize: "3rem" }}
 							onClick={() => {
 								{
-									togglePlayPause(audioSrc)
+									togglePlayPause(srcFromList)
 								}
 							}}
 						>
@@ -64,6 +69,7 @@ export default function ProductCardImage({
 				<AudioDrawer
 					audioSrc={audioSrcId}
 					srcType={srcType}
+					audioList={audioList}
 					startingPrice={startingPrice}
 					product={product}
 					imageSrc={imageSrc}

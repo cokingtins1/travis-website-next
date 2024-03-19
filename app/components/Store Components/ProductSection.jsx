@@ -4,7 +4,12 @@ import ProductCard from "../ProductCard/ProductCard"
 
 import { useEffect, useState } from "react"
 
-import { getBPMData, productFilter, returnFilters } from "@/libs/utils"
+import {
+	getAudioList,
+	getBPMData,
+	productFilter,
+	returnFilters,
+} from "@/libs/utils"
 
 import NewDropDown from "./FilterComponents/NewDropDown"
 import StoreSkeleton from "../Skeletons/StoreSkeleton"
@@ -38,6 +43,10 @@ export default function ProductSection({ data, searchParams }) {
 			return data
 		}
 	})
+	const [audioList, setAudioList] = useState(
+		getAudioList(data.map((p) => p.product_files))
+	)
+
 	const [bpm, setBpm] = useState(() => getBPMData(filteredData))
 
 	const allBpmRange = getBPMData(data)
@@ -58,15 +67,20 @@ export default function ProductSection({ data, searchParams }) {
 		const [tags, allTags] = returnFilters(filteredData, "tags")
 		setTagFilters([tags, allTags])
 		setBpm(() => getBPMData(filteredData))
+		setAudioList(getAudioList(filteredData.map((p) => p.product_files)))
 	}, [searchParams, filteredData])
 
 	useEffect(() => {
 		setAllFilters(searchParams)
 		setFilteredData(productFilter(data, searchParams))
+		setAudioList(getAudioList(filteredData.map((p) => p.product_files)))
+
 	}, [searchParams])
 
 	useEffect(() => {
 		setFilteredData(productFilter(filteredData, allFilters))
+		setAudioList(getAudioList(filteredData.map((p) => p.product_files)))
+
 	}, [allFilters])
 
 	const [genres, allGenres] = genreFilters
@@ -136,7 +150,11 @@ export default function ProductSection({ data, searchParams }) {
 				<ul className="grid sm:grid-cols-2 gap-x-4 grid-cols-1 ">
 					{filteredData.length > 0 ? (
 						filteredData.map((p, index) => (
-							<ProductCard key={index} productData={p} />
+							<ProductCard
+								key={index}
+								productData={p}
+								audioList={audioList}
+							/>
 						))
 					) : (
 						<StoreSkeleton />

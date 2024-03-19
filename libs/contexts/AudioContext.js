@@ -14,6 +14,9 @@ export const AudioContextProvider = ({ children }) => {
 	const [buttonId, setButtonId] = useState(null)
 	const [volume, setVolume] = useState(0.2)
 
+	const [currentIndex, setCurrentIndex] = useState(null)
+	const [listLength, setListLength] = useState(null)
+
 	const [tempMP3, setTempMP3] = useState({})
 	const [tempWAV, setTempWAV] = useState({})
 
@@ -74,6 +77,10 @@ export const AudioContextProvider = ({ children }) => {
 		ref,
 		buttonId,
 		volume,
+		currentIndex,
+		listLength,
+		setListLength,
+		setCurrentIndex,
 		setVolume,
 		setRef,
 		setTempMP3,
