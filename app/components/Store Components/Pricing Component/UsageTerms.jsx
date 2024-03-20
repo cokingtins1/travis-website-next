@@ -6,11 +6,11 @@ import ReceiptLongIcon from "@mui/icons-material/ReceiptLong"
 
 export default function UsageTerms({ selected }) {
 	const icons = [
-		<MicNoneIcon />,
-		<FilterNoneIcon />,
-		<CellTowerIcon />,
-		<VideocamIcon />,
-		<ReceiptLongIcon />,
+		{ key: 0, value: <MicNoneIcon /> },
+		{ key: 1, value: <FilterNoneIcon /> },
+		{ key: 2, value: <CellTowerIcon /> },
+		{ key: 3, value: <VideocamIcon /> },
+		{ key: 4, value: <ReceiptLongIcon /> },
 	]
 
 	const terms = {
@@ -37,15 +37,16 @@ export default function UsageTerms({ selected }) {
 		],
 	}
 
-	const selectedTerms = terms[selected] || []
+	const selectedTerms = terms[selected] || null
 
 	return (
 		<ul className="grid grid-cols-3 gap-4">
 			{selected &&
+				selectedTerms &&
 				selectedTerms.map((t, index) => (
 					<li key={index} className="text-text-secondary text-sm">
-						<span key={index} className="flex items-center gap-2">
-							{icons[index]} {t.toUpperCase()}
+						<span className="flex items-center gap-2">
+							{icons[index].value} {t.toUpperCase()}
 						</span>
 					</li>
 				))}

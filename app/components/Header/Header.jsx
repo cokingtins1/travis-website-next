@@ -88,7 +88,7 @@ export default function Header({ session }) {
 					<div
 						className={`nav-links duration-500 md:static absolute bg-bg-elevated md:min-h-fit rounded-lg ${
 							menuOpen
-								? "top-[8%] z-50 left-4 right-4 pb-4 rounded-none"
+								? "top-[7%] z-50 left-4 right-4 pb-4 rounded-none"
 								: "top-[-100%]"
 						} md:w-auto flex items-center px-5 md:justify-self-end`}
 					>
