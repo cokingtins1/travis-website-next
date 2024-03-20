@@ -1,12 +1,11 @@
 import styles from "./styles.module.css"
 import beatKitImage from "@/public/beatKitImage.jpg"
 import Image from "next/image"
-import IconButton from "@mui/material/IconButton"
 import Divider from "@mui/material/Divider"
-import IosShareIcon from "@mui/icons-material/IosShare"
 import { getLikes } from "@/libs/supabase/supabaseQuery"
 import LikeButton from "../../Like Button/LikeButton"
 import { formatLarge } from "@/libs/utils"
+import ShareButton from "../ShareComponent/ShareButton"
 
 export default async function ProductMeta({ product, imageSrc }) {
 	const { likes } = await getLikes(product.product_id)
@@ -36,9 +35,7 @@ export default async function ProductMeta({ product, imageSrc }) {
 							productId={product.product_id}
 							likes={likes}
 						/>
-						<IconButton>
-							<IosShareIcon />
-						</IconButton>
+						<ShareButton imageSrc={imageSrc ? imageSrc : beatKitImage} product={product} />
 					</div>
 
 					<Divider />

@@ -22,7 +22,7 @@ export default function AudioProductSection({
 					/>
 				</div>
 			)}
-			<div>
+			<div className='hidden sm:block'>
 				<p className="text-sm text-text-primary">
 					{product?.title || file?.fileName}
 				</p>

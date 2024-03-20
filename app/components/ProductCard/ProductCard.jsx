@@ -26,7 +26,7 @@ export default function ProductCard({ productData, audioList }) {
 	return (
 		<>
 			<li>
-				<div className="border border-bg-base hover:bg-bg-elevated hover:border-border-primary rounded-lg flex justify-between gap-2 p-4">
+				<div className="sm:border sm:border-bg-base sm:hover:bg-bg-elevated hover:border-border-primary rounded-lg flex justify-between gap-2 p-4">
 					<div className="flex gap-4">
 						<ProductCardImage
 							imageSrc={imageSrc}

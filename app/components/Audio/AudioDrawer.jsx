@@ -18,7 +18,7 @@ import AudioProductSection from "./AudioProductSection"
 export default function AudioDrawer({
 	audioSrc, //required
 	srcType, //required
-	audioList,
+	audioList = undefined,
 	buttonId,
 	file = false,
 	playOnMount = true,
@@ -52,11 +52,14 @@ export default function AudioDrawer({
 
 	useEffect(() => {
 		if (audioRef.current) {
+			setDuration(audioRef.current.duration)
+
+			if (!audioList) return
+
 			const currentSong = audioList.find((item) => item.src === audioSrc)
 			const currentIndex = currentSong?.index
 			setCurrentIndex(currentIndex)
 			setListLength(Object.entries(audioList).length)
-			setDuration(audioRef.current.duration)
 		}
 	}, [])
 
@@ -104,13 +107,6 @@ export default function AudioDrawer({
 			}
 		})
 	}
-
-	// const handlePrev = () => {
-	// 	audioRef.current?.pause()
-	// 	audioRef.current?.currentTime = 0
-	//     audioRef.current?.play()
-
-	// }
 
 	const closePlayer = () => {
 		togglePlayPause(audioSrc)
@@ -178,7 +174,6 @@ export default function AudioDrawer({
 					}
 					onPlaying={() => setPlaying(true)}
 					onPause={() => setPlaying(false)}
-					// onEnded={handleNext}
 					onCanPlay={(e) => {
 						e.currentTarget.volume = volume
 						setIsReady(true)
@@ -193,7 +188,7 @@ export default function AudioDrawer({
 				>
 					<source type={srcType} src={audioSrc} />
 				</audio>
-				<div className="grid grid-cols-2 lg:grid-cols-3 justify-items-stretch items-center justify-center my-2 mx-16">
+				<div className="flex lg:grid grid-cols-3 justify-items-stretch items-center justify-center my-2 mx-16">
 					<AudioProductSection
 						imageSrc={imageSrc}
 						product={product}
@@ -205,6 +200,7 @@ export default function AudioDrawer({
 							<IconButton
 								sx={{ fontSize: "2.5rem" }}
 								onClick={() => handleNextPrev(-1)}
+								disabled={audioList === undefined}
 							>
 								<SkipPreviousIcon
 									sx={{ color: "#a7a7a7" }}
@@ -228,6 +224,7 @@ export default function AudioDrawer({
 							<IconButton
 								sx={{ fontSize: "2.5rem" }}
 								onClick={() => handleNextPrev(1)}
+								disabled={audioList === undefined}
 							>
 								<SkipNextIcon
 									sx={{ color: "#a7a7a7" }}
@@ -235,7 +232,7 @@ export default function AudioDrawer({
 								/>
 							</IconButton>
 						</div>
-						<div className="text-center h-[30px]">
+						<div className="hidden sm:text-center h-[30px]">
 							{!isNaN(duration) && (
 								<AudioProgressBar
 									duration={duration}
@@ -250,6 +247,24 @@ export default function AudioDrawer({
 								/>
 							)}
 						</div>
+						<div className="block text-center sm:hidden">
+							<p className="text-text-secondary text-sm">
+								{product?.title}
+							</p>
+						</div>
+					</div>
+					<div className="sm:hidden">
+						{playOnMount && (
+							<div className="absolute top-0 right-4">
+								<Tooltip title={"Close Player"} placement="top">
+									<IconButton
+										onClick={() => closePlayer(audioSrc)}
+									>
+										<CloseIcon />
+									</IconButton>
+								</Tooltip>
+							</div>
+						)}
 					</div>
 					<div className="hidden lg:flex justify-self-end items-center w-[200px] gap-4 mt-8">
 						{playOnMount && (

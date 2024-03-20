@@ -31,9 +31,15 @@ export default function LikeButton({
 				variant === "bottom" && "flex-col"
 			}`}
 		>
-			{variant && variant === "left" && <p className='hidden'>{optimisticLikes}</p>}
+			{variant && variant === "left" && (
+				<p className="hidden">{optimisticLikes}</p>
+			)}
 			{openModal && (
-				<FollowModal openModal={openModal} setModal={setOpenModal} />
+				<FollowModal
+					openModal={openModal}
+					setModal={setOpenModal}
+					prompt={"follow"}
+				/>
 			)}
 
 			<form

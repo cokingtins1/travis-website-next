@@ -1,12 +1,20 @@
 import Modal from "@mui/material/Modal"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import SignUpForm from "../SignUpForm/SignUpForm"
 import SignUpSuccess from "./SignUpSuccess"
 
-export default function FollowModal({ openModal, setModal }) {
+export default function FollowModal({ openModal, setModal, prompt }) {
 	const [submit, setSubmit] = useState(false)
 	const [statusCode, setStatusCode] = useState(undefined)
 	const [signup, setSignup] = useState(false)
+
+	const messages = {
+		follow: "to follow my music and gain access to my free samples",
+		comment: "leave a comment",
+		reply: "leave a submit a reply",
+	}
+
+	const message = messages[prompt] || ""
 
 	return (
 		<Modal
@@ -24,8 +32,7 @@ export default function FollowModal({ openModal, setModal }) {
 							Create Account
 						</h1>
 						<p className="text-sm text-text-secondary pb-4">
-							Create an account to follow my music and gain access
-							to my free samples.{" "}
+							Create an account to {message}.{" "}
 						</p>
 						<SignUpForm
 							submit={submit}

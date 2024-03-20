@@ -5,12 +5,15 @@ import Tab from "@mui/material/Tab"
 import { useState } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import ThemeProvider from "@/libs/contexts/ThemeContext"
+import useWindowSize from "../CustomHooks/useWindowSize"
 
-export default function NavBar({ session }) {
+export default function NavBar({ session = true }) {
 	const path = usePathname()
 	const page = path.replace(/^[^/]*\/([^/]*)\/?.*$/, "$1")
 
 	const router = useRouter()
+
+	const size = useWindowSize()
 
 	const indices = [
 		{ index: 0, value: "Home", href: "" },
@@ -42,13 +45,16 @@ export default function NavBar({ session }) {
 	return (
 		<>
 			<ThemeProvider>
-				<nav className="justify-self-center">
+				<div>
 					<Tabs
 						sx={tabsStyles}
 						onChange={(e) => {
 							setTabValue(e.target.value)
 						}}
 						value={tabValue}
+						orientation={
+							size.width < 768 ? "vertical" : "horizontal"
+						}
 					>
 						{indices.map((step) => (
 							<Tab
@@ -64,7 +70,7 @@ export default function NavBar({ session }) {
 							/>
 						))}
 					</Tabs>
-				</nav>
+				</div>
 			</ThemeProvider>
 		</>
 	)

@@ -14,7 +14,7 @@ import { useRouter } from "next/navigation"
 import { formatCurrency } from "@/libs/utils"
 
 export default function ShoppingCart() {
-	const { shoppingCart, cartTotal } = useShoppingCart()
+	const { shoppingCart, cartTotal, clearShoppingCart } = useShoppingCart()
 	const router = useRouter()
 
 	const [anchorEl, setAnchorEl] = useState(null)
@@ -29,13 +29,8 @@ export default function ShoppingCart() {
 	}
 
 	async function handleCheckout(e) {
-		console.log("handling checkout")
 		e.preventDefault()
 
-		// router.push("/checkout")
-		// return
-
-		// Execute the below for Stripe to host checkout functionalities.
 		try {
 			const res = await fetch("/api/checkout", {
 				method: "POST",
@@ -47,6 +42,7 @@ export default function ShoppingCart() {
 
 			if (res.ok) {
 				const redirect = await res.json()
+				clearShoppingCart()
 				router.push(redirect)
 			} else {
 				console.log("there was an error going to checkout")
@@ -56,16 +52,9 @@ export default function ShoppingCart() {
 		}
 	}
 
-	const primaryAccent = "#ffeec2"
-
 	const buttonStyles = {
 		width: "120px",
 		height: "36px",
-		// color: primaryAccent,
-		// borderColor: primaryAccent,
-		// "&:hover": {
-		// 	borderColor: primaryAccent,
-		// },
 	}
 
 	return (
@@ -76,9 +65,13 @@ export default function ShoppingCart() {
 				startIcon={<ShoppingCartIcon />}
 				onClick={handleClick}
 			>
-				<div className="flex pointer gap-2">
+				<div className="relative flex pointer gap-2">
 					<p>Cart</p>
-					<p>{shoppingCart && shoppingCart.length}</p>
+					{shoppingCart.length > 0 ? (
+						<p>{shoppingCart.length}</p>
+					) : (
+						""
+					)}
 				</div>
 			</Button>
 
@@ -89,8 +82,13 @@ export default function ShoppingCart() {
 				TransitionComponent={Fade}
 				MenuListProps={{ sx: { py: 0 } }}
 			>
-				<div className="flex flex-col gap-4 bg-bg-elevated p-8 w-[400px] border border-slate-600">
-					<p className="text-text-primary">{`Your Cart (${shoppingCart.length})`}</p>
+				<div className="flex flex-col gap-4 bg-bg-elevated p-8 md:w-[400px] border border-slate-600">
+					<p className="text-text-primary">{`Your Cart ${
+						shoppingCart.length > 0
+							? `(${shoppingCart.length})`
+							: ""
+					}`}</p>
+
 					{shoppingCart.map((item, index) => (
 						<CartItem key={index} cartItem={item} />
 					))}
@@ -111,6 +109,7 @@ export default function ShoppingCart() {
 					)}
 					<Button
 						onClick={(e) => {
+							if (shoppingCart.length === 0) return
 							handleCheckout(e)
 							handleClose()
 						}}

@@ -8,10 +8,8 @@ export async function POST(req) {
 	const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 
 	const data = await req.json()
-	console.log(data)
 	const origin = headers().get("origin")
 	const signedUrls = await getDownloadUrls(data)
-	return
 
 	for (let i = 0; i < data.length && i < signedUrls.length; i++) {
 		data[i].signedUrl = signedUrls[i]

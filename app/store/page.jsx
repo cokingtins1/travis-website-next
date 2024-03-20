@@ -5,7 +5,7 @@ import { SearchContextProvider } from "@/libs/contexts/SearchContext"
 import { constructData } from "@/libs/supabase/supabseStoreData"
 import { Suspense } from "react"
 import StoreSkeleton from "../components/Skeletons/StoreSkeleton"
-import { getAudioList } from '@/libs/utils'
+import { getAudioList } from "@/libs/utils"
 
 export default async function Store({ searchParams }) {
 	const data = await constructData()
@@ -13,12 +13,6 @@ export default async function Store({ searchParams }) {
 	if (!data) {
 		notFound()
 	}
-
-	const audioList  = data.map(p => p.product_files)
-
-	// console.log(getAudioList(audioList))
-
-	// console.log(data.map(p => p.product_files))
 
 	return (
 		<>

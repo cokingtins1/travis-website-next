@@ -141,10 +141,13 @@ export default function PricingSection({ product, pricing, imageSrc }) {
 							}}
 							expandIcon={<ExpandMoreIcon />}
 						>
-							Usage Terms
+							Usage Terms{" "}
+							{selected && (
+								<span className="font-semibold">{`: (${selected.toUpperCase()})`}</span>
+							)}
 						</AccordionSummary>
 						<AccordionDetails sx={{ backgroundColor: "#121212" }}>
-							<UsageTerms />
+							<UsageTerms selected={selected} />
 						</AccordionDetails>
 					</Accordion>
 				</div>

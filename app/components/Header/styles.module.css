@@ -8,5 +8,53 @@
     z-index: 99;
     top: 0;
     box-shadow: 0px 0px 25px 0px rgba(100, 100, 100, 0.5);
+    /* display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    justify-items: stretch;
+    align-items: center; */
+
 
 }
+
+.navBarWrapper{
+    justify-self: center;
+}
+
+.accountWrapper{
+    justify-self: end;
+    display: flex;
+    column-gap: 16px;
+}
+
+@media (max-width: 768px ){
+
+
+
+    /* .headerWrapper{
+        height: min-content;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-rows: repeat(2, minmax(0, 1fr));
+        justify-items: stretch;
+        align-items: center;
+    
+    } */
+
+    .imageWrapper{
+        grid-column-start: 1;
+        grid-row-start: 1;
+
+    }
+    
+    .navBarWrapper{
+        grid-column: span 2;
+        grid-row-start: 2;
+    }
+    
+    .accountWrapper{
+        grid-column-start: 2;
+        grid-row-start: 1;
+    }
+}
+
+
