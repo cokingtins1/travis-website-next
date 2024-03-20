@@ -44,7 +44,7 @@ export default function UsageTerms({ selected }) {
 			{selected &&
 				selectedTerms.map((t, index) => (
 					<li key={index} className="text-text-secondary text-sm">
-						<span className="flex items-center gap-2">
+						<span key={index} className="flex items-center gap-2">
 							{icons[index]} {t.toUpperCase()}
 						</span>
 					</li>
