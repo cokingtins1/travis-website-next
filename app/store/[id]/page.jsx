@@ -59,7 +59,7 @@ export default async function Page({ params: { id } }) {
 				<section
 					className={`grid content-start col-span-8 px-10 gap-4 ${media.pricingLg} `}
 				>
-					<section className="bg-bg-elevated rounded-xl p-4">
+					<section className=" bg-bg-elevated rounded-xl p-4">
 						{storeSrc && storeSrcType && (
 							<AudioPlayStore
 								audioSrc={storeSrc.storeSrc}

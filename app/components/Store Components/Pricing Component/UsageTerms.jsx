@@ -40,7 +40,7 @@ export default function UsageTerms({ selected }) {
 	const selectedTerms = terms[selected] || null
 
 	return (
-		<ul className="grid grid-cols-3 gap-4">
+		<ul className="flex flex-col md:grid grid-cols-3 gap-4">
 			{selected &&
 				selectedTerms &&
 				selectedTerms.map((t, index) => (

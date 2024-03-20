@@ -7,7 +7,7 @@ import { useRouter, usePathname } from "next/navigation"
 import ThemeProvider from "@/libs/contexts/ThemeContext"
 import useWindowSize from "../CustomHooks/useWindowSize"
 
-export default function NavBar({ session = true }) {
+export default function NavBar({ session, setMenuOpen }) {
 	const path = usePathname()
 	const page = path.replace(/^[^/]*\/([^/]*)\/?.*$/, "$1")
 
@@ -66,6 +66,7 @@ export default function NavBar({ session = true }) {
 								onClick={() => {
 									setTabValue(step.index)
 									router.push(`/${step.href}`)
+									setMenuOpen(false)
 								}}
 							/>
 						))}

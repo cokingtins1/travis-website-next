@@ -6,7 +6,7 @@ import Tooltip from "@mui/material/Tooltip"
 import TwitchIcon from "../UI/TwitchIcon"
 import InstagramIcon from "@mui/icons-material/Instagram"
 
-export default function FollowButtons() {
+export default function FollowButtons({text = "Follow me:"}) {
 	const followButtons = [
 		{
 			name: "Twitter",
@@ -36,7 +36,7 @@ export default function FollowButtons() {
 
 	return (
 		<div className="flex flex-col items-center mt-8">
-			<p className="text-text-secondary">Follow me:</p>
+			<p className="text-text-secondary">{text}</p>
 			<ul className="flex gap-4">
 				{followButtons.map((button, index) => (
 					<li key={index}>
