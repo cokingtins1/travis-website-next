@@ -45,7 +45,7 @@ export default function InfoEdit({
 		STEM_update: !!productFiles.STEM_file,
 
 		productImage: productFiles.productImage,
-		productImageSrc: productFiles.productImage,
+		productImageSrc: product.image_name,
 
 		title: product.title || "",
 		description: product.description || "",
@@ -839,6 +839,7 @@ export default function InfoEdit({
 								size="small"
 								id="videoLink"
 								label="YouTube Link (optional)"
+								disabled={!editing}
 								type="text"
 								value={data.videoLink}
 								onChange={(e) => {

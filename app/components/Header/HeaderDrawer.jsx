@@ -11,7 +11,7 @@ import AccountButton from "./AccountButton"
 import dynamic from "next/dynamic"
 import ExpandLessIcon from "@mui/icons-material/ExpandLess"
 import Link from "next/link"
-import { useState } from 'react'
+import { useState } from "react"
 
 export default function HeaderDrawer({ session }) {
 	const [openDrawer, setOpenDrawer] = useState(false)
@@ -83,6 +83,7 @@ export default function HeaderDrawer({ session }) {
 						backgroundColor: "#121212",
 						marginInline: "1rem",
 						borderRadius: "8px",
+						boxShadow: "0px 0px 25px 0px rgba(100, 100, 100, 0.5)",
 					},
 				}}
 			>

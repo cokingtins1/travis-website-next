@@ -1,11 +1,10 @@
 import Image from "next/image"
 import beatKitImage from "@/public/beatKitImage.jpg"
 import Link from "next/link"
-import { getImageSrc } from "@/libs/supabase/supabaseQuery"
-import { formatLarge } from '@/libs/utils'
+import { formatLarge } from "@/libs/utils"
 
 export default async function DashboardProductCard({ product, index }) {
-	const imageSrc = await getImageSrc(product.product_id)
+	const imageSrc = product.image_name
 
 	return (
 		<li
@@ -31,7 +30,7 @@ export default async function DashboardProductCard({ product, index }) {
 			</Link>
 			<p className="text-sm">{product.release_date_long}</p>
 			<p className="text-sm"></p>
-			<p className='text-sm'>{formatLarge(product.plays)}</p>
+			<p className="text-sm">{formatLarge(product.plays)}</p>
 		</li>
 	)
 }

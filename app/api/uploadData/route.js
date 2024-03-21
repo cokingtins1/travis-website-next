@@ -125,6 +125,7 @@ export async function POST(req) {
 		const value = e[1]
 
 		if (value instanceof File) {
+			
 			// catch STEM files for now. Will upgrade to pro soon.
 			if (value.type === "application/x-zip-compressed") {
 				return NextResponse.json({ success: true })

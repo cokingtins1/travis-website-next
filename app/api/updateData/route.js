@@ -1,7 +1,6 @@
 import { returnArray } from "@/libs/utils"
 import { NextResponse } from "next/server"
 import { revalidatePath } from "next/cache"
-import { headers } from "next/headers"
 import { getPricingIdById } from "@/libs/supabase/supabaseQuery"
 import { useSession } from "@/libs/supabase/useSession"
 
@@ -11,7 +10,7 @@ export async function PUT(req) {
 	const pricingId = await getPricingIdById(product_id)
 	const [MP3_file_id, WAV_file_id, STEM_file_id] = pricingId
 
-	const { supabase } = useSession()
+	const { supabase } = await useSession()
 
 	const file_url_mp3 = `${product_id}/${MP3_file_id}`
 	const file_url_wav = `${product_id}/${WAV_file_id}`
@@ -27,6 +26,19 @@ export async function PUT(req) {
 		//if update === 'true' && !path => file was removed => remove file from supa
 
 		if (update === "true" && file) {
+			if (file.type === "image/jpeg" || file.type === "image/png") {
+				try {
+					const { error } = await supabase.storage
+						.from("all_products")
+						.upload(path, file)
+					if (error) {
+						throw error
+					}
+				} catch (error) {
+					console.log(error)
+				}
+			}
+
 			try {
 				const { error } = await supabase.storage
 					.from("all_products")
@@ -141,11 +153,10 @@ export async function PUT(req) {
 
 				if (value instanceof File) {
 					// catch STEM files for now. Will upgrade to pro soon.
-					if (value.type === "application/x-zip-compressed") {
-						return NextResponse.json({ success: true })
-					} else if (value.type.split("/")[0] == "image") {
+
+					if (value.type.split("/")[0] == "image") {
 						const imagePath = `${product_id}/productImage/${value.name}`
-						await modifyStorage(imagePath, value, true)
+						await modifyStorage(imagePath, value, "true", "false")
 					} else if (value.name.endsWith(".mp3")) {
 						await modifyStorage(
 							file_url_mp3,
