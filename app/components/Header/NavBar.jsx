@@ -5,15 +5,12 @@ import Tab from "@mui/material/Tab"
 import { useState } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import ThemeProvider from "@/libs/contexts/ThemeContext"
-import useWindowSize from "../CustomHooks/useWindowSize"
 
-export default function NavBar({ session, setMenuOpen }) {
+export default function NavBar({ session, orientation }) {
 	const path = usePathname()
 	const page = path.replace(/^[^/]*\/([^/]*)\/?.*$/, "$1")
 
 	const router = useRouter()
-
-	const size = useWindowSize()
 
 	const indices = [
 		{ index: 0, value: "Home", href: "" },
@@ -37,6 +34,8 @@ export default function NavBar({ session, setMenuOpen }) {
 	const tabsStyles = {
 		color: primaryAccent,
 
+		width: "min-content",
+
 		"& .MuiTabs-indicator": {
 			backgroundColor: primaryAccent,
 		},
@@ -45,28 +44,26 @@ export default function NavBar({ session, setMenuOpen }) {
 	return (
 		<>
 			<ThemeProvider>
-				<div>
+				<div className="self-end">
 					<Tabs
 						sx={tabsStyles}
 						onChange={(e) => {
 							setTabValue(e.target.value)
 						}}
 						value={tabValue}
-						orientation={
-							size.width < 768 ? "vertical" : "horizontal"
-						}
+						orientation={orientation}
 					>
 						{indices.map((step) => (
 							<Tab
 								sx={{
 									color: step.index === tabValue && "#1976D2",
+									width: "min-content",
 								}}
 								key={step.index}
 								label={step.value}
 								onClick={() => {
 									setTabValue(step.index)
 									router.push(`/${step.href}`)
-									setMenuOpen(false)
 								}}
 							/>
 						))}

@@ -1,8 +1,8 @@
 import { useSession } from "@/libs/supabase/useSession"
-import Header from "./Header"
+import HeaderDrawer from "./HeaderDrawer"
 
 export default async function HeaderWrapper() {
 	const { session } = await useSession()
 
-	return <Header session={session} />
+	return <HeaderDrawer session={session} />
 }
