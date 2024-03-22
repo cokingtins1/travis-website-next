@@ -35,10 +35,6 @@ html{
 
 }
 
-
-
-
-
 * {
   scrollbar-color: var(--bg-secondary) var(--bg-primary);
 }

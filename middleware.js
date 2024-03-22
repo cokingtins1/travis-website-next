@@ -22,10 +22,10 @@ export async function middleware(req) {
 			id: "26dcbb0d-3447-4021-9d8c-9a4e2badd31c",
 		},
 
-		// {
-		// 	email: "seancokingtin@gmail.com",
-		// 	id: "26dcbb0d-3447-4021-9d8c-9a4e2badd31c",
-		// },
+		{
+			email: "beatsmadebyTrav@gmail.com",
+			id: "26441262-5775-49d1-9edb-c6c0b07aee0c",
+		},
 	]
 
 	const {
@@ -35,7 +35,6 @@ export async function middleware(req) {
 	const userId = session.user.id
 	const adminSignedIn = admins.some((admin) => admin.id === userId)
 
-
 	if (!session) {
 		return NextResponse.redirect(`${requestUrl.origin}/login`)
 	}
@@ -43,7 +42,6 @@ export async function middleware(req) {
 	if (session && !adminSignedIn) {
 		return NextResponse.redirect(`${requestUrl.origin}`)
 	}
-
 
 	return res
 }
