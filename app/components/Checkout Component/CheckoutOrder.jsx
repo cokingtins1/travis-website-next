@@ -1,20 +1,28 @@
+"use client"
+
 import Image from "next/image"
 import Button from "@mui/material/Button"
 import Link from "next/link"
 import Divider from "@mui/material/Divider"
 import FollowButtons from "./FollowButtons"
-import { returnFileType } from "@/libs/utils"
+import { useRouter } from "next/navigation"
 
-export default function CheckoutOrder({ orderDetails, orderNumber, email }) {
+export default function CheckoutOrder({ orderDetails }) {
+	const router = useRouter()
+	if (orderDetails.length === 0) {
+		router.refresh()
+	}
+
 	return (
 		<div className=" flex flex-col items-center w-2/5 gap-4 mt-12 p-8 bg-bg-elevated rounded-lg">
 			<div className="flex flex-col items-center">
 				<h1 className="text-xl font-bold">
 					Thank you for you purchase!
 				</h1>
-				<p>Order#: {orderNumber}</p>
+				<p>Order#: {orderDetails[0].orderAlias}</p>
 				<p className="text-sm">
-					An order confirmation has been sent to {email}{" "}
+					An order confirmation has been sent to{" "}
+					{orderDetails[0].customerEmail}{" "}
 				</p>
 
 				<p className="my-4">Click the links below to download:</p>
@@ -31,7 +39,10 @@ export default function CheckoutOrder({ orderDetails, orderNumber, email }) {
 								<Image
 									src={product.imageSrc}
 									fill={true}
-									style={{ objectFit: "cover", borderRadius: '0.5rem' }}
+									style={{
+										objectFit: "cover",
+										borderRadius: "0.5rem",
+									}}
 									sizes="(max-width: 430px), 100px "
 									alt="product image"
 								/>
@@ -52,9 +63,6 @@ export default function CheckoutOrder({ orderDetails, orderNumber, email }) {
 									Download Link
 								</Button>
 							</Link>
-							{/* <p className="text-xs text-text-secondary">
-								{`(${returnFileType(product.productType)})`}
-							</p> */}
 						</div>
 					</li>
 				))}
@@ -67,9 +75,9 @@ export default function CheckoutOrder({ orderDetails, orderNumber, email }) {
 					{
 						<Link
 							className="underline"
-							href="mailto:cokingtins1@gmail.com"
+							href="mailto:beatsmadebytrav@gmail.com"
 						>
-							cokingtins1@gmail.com
+							beatsmadebytrav@gmail.com
 						</Link>
 					}
 				</p>

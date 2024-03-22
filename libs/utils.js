@@ -237,15 +237,12 @@ export function shuffleArray(array) {
 }
 
 export function getAudioFile(fileArray) {
-	const productFileURL =
-		"https://njowjcfiaxbnflrcwcep.supabase.co/storage/v1/object/public/all_products"
-
 	const storeSrc = fileArray.find(
 		(file) =>
 			file.file_extension === ".mp3" || file.file_extension === ".wav"
 	)
 
-	const result = `${productFileURL}/${storeSrc?.file_url}`
+	const result = `${storeSrc?.file_url}`
 	const srcMatch = fileArray.find(
 		(file) => file.file_url === storeSrc?.file_url
 	)
@@ -271,9 +268,6 @@ export function formatLarge(num) {
 }
 
 export function getAudioList(fileArrays) {
-	const productFileURL =
-		"https://njowjcfiaxbnflrcwcep.supabase.co/storage/v1/object/public/all_products"
-
 	const audioList = []
 	let indexCounter = 0
 
@@ -284,7 +278,7 @@ export function getAudioList(fileArrays) {
 		)
 
 		if (storeSrc) {
-			const src = `${productFileURL}/${storeSrc.file_url}`
+			const src = `${storeSrc.file_url}`
 			const srcType =
 				storeSrc.file_extension === ".mp3" ? "audio/mpeg" : "audio/wav"
 			const product_id = storeSrc.product_id

@@ -10,7 +10,6 @@ export default function ProductMedia({ url }) {
 				height="480"
 				src={`https://www.youtube.com/embed/${embeddedUrl}`}
 				allowFullScreen
-				allowTransparency={true}
 			/>
 		</div>
 	)

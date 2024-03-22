@@ -1,9 +1,6 @@
 "use server"
 
-import {
-	getAudioSrcById,
-	getProductById,
-} from "@/libs/supabase/supabaseQuery"
+import { getFileSources, getProductById } from "@/libs/supabase/supabaseQuery"
 import sgMail from "@sendgrid/mail"
 import supabaseClient from "@/libs/supabase/config/supabaseClient"
 import dayjs from "dayjs"
@@ -14,7 +11,7 @@ export const getFreeDownload = async (formData) => {
 	const productId = formData.get("productId")
 	const imageSrc = formData.get("imageSrc")
 
-	const { storeSrc } = await getAudioSrcById(productId)
+	const { storeSrc } = await getFileSources(productId)
 	const path = storeSrc.split("all_products/")[1]
 
 	const product_data = await getProductById(productId)
@@ -26,14 +23,12 @@ export const getFreeDownload = async (formData) => {
 		.from("all_products")
 		.getPublicUrl(path, { download: true })
 
-    
-
 	const order = [
 		{
 			Product: {
 				productName: product_data.title,
 				productPrice: "Free",
-                productType: "BASIC",
+				productType: "BASIC",
 				signedUrl: url.publicUrl,
 				imageSrc: imageSrc,
 			},
@@ -64,5 +59,4 @@ export const getFreeDownload = async (formData) => {
 			console.log(error)
 		}
 	}
-
 }

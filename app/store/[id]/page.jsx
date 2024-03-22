@@ -3,7 +3,7 @@ import ProductMedia from "@/app/components/Store Components/Media Components/Pro
 
 import ProductMeta from "@/app/components/Store Components/ProductMeta/ProductMeta"
 import {
-	getAudioSrcById,
+	getFileSources,
 	getComments,
 	getPricingById,
 	getProductById,
@@ -19,8 +19,8 @@ export default async function Page({ params: { id } }) {
 	const product = await getProductById(id)
 	const imageSrc = product.image_name
 	const { filteredPricing } = await getPricingById(id)
-	const storeSrc = await getAudioSrcById(id)
-	const storeSrcType = await getAudioSrcById(id)
+	const storeSrc = await getFileSources(id)
+	const storeSrcType = await getFileSources(id)
 	const { session } = await useSession()
 	const comments = await getComments(id)
 	const replies = await getReplys(id)

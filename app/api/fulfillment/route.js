@@ -78,6 +78,8 @@ export async function POST(req) {
 
 		const supabaseData = {
 			stripe_order_id: sessionData.id,
+			order_id_alias:
+				Math.floor(Math.random() * (10000 - 1000 + 1)) + 1000,
 			created_at: new Date(sessionData.created * 1000).toISOString(),
 			order_total: sessionData.amount_total / 100,
 			customer_name: sessionData.customer_details.name,
@@ -96,7 +98,7 @@ export async function POST(req) {
 		if (customer_email) {
 			sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 			const msg = {
-				from: "cokingtins1@gmail.com",
+				from: "beatsmadebytrav@gmail.com",
 				personalizations: [
 					{
 						to: customer_email,
