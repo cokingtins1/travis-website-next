@@ -232,7 +232,7 @@ export default function AudioDrawer({
 								/>
 							</IconButton>
 						</div>
-						<div className="hidden sm:text-center h-[30px]">
+						<div className="hidden sm:block text-center h-[30px]">
 							{!isNaN(duration) && (
 								<AudioProgressBar
 									duration={duration}

@@ -1,8 +1,7 @@
 import { useSession } from "@/libs/supabase/useSession"
 import { notFound, redirect } from "next/navigation"
 import {
-	getAudioSrcById,
-	getImageSrc,
+	getFileSources,
 	getPricingById,
 	getPricingIdById,
 } from "@/libs/supabase/supabaseQuery"
@@ -17,13 +16,11 @@ export default async function Page({ params: { id } }) {
 
 	const productFilePaths = await getPricingIdById(id)
 
-	const productImage = await getImageSrc(id)
 	const pricing = await getPricingById(id)
 
 	if (!productFilePaths) {
 		notFound()
 	}
-	const [MP3_file_id, WAV_file_id, STEM_file_id] = productFilePaths
 
 	const { data: product } = await supabase
 		.from("products")
@@ -31,20 +28,18 @@ export default async function Page({ params: { id } }) {
 		.match({ product_id: id })
 		.single()
 
-	const { data: files } = await supabase.storage.from("all_products").list(id)
+	const {
+		audioSrc_MP3,
+		audioSrc_WAV,
+		audioSrc_STEM,
+		audioFile_MP3: MP3_file,
+		audioFile_WAV: WAV_file,
+		audioFile_STEM: STEM_file,
+		imageFile,
+		imageSrc,
+	} = await getFileSources(product)
 
-	function findFile(fileList, fileName) {
-		return fileList.find((file) => file.name === fileName)
-	}
-
-	const MP3_file = findFile(files, MP3_file_id)
-	const WAV_file = findFile(files, WAV_file_id)
-	const STEM_file = findFile(files, STEM_file_id)
-
-	const productFiles = { MP3_file, WAV_file, STEM_file, productImage }
-	const { audioSrc_MP3, audioSrc_WAV, audioSrc_STEM } = await getAudioSrcById(
-		id
-	)
+	const productFiles = { MP3_file, WAV_file, STEM_file, imageFile, imageSrc }
 
 	const audioSources = {
 		MP3: audioSrc_MP3,

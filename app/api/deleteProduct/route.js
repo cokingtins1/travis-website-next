@@ -1,22 +1,19 @@
 import { NextResponse } from "next/server"
 import { revalidatePath } from "next/cache"
-import { useSession } from '@/libs/supabase/useSession'
+import { useSession } from "@/libs/supabase/useSession"
 
 export async function DELETE(req) {
-
-	const {supabase} = useSession()
+	const { supabase } = await useSession()
 
 	const product_id = await req.json()
 
 	if (product_id) {
-		console.log(`deleting ${product_id}`)
-
 		// Delete data from DB
 		try {
 			const { error } = await supabase
 				.from("products")
 				.delete()
-				.eq("id", product_id)
+				.eq("product_id", product_id)
 
 			if (error) {
 				throw error
@@ -31,28 +28,24 @@ export async function DELETE(req) {
 				.from("all_products")
 				.list(product_id)
 
-			const filesToRemove = productFiles
-				.filter((file) => file.name !== "productImage")
-				.map((file) => file.name)
+			if (!productFiles) return
 
-			const { data: imageFiles } = await supabase.storage
-				.from("all_products")
-				.list(`${product_id}/productImage`)
-
-			const imagesToRemove = imageFiles.map((file) => file.name)
+			const filesToRemove = productFiles.map((file) => file.name)
 
 			if (filesToRemove) {
 				for (const file in filesToRemove) {
-					const path = `${product_id}/${filesToRemove[file]}`
+					let fileName
+					const folder = `${product_id}/${filesToRemove[file]}`
 
-					await supabase.storage.from("all_products").remove(path)
-				}
-			}
+					const { data } = await supabase.storage
+						.from("all_products")
+						.list(folder)
 
-			if (imagesToRemove) {
-				for (const file in imagesToRemove) {
-					const path = `${product_id}/productImage/${imagesToRemove[file]}`
-					await supabase.storage.from("all_products").remove(path)
+					fileName = data[0].name
+
+					await supabase.storage
+						.from("all_products")
+						.remove(`${folder}/${fileName}`)
 				}
 			}
 		} catch (error) {
@@ -60,7 +53,7 @@ export async function DELETE(req) {
 		}
 	}
 
-	revalidatePath("/")
+	// revalidatePath("/")
 
 	return NextResponse.json(
 		{ message: "Product deleted successfully" },

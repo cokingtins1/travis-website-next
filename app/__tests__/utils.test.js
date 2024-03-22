@@ -528,9 +528,9 @@ describe("return array", () => {
 // 	// 	item.productLikes = productLikes
 
 // 	// 	// item.imageSrc = getImageSrc(item.product_data.product_id)
-// 	// 	// const {storeSrc} = getAudioSrcById(item.product_data.product_id)
+// 	// 	// const {storeSrc} = getFileSources(item.product_data.product_id)
 // 	// 	// item.storeSrc = storeSrc
-// 	// 	// const {storeSrcType} = getAudioSrcById(item.product_data.product_id)
+// 	// 	// const {storeSrcType} = getFileSources(item.product_data.product_id)
 // 	// 	// item.storeSrcType = storeSrcType
 // 	// }
 

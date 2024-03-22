@@ -3,7 +3,7 @@ import dayjs from "dayjs"
 import { returnArray } from "@/libs/utils"
 import { revalidatePath } from "next/cache"
 import { useSession } from "@/libs/supabase/useSession"
-import { getAudioSrcById, getProductById } from "@/libs/supabase/supabaseQuery"
+import { getFileSources, getProductById } from "@/libs/supabase/supabaseQuery"
 
 export async function POST(req) {
 	const { supabase } = await useSession()
@@ -22,6 +22,7 @@ export async function POST(req) {
 			const { error } = await supabase.storage
 				.from("all_products")
 				.upload(path, file)
+
 			if (error) {
 				throw error
 			}
@@ -29,9 +30,6 @@ export async function POST(req) {
 			console.log(error)
 		}
 	}
-
-	const productFileURL =
-	"https://njowjcfiaxbnflrcwcep.supabase.co/storage/v1/object/public/all_products"
 
 	// Foreign Keys:
 	const product_id = crypto.randomUUID()
@@ -41,9 +39,27 @@ export async function POST(req) {
 	const pricing_id_zip = crypto.randomUUID()
 
 	// Storage Foreign Keys:
-	const file_url_mp3 = `${product_id}/${pricing_id_mp3}`
-	const file_url_wav = `${product_id}/${pricing_id_wav}`
-	const file_url_zip = `${product_id}/${pricing_id_zip}`
+
+	const file_url_mp3 = `${product_id}/MP3/${formData.get(
+		"title"
+	)} ${formData.get("bpm")} BPM-@trav-MP3`
+	const file_url_wav = `${product_id}/WAV/${formData.get(
+		"title"
+	)} ${formData.get("bpm")} BPM-@trav-WAV`
+	const file_url_zip = `${product_id}/STEM/${formData.get(
+		"title"
+	)} ${formData.get("bpm")} BPM-@trav-STEM`
+
+	let image_url
+	for (const e of formData) {
+		const value = e[1]
+		if (value instanceof File) {
+			if (value.type.split("/")[0] == "image") {
+				image_url = `${product_id}/productImage/${value.name}`
+				break
+			}
+		}
+	}
 
 	await supabase.from("products").insert({
 		product_id: product_id,
@@ -62,10 +78,9 @@ export async function POST(req) {
 		keys: formData.get("keys"),
 		bpm: formData.get("bpm"),
 		video_link: formData.get("videoLink"),
-
+		image_name: "",
 		free: formData.get("free"),
-		image_name: formData.get("productImage")?.name,
-		image_names: `${productFileURL}/${product_id}/productImage/${formData.get("productImage")?.name}`
+		plays: Math.floor(Math.random() * (10000 - 1000 + 1)) + 1000,
 	})
 
 	await supabase.from("pricing").insert({
@@ -92,27 +107,6 @@ export async function POST(req) {
 		price: formData.get("exclusivePrice"),
 	})
 
-	await supabase.from("product_files").insert({
-		product_id: product_id,
-		pricing_id: pricing_id_mp3,
-		file_extension: ".mp3",
-		file_url: file_url_mp3,
-	})
-
-	await supabase.from("product_files").insert({
-		product_id: product_id,
-		pricing_id: pricing_id_wav,
-		file_extension: ".wav",
-		file_url: file_url_wav,
-	})
-
-	await supabase.from("product_files").insert({
-		product_id: product_id,
-		pricing_id: pricing_id_zip,
-		file_extension: ".zip",
-		file_url: file_url_zip,
-	})
-
 	await supabase.from("product_likes").insert({
 		product_id: product_id,
 		likes: 0,
@@ -121,44 +115,84 @@ export async function POST(req) {
 	})
 
 	for (const e of formData) {
-		const key = e[0]
 		const value = e[1]
 
 		if (value instanceof File) {
-			
 			// catch STEM files for now. Will upgrade to pro soon.
-			if (value.type === "application/x-zip-compressed") {
-				return NextResponse.json({ success: true })
-			} else if (value.type.split("/")[0] == "image") {
-				const imagePath = `${product_id}/productImage/${value.name}`
-				await uploadFile(imagePath, value)
+
+			if (value.type.split("/")[0] == "image") {
+				await uploadFile(image_url, value)
 			} else if (value.name.endsWith(".mp3")) {
 				await uploadFile(file_url_mp3, value)
 			} else if (value.name.endsWith(".wav")) {
 				await uploadFile(file_url_wav, value)
 			} else if (value.name.endsWith(".zip")) {
+				console.log("ZIP File:", value)
 				await uploadFile(file_url_zip, value)
 			}
 		}
 	}
 
+	const { audioSrc_MP3, audioSrc_WAV, audioSrc_STEM, imageSrc } =
+		await getFileSources(product_id)
+
+	console.log(
+		"MP3",
+		audioSrc_MP3,
+		"WAV",
+		audioSrc_WAV,
+		"STEM",
+		audioSrc_STEM,
+		"image",
+		imageSrc
+	)
+
+	await supabase.from("product_files").insert({
+		product_id: product_id,
+		pricing_id: pricing_id_mp3,
+		file_extension: ".mp3",
+		file_url: audioSrc_MP3,
+	})
+
+	await supabase.from("product_files").insert({
+		product_id: product_id,
+		pricing_id: pricing_id_wav,
+		file_extension: ".wav",
+		file_url: audioSrc_WAV,
+	})
+
+	await supabase.from("product_files").insert({
+		product_id: product_id,
+		pricing_id: pricing_id_zip,
+		file_extension: ".zip",
+		file_url: audioSrc_STEM,
+	})
+
+	await supabase
+		.from("products")
+		.update({
+			image_name: imageSrc,
+		})
+		.eq("product_id", product_id)
+
+	revalidatePath("/", "layout")
+
 	// Check supabase to see if data was uploaded
 	const data = await getProductById(product_id)
-	const audioSrc = await getAudioSrcById(product_id)
 
-	if (data && audioSrc) {
+	if (data && audioSrc_MP3) {
 		revalidatePath("/", "layout")
 
 		return NextResponse.json(
 			{ message: "Product was uploaded susccessfully" },
 			{ status: 201 }
 		)
-	} else if (!data && audioSrc) {
+	} else if (!data && audioSrc_MP3) {
 		return NextResponse.json(
 			{ message: "Error uploading product data" },
 			{ status: 500 }
 		)
-	} else if (data && !audioSrc) {
+	} else if (data && !audioSrc_MP3) {
 		return NextResponse.json(
 			{ message: "Error uploading product files" },
 			{ status: 500 }

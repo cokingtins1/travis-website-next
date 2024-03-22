@@ -1,38 +1,67 @@
 import { returnArray } from "@/libs/utils"
 import { NextResponse } from "next/server"
 import { revalidatePath } from "next/cache"
-import { getPricingIdById } from "@/libs/supabase/supabaseQuery"
+import { getFileSources, getPricingIdById } from "@/libs/supabase/supabaseQuery"
 import { useSession } from "@/libs/supabase/useSession"
 
 export async function PUT(req) {
 	const formData = await req.formData()
 	const product_id = await formData.get("product_id")
-	const pricingId = await getPricingIdById(product_id)
-	const [MP3_file_id, WAV_file_id, STEM_file_id] = pricingId
 
 	const { supabase } = await useSession()
 
-	const file_url_mp3 = `${product_id}/${MP3_file_id}`
-	const file_url_wav = `${product_id}/${WAV_file_id}`
-	const file_url_zip = `${product_id}/${STEM_file_id}`
+	const {
+		audioFile_MP3: currentMP3,
+		audioFile_WAV: currentWAV,
+		audioFile_STEM: currentSTEM,
+		imageFile: currentImage,
+	} = await getFileSources(product_id)
 
-	const productFileURL =
-		"https://njowjcfiaxbnflrcwcep.supabase.co/storage/v1/object/public/all_products"
+	// For deleting file purposes only
+	const existing_path_mp3 = `${product_id}/MP3/${currentMP3?.name}`
+	const existing_path_wav = `${product_id}/WAV/${currentWAV?.name}`
+	const existing_path_stem = `${product_id}/STEM/${currentSTEM?.name}`
+	//-------------------
 
-	async function modifyStorage(path, file, update, deleteFlag) {
-		//if upload is true, file did not exist in the first place -> check if new file has been uploaded by checking path !== undefined
-		// if file did not change, it will not log an instance of file since and will never reach this function so it's all good.
+	const file_url_mp3 = `${product_id}/MP3/${formData.get(
+		"title"
+	)} ${formData.get("bpm")} BPM-@trav-MP3`
+	const file_url_wav = `${product_id}/WAV/${formData.get(
+		"title"
+	)} ${formData.get("bpm")} BPM-@trav-WAV`
+	const file_url_zip = `${product_id}/STEM/${formData.get(
+		"title"
+	)} ${formData.get("bpm")} BPM-@trav-STEM`
 
-		//if update === 'true' && !path => file was removed => remove file from supa
+	let image_url
+	for (const e of formData) {
+		const value = e[1]
+		if (value instanceof File) {
+			if (value.type.split("/")[0] == "image") {
+				image_url = `${product_id}/productImage/${value.name}`
+				break
+			}
+		}
+	}
 
-		if (update === "true" && file) {
-			if (file.type === "image/jpeg" || file.type === "image/png") {
+	async function modifyStorageNEW(
+		currentFilePath,
+		newFilePath,
+		newFile,
+		update,
+		deleteFlag
+	) {
+		if (update === "true" && newFile) {
+			if (newFile.type === "image/jpeg" || newFile.type === "image/png") {
 				try {
-					const { error } = await supabase.storage
+					const { error: removeError } = await supabase.storage
 						.from("all_products")
-						.upload(path, file)
-					if (error) {
-						throw error
+						.remove(currentFilePath)
+					const { error: uploadError } = await supabase.storage
+						.from("all_products")
+						.upload(newFilePath, newFile)
+					if (removeError || uploadError) {
+						throw removeError || uploadError
 					}
 				} catch (error) {
 					console.log(error)
@@ -40,20 +69,23 @@ export async function PUT(req) {
 			}
 
 			try {
-				const { error } = await supabase.storage
+				const { error: removeError } = await supabase.storage
 					.from("all_products")
-					.update(path, file, { cacheControl: "3600" })
-				if (error) {
-					throw error
+					.remove(currentFilePath)
+				const { error: uploadError } = await supabase.storage
+					.from("all_products")
+					.upload(newFilePath, newFile)
+				if (removeError || uploadError) {
+					throw removeError || uploadError
 				}
 			} catch (error) {
 				console.log(error)
 			}
-		} else if (update === "false" && file) {
+		} else if (update === "false" && newFile) {
 			try {
 				const { error } = await supabase.storage
 					.from("all_products")
-					.upload(path, file)
+					.upload(newFilePath, newFile)
 				if (error) {
 					throw error
 				}
@@ -64,7 +96,7 @@ export async function PUT(req) {
 			try {
 				const { error } = await supabase.storage
 					.from("all_products")
-					.remove(path)
+					.remove(currentFilePath)
 				if (error) {
 					throw error
 				}
@@ -74,117 +106,123 @@ export async function PUT(req) {
 		}
 	}
 
-	if (formData) {
-		try {
-			await supabase
-				.from("products")
-				.update({
-					title: formData.get("title"),
-					type: formData.get("type"),
-					description: formData.get("description"),
-					tags: returnArray("tags", formData),
-					genres: returnArray("genres", formData),
-					moods: returnArray("moods", formData),
-					instruments: returnArray("instruments", formData),
-					keys: formData.get("keys"),
-					bpm: formData.get("bpm") === "" ? 0 : formData.get("bpm"),
-					video_link: formData.get("videoLink"),
-					image_name: `${productFileURL}/${product_id}/productImage/${
-						formData.get("productImage")?.name
-					}`,
+	if (!formData) return
 
-					free: formData.get("free"),
-				})
-				.eq("product_id", product_id)
-				.then((res) => {
-					if (res.error) {
-						console.log(res.error.message)
-					} else {
-						console.log("update successfull")
-					}
-				})
-		} catch (error) {
-			console.log(error)
+	try {
+		await supabase
+			.from("products")
+			.update({
+				title: formData.get("title"),
+				type: formData.get("type"),
+				description: formData.get("description"),
+				tags: returnArray("tags", formData),
+				genres: returnArray("genres", formData),
+				moods: returnArray("moods", formData),
+				instruments: returnArray("instruments", formData),
+				keys: formData.get("keys"),
+				bpm: formData.get("bpm") === "" ? 0 : formData.get("bpm"),
+				video_link: formData.get("videoLink"),
+
+				free: formData.get("free"),
+			})
+			.eq("product_id", product_id)
+			.then((res) => {
+				if (res.error) {
+					console.log(res.error.message)
+				} else {
+					console.log("update successfull")
+				}
+			})
+	} catch (error) {
+		console.log(error)
+	}
+
+	try {
+		await supabase
+			.from("pricing")
+			.update({
+				is_active: formData.get("basic"),
+				price: formData.get("basicPrice"),
+			})
+			.eq("product_id", product_id)
+			.eq("type_id", "basic")
+
+		await supabase
+			.from("pricing")
+			.update({
+				is_active: formData.get("premium"),
+				price: formData.get("premiumPrice"),
+			})
+			.eq("product_id", product_id)
+			.eq("type_id", "premium")
+
+		await supabase
+			.from("pricing")
+			.update({
+				is_active: formData.get("exclusive"),
+				price: formData.get("exclusivePrice"),
+			})
+			.eq("product_id", product_id)
+			.eq("type_id", "exclusive")
+
+		// Deleting files
+		if (formData.get("basicFileDelete") === "true") {
+			await modifyStorageNEW(existing_path_mp3, null, null, null, "true")
+		}
+		if (formData.get("premiumFileDelete") === "true") {
+			await modifyStorageNEW(existing_path_wav, null, null, null, "true")
+		}
+		if (formData.get("exclusiveFileDelete") === "true") {
+			await modifyStorageNEW(existing_path_stem, null, null, null, "true")
 		}
 
-		try {
-			await supabase
-				.from("pricing")
-				.update({
-					is_active: formData.get("basic"),
-					price: formData.get("basicPrice"),
-				})
-				.eq("product_id", product_id)
-				.eq("type_id", "basic")
+		// Inserting or updating files
+		for (const e of formData) {
+			const key = e[0]
+			const value = e[1]
 
-			await supabase
-				.from("pricing")
-				.update({
-					is_active: formData.get("premium"),
-					price: formData.get("premiumPrice"),
-				})
-				.eq("product_id", product_id)
-				.eq("type_id", "premium")
+			if (value instanceof File) {
+				// catch STEM files for now. Will upgrade to pro soon.
 
-			await supabase
-				.from("pricing")
-				.update({
-					is_active: formData.get("exclusive"),
-					price: formData.get("exclusivePrice"),
-				})
-				.eq("product_id", product_id)
-				.eq("type_id", "exclusive")
-
-			// Deleting files
-			if (formData.get("basicFileDelete") === "true") {
-				await modifyStorage(file_url_mp3, null, null, "true")
-			}
-			if (formData.get("premiumFileDelete") === "true") {
-				await modifyStorage(file_url_wav, null, null, "true")
-			}
-			if (formData.get("exclusiveFileDelete") === "true") {
-				await modifyStorage(file_url_zip, null, null, "true")
-			}
-
-			// Inserting or updating files
-			for (const e of formData) {
-				const key = e[0]
-				const value = e[1]
-
-				if (value instanceof File) {
-					// catch STEM files for now. Will upgrade to pro soon.
-
-					if (value.type.split("/")[0] == "image") {
-						const imagePath = `${product_id}/productImage/${value.name}`
-						await modifyStorage(imagePath, value, "true", "false")
-					} else if (value.name.endsWith(".mp3")) {
-						await modifyStorage(
-							file_url_mp3,
-							value,
-							formData.get("MP3_update"),
-							formData.get("basicFileDelete")
-						)
-					} else if (value.name.endsWith(".wav")) {
-						await modifyStorage(
-							file_url_wav,
-							value,
-							formData.get("WAV_update"),
-							formData.get("premiumFileDelete")
-						)
-					} else if (value.name.endsWith(".zip")) {
-						await modifyStorage(
-							file_url_zip,
-							value,
-							formData.get("STEM_update"),
-							formData.get("exclusiveFileDelete")
-						)
-					}
+				if (value.type.split("/")[0] == "image") {
+					await modifyStorageNEW(
+						`${product_id}/productImage/${currentImage.name}`,
+						image_url,
+						value,
+						"true",
+						"false"
+					)
+				} else if (value.name.endsWith(".mp3")) {
+					await modifyStorageNEW(
+						`${product_id}/MP3/${currentMP3?.name}`,
+						file_url_mp3,
+						value,
+						formData.get("MP3_update"),
+						formData.get("basicFileDelete")
+					)
+				} else if (value.name.endsWith(".wav")) {
+					await modifyStorageNEW(
+						`${product_id}/WAV/${currentWAV?.name}`,
+						file_url_wav,
+						value,
+						formData.get("WAV_update"),
+						formData.get("basicFileDelete")
+					)
+				} else if (value.name.endsWith(".zip")) {
+					await modifyStorageNEW(
+						`${product_id}/STEM/${currentSTEM?.name}`,
+						file_url_zip,
+						value,
+						formData.get("STEM_update"),
+						formData.get("basicFileDelete")
+					)
 				}
 			}
-		} catch (error) {
-			console.log(error)
 		}
+	} catch (error) {
+		console.log(error)
 	}
+
 	revalidatePath("/")
 
 	return NextResponse.json(

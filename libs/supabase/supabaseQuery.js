@@ -2,38 +2,33 @@
 
 import supabaseClient from "@/libs/supabase/config/supabaseClient"
 import { useSession } from "./useSession"
-import supabaseServer from "./supabaseServer"
 
 // Order getting functions:
 
 export async function getSupabaseOrderData(order_id) {
-	try {
-		const { data } = await supabaseClient
-			.from("orders")
-			.select("*")
-			.match({ stripe_order_id: order_id })
-			.single()
+	const { data } = await supabaseClient
+		.from("orders")
+		.select("*")
+		.match({ stripe_order_id: order_id })
+		.single()
 
-		const rawData = JSON.parse(data.products_sold)
+	if (!data) return null
 
-		const orderData = rawData.map((productGroup) => {
-			const productName = Object.keys(productGroup)[0]
-			const productDetails = productGroup[productName]
-			return { name: productName, ...productDetails }
-		})
+	const rawData = JSON.parse(data.products_sold)
+	const customerEmail = data.customer_email
+	const orderAlias = data.order_id_alias
 
-		return orderData
-
-		// if (data) {
-
-		// 	// orderAlias: data[0].order_id_alias
-		// 	return orderData
-		// } else {
-		// 	return null
-		// }
-	} catch (error) {
-		console.log(error)
-	}
+	const orderData = rawData.map((productGroup) => {
+		const productName = Object.keys(productGroup)[0]
+		const productDetails = productGroup[productName]
+		return {
+			name: productName,
+			...productDetails,
+			customerEmail,
+			orderAlias,
+		}
+	})
+	return orderData
 }
 
 export async function getLikes(product_id) {
@@ -317,33 +312,34 @@ export async function insertOrderData(data) {
 }
 
 export async function getDownloadUrls(productsSold) {
-	const filePaths = productsSold.map(
-		(product) => `${product.product_id}/${product.pricing_id}`
-	)
-
 	const processFilePaths = async (filePaths) => {
-		const expiresIn = 60 * 60 * 24 * 7 // 7 days
 		const result = []
 
-		for (const path of filePaths) {
-			const { data } = await supabaseClient.storage
-				.from("all_products")
-				.createSignedUrl(path, expiresIn, { download: true })
-			result.push(data.signedUrl)
+		for (const product of filePaths) {
+			const { data } = await supabaseClient
+				.from("product_files")
+				.select("file_url")
+				.match({ pricing_id: product.pricing_id })
+				.single()
+
+			result.push(data.file_url)
 		}
+
 		return result
 	}
 
-	const downloadUrls = await processFilePaths(filePaths)
+	const downloadUrls = await processFilePaths(productsSold)
 
 	return downloadUrls
 }
 
-export async function getAudioSrcById(product_id) {
+export async function getFileSources(product) {
+	const productId = typeof product === "object" ? product.product_id : product
+
 	try {
 		const { data, error } = await supabaseClient.storage
 			.from(`all_products`)
-			.list(`${product_id}`, {
+			.list(`${productId}`, {
 				offset: 0,
 			})
 
@@ -351,65 +347,108 @@ export async function getAudioSrcById(product_id) {
 			throw new Error(error.message)
 		}
 
-		if (data) {
-			const audioFiles = data.filter((item) =>
-				[
-					"audio/mpeg",
-					"audio/wav",
-					"application/x-zip-compressed",
-				].includes(item?.metadata?.mimetype)
-			)
+		let audioFile_MP3 = null
+		let audioFile_WAV = null
+		let audioFile_STEM = null
+		let imageFile = null
 
-			let audioFile_MP3 = null
-			let audioFile_WAV = null
-			let audioFile_STEM = null
+		if (!data) return
 
-			audioFiles.forEach((audioFile) => {
-				if (audioFile?.metadata?.mimetype === "audio/mpeg") {
-					audioFile_MP3 = audioFile
-				} else if (audioFile?.metadata?.mimetype === "audio/wav") {
-					audioFile_WAV = audioFile
-				} else if (
-					audioFile?.metadata?.mimetype ===
-					"application/x-zip-compressed"
-				) {
-					audioFile_STEM = audioFile
-				}
-			})
+		if (data.some((file) => file.name === "MP3")) {
+			const { data: file, error } = await supabaseClient.storage
+				.from(`all_products`)
+				.list(`${productId}/MP3`, {
+					offset: 0,
+				})
+			audioFile_MP3 = file[0]
+		}
 
-			if (audioFile_MP3 || audioFile_WAV || audioFile_STEM) {
-				const productFileURL =
-					"https://njowjcfiaxbnflrcwcep.supabase.co/storage/v1/object/public/all_products"
+		if (data.some((file) => file.name === "WAV")) {
+			const { data: file, error } = await supabaseClient.storage
+				.from(`all_products`)
+				.list(`${productId}/WAV`, {
+					offset: 0,
+				})
+			audioFile_WAV = file[0]
+		}
 
-				const audioSrc_MP3 =
-					audioFile_MP3 &&
-					`${productFileURL}/${product_id}/${audioFile_MP3.name}`
-				const audioSrc_WAV =
-					audioFile_WAV &&
-					`${productFileURL}/${product_id}/${audioFile_WAV.name}`
-				const audioSrc_STEM =
-					audioFile_STEM &&
-					`${productFileURL}/${product_id}/${audioFile_STEM.name}`
+		if (data.some((file) => file.name === "STEM")) {
+			const { data: file, error } = await supabaseClient.storage
+				.from(`all_products`)
+				.list(`${productId}/STEM`, {
+					offset: 0,
+				})
+			audioFile_STEM = file[0]
+		}
 
-				// Corrected assignment of srcType_STEM
-				const srcType_MP3 = audioFile_MP3?.metadata?.mimetype
-				const srcType_WAV = audioFile_WAV?.metadata?.mimetype
-				const srcType_STEM = audioFile_STEM?.metadata?.mimetype
+		if (data.some((file) => file.name === "productImage")) {
+			const { data: file, error } = await supabaseClient.storage
+				.from(`all_products`)
+				.list(`${productId}/productImage`, {
+					offset: 0,
+				})
+			imageFile = file[0]
+		}
 
-				const storeSrc = audioSrc_MP3 || audioSrc_WAV
-				const storeSrcType = srcType_MP3 || srcType_WAV || srcType_STEM
+		let audioSrc_MP3
+		let audioSrc_WAV
+		let audioSrc_STEM
+		let imageSrc
 
-				return {
-					storeSrc,
-					storeSrcType,
-					audioSrc_MP3,
-					srcType_MP3,
-					audioSrc_WAV,
-					srcType_WAV,
-					audioSrc_STEM,
-					srcType_STEM,
-				}
-			}
+		if (audioFile_MP3) {
+			const { data } = supabaseClient.storage
+				.from(`all_products`)
+				.getPublicUrl(`${productId}/MP3/${audioFile_MP3.name}`)
+			audioSrc_MP3 = data.publicUrl
+		}
+
+		if (audioFile_WAV) {
+			const { data } = supabaseClient.storage
+				.from(`all_products`)
+				.getPublicUrl(`${productId}/WAV/${audioFile_WAV.name}`)
+			audioSrc_WAV = data.publicUrl
+		}
+
+		if (audioFile_STEM) {
+			const { data } = supabaseClient.storage
+				.from(`all_products`)
+				.getPublicUrl(`${productId}/STEM/${audioFile_STEM.name}`)
+			audioSrc_STEM = data.publicUrl
+		}
+
+		if (imageFile) {
+			const { data } = supabaseClient.storage
+				.from(`all_products`)
+				.getPublicUrl(`${productId}/productImage/${imageFile.name}`)
+			imageSrc = data.publicUrl
+		}
+
+		const srcType_MP3 = audioFile_MP3?.metadata?.mimetype
+		const srcType_WAV = audioFile_WAV?.metadata?.mimetype
+		const srcType_STEM = audioFile_STEM?.metadata?.mimetype
+
+		const storeSrc = audioSrc_MP3 || audioSrc_WAV
+		const storeSrcType = srcType_MP3 || srcType_WAV || srcType_STEM
+
+		return {
+			storeSrc,
+			storeSrcType,
+
+			audioFile_MP3,
+			audioFile_WAV,
+			audioFile_STEM,
+
+			audioSrc_MP3,
+			srcType_MP3,
+
+			audioSrc_WAV,
+			srcType_WAV,
+
+			audioSrc_STEM,
+			srcType_STEM,
+
+			imageFile,
+			imageSrc,
 		}
 	} catch (error) {
 		console.error(error)
@@ -580,39 +619,4 @@ export async function getAllColVals(columnName) {
 		}, [])
 	}
 	return null
-}
-
-export async function testRENAME() {
-	// const filePaths = productsSold.map(
-	// 	(product) => `${product.product_id}/${product.pricing_id}`
-	// )
-
-	const test = ["TEST/123456", "TEST/78910"]
-
-	for (const path in test) {
-		// const newPath = `${path}/TEMP_${crypto.randomUUID()}`
-		const newPath = "TEST FOLDER"
-		const { data, error } = await supabaseClient.storage
-			.from("all_products")
-			.copy(path, newPath)
-
-		console.log(data)
-	}
-
-	// const processFilePaths = async (filePaths) => {
-	// 	const expiresIn = 60 * 60 * 24 * 7 // 7 days
-	// 	const result = []
-
-	// 	for (const path of filePaths) {
-	// 		const { data } = await supabaseClient.storage
-	// 			.from("all_products")
-	// 			.createSignedUrl(path, expiresIn, { download: true })
-	// 		result.push(data.signedUrl)
-	// 	}
-	// 	return result
-	// }
-
-	// const downloadUrls = await processFilePaths(test)
-
-	// return downloadUrls
 }
