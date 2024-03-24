@@ -29,6 +29,7 @@ export async function PUT(req) {
 	const file_url_wav = `${product_id}/WAV/${formData.get(
 		"title"
 	)} ${formData.get("bpm")} BPM-@trav-WAV`
+
 	const file_url_zip = `${product_id}/STEM/${formData.get(
 		"title"
 	)} ${formData.get("bpm")} BPM-@trav-STEM`
@@ -104,6 +105,29 @@ export async function PUT(req) {
 				console.log(error)
 			}
 		}
+	}
+
+	async function updateFileUrls(file_url) {
+		let publicUrl
+
+		const { data } = supabase.storage
+			.from(`all_products`)
+			.getPublicUrl(file_url)
+		publicUrl = data.publicUrl
+
+		await supabase
+			.from("product_files")
+			.update({
+				file_url: publicUrl,
+			})
+			.eq("product_id", product_id)
+			.then((res) => {
+				if (res.error) {
+					console.log(res.error.message)
+				} else {
+					console.log("update successfull")
+				}
+			})
 	}
 
 	if (!formData) return
@@ -200,6 +224,7 @@ export async function PUT(req) {
 						formData.get("MP3_update"),
 						formData.get("basicFileDelete")
 					)
+					await updateFileUrls(file_url_mp3)
 				} else if (value.name.endsWith(".wav")) {
 					await modifyStorageNEW(
 						`${product_id}/WAV/${currentWAV?.name}`,
@@ -208,6 +233,7 @@ export async function PUT(req) {
 						formData.get("WAV_update"),
 						formData.get("basicFileDelete")
 					)
+					await updateFileUrls(file_url_wav)
 				} else if (value.name.endsWith(".zip")) {
 					await modifyStorageNEW(
 						`${product_id}/STEM/${currentSTEM?.name}`,
@@ -216,6 +242,7 @@ export async function PUT(req) {
 						formData.get("STEM_update"),
 						formData.get("basicFileDelete")
 					)
+					await updateFileUrls(file_url_zip)
 				}
 			}
 		}

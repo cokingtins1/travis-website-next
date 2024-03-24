@@ -84,15 +84,6 @@ export default function InfoEdit({
 
 	const { audioSrcId, clearAudio, buttonId } = useAudio()
 
-	// function createFileObject(fileInfo) {
-	// 	const blob = new Blob([""], { type: fileInfo.metadata.mimetype })
-	// 	const file = new File([blob], fileInfo.name, {
-	// 		lastModified: new Date(fileInfo.metadata.lastModified),
-	// 		type: fileInfo.metadata.mimetype,
-	// 	})
-	// 	return file
-	// }
-
 	useEffect(() => {
 		clearAudio()
 	}, [])

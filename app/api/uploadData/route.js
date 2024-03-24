@@ -136,17 +136,6 @@ export async function POST(req) {
 	const { audioSrc_MP3, audioSrc_WAV, audioSrc_STEM, imageSrc } =
 		await getFileSources(product_id)
 
-	console.log(
-		"MP3",
-		audioSrc_MP3,
-		"WAV",
-		audioSrc_WAV,
-		"STEM",
-		audioSrc_STEM,
-		"image",
-		imageSrc
-	)
-
 	await supabase.from("product_files").insert({
 		product_id: product_id,
 		pricing_id: pricing_id_mp3,

@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation"
 
 export default function CheckoutOrder({ orderDetails }) {
 	const router = useRouter()
-	if (orderDetails.length === 0) {
+	if (orderDetails?.length === 0) {
 		router.refresh()
 	}
 

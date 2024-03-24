@@ -11,8 +11,9 @@ export async function POST(req) {
 	const origin = headers().get("origin")
 	const signedUrls = await getDownloadUrls(data)
 
+	console.log("signedUrls:", signedUrls)
 
-	if(!signedUrls) return
+	if (!signedUrls) return
 
 	for (let i = 0; i < data.length && i < signedUrls.length; i++) {
 		data[i].signedUrl = signedUrls[i]

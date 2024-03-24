@@ -312,7 +312,7 @@ export async function insertOrderData(data) {
 }
 
 export async function getDownloadUrls(productsSold) {
-	const processFilePaths = async (filePaths) => {
+	const getUrls = async (filePaths) => {
 		const result = []
 
 		for (const product of filePaths) {
@@ -328,7 +328,23 @@ export async function getDownloadUrls(productsSold) {
 		return result
 	}
 
-	const downloadUrls = await processFilePaths(productsSold)
+	const publicUrls = await getUrls(productsSold)
+
+	const processFilePath = async (publicUrls) => {
+		const expiresIn = 60 * 60 * 24 * 14
+		const result = []
+
+		for (const url of publicUrls) {
+			const path = url.split("all_products/")[1]
+			const { data } = await supabaseClient.storage
+				.from("all_products")
+				.createSignedUrl(path, expiresIn, { download: true })
+			result.push(data.signedUrl)
+		}
+		return result
+	}
+
+	const downloadUrls = await processFilePath(publicUrls)
 
 	return downloadUrls
 }
