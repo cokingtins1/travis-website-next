@@ -38,7 +38,7 @@ export const getFreeDownload = async (formData) => {
 	if (email) {
 		sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 		const msg = {
-			from: "cokingtins1@gmail.com",
+			from: "beatsmadebytrav@gmail.com",
 			personalizations: [
 				{
 					to: email,
@@ -46,7 +46,7 @@ export const getFreeDownload = async (formData) => {
 						subject: "Free Download From trav!",
 						order_id: supabaseOrderId,
 						order_date: order_date,
-						order_total: "Free",
+						order_total: "0",
 						order: order,
 					},
 				},

@@ -12,7 +12,7 @@ export async function POST(req) {
 
 	const endpointSecret = process.env.STRIPE_ENDPOINT_SECRET
 
-	const body = await req.text()
+const body = await req.text()
 	const sig = headers().get("stripe-signature")
 
 	let event

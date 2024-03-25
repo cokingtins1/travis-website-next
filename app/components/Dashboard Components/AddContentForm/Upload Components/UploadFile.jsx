@@ -17,6 +17,7 @@ export default function UploadFile({
 	audioSource = null,
 	setAudioSrc = false,
 	type,
+	editing,
 }) {
 	const [error, setError] = useState("")
 	const [file, setFile] = useState(!!fileProps)
@@ -216,6 +217,7 @@ export default function UploadFile({
 					{file && (
 						<>
 							<Button
+								disabled={!editing}
 								variant="outlined"
 								size="small"
 								onClick={() => {
@@ -236,6 +238,7 @@ export default function UploadFile({
 					)}
 					{type !== "STEM" && (
 						<Button
+						
 							component="label"
 							variant="contained"
 							sx={{ width: "115px", height: "40px" }}
@@ -270,6 +273,7 @@ export default function UploadFile({
 					<Button
 						component="label"
 						variant="contained"
+						disabled={!editing}
 						startIcon={
 							!fileProps ? <CloudUploadIcon /> : <CachedIcon />
 						}

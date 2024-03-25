@@ -601,6 +601,7 @@ export default function InfoEdit({
 							fileProps={data.MP3_file}
 							fileNameProps={data.MP3_fileName}
 							fileSizeProps={data.MP3_fileSize}
+							editing={editing}
 							updateFields={(fields) =>
 								updateFields({
 									MP3_file: fields.file,
@@ -620,6 +621,7 @@ export default function InfoEdit({
 							fileProps={data.WAV_file}
 							fileNameProps={data.WAV_fileName}
 							fileSizeProps={data.WAV_fileSize}
+							editing={editing}
 							updateFields={(fields) =>
 								updateFields({
 									WAV_file: fields.file,
@@ -637,6 +639,7 @@ export default function InfoEdit({
 							fileProps={data.STEM_file}
 							fileNameProps={data.STEM_fileName}
 							fileSizeProps={data.STEM_fileSize}
+							editing={editing}
 							updateFields={(fields) =>
 								updateFields({
 									STEM_file: fields.file,
@@ -913,6 +916,7 @@ export default function InfoEdit({
 								contractSubtext={"MP3"}
 								type={"MP3"}
 								value={data.basicPrice}
+								editing={editing}
 								onCheckedChange={(newChecked) => {
 									updateFields({
 										basic: newChecked,
@@ -936,6 +940,7 @@ export default function InfoEdit({
 								contractSubtext={"WAV, MP3"}
 								value={data.premiumPrice}
 								type={"WAV"}
+								editing={editing}
 								onCheckedChange={(newChecked) => {
 									updateFields({
 										premium: newChecked,
@@ -959,6 +964,7 @@ export default function InfoEdit({
 								contractSubtext={"WAV, MP3, STEMS"}
 								value={data.exclusivePrice}
 								type={"STEM"}
+								editing={editing}
 								onCheckedChange={(newChecked) => {
 									updateFields({
 										exclusive: newChecked,

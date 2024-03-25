@@ -18,6 +18,7 @@ export default function PricingSwitch({
 	namePrice,
 	disabled = false,
 	width,
+	editing = true,
 }) {
 	const [inputValue, setInputValue] = useState(value || "")
 	const [isChecked, setIsChecked] = useState(!!defaultChecked)
@@ -74,7 +75,7 @@ export default function PricingSwitch({
 				</InputLabel>
 				<TextField
 					name={namePrice}
-					disabled={!isChecked}
+					disabled={!isChecked || !editing}
 					size="small"
 					type="number"
 					id="outlined-start-adornment"
@@ -84,7 +85,6 @@ export default function PricingSwitch({
 							<InputAdornment position="start">$</InputAdornment>
 						),
 					}}
-					
 					value={inputValue}
 					onChange={(e) => {
 						setInputValue(e.target.value)
