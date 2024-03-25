@@ -9,18 +9,6 @@ import { redirect } from "next/navigation"
 export default function SupabaseLoginForm({ session = null }) {
 	const formik = createFormik("login")
 
-	// const primaryAccent = "#ffeec2"
-
-	// const buttonStyles = {
-	// 	width: "120px",
-	// 	height: "36px",
-	// 	color: primaryAccent,
-	// 	borderColor: primaryAccent,
-	// 	"&:hover": {
-	// 		borderColor: primaryAccent,
-	// 	},
-	// }
-
 	return session ? (
 		redirect("/dashboard")
 	) : (

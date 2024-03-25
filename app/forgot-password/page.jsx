@@ -7,7 +7,7 @@ export default function Page() {
 		<main className={styles.main}>
 			<div className={styles.loginCont}>
 				<h1>Password Reset</h1>
-				{/* <ForgotPasswordForm /> */}
+				<ForgotPasswordForm />
 			</div>
 		</main>
 	)

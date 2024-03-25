@@ -13,7 +13,7 @@ import ExpandLessIcon from "@mui/icons-material/ExpandLess"
 import Link from "next/link"
 import { useState } from "react"
 
-export default function HeaderDrawer({ session }) {
+export default function HeaderDrawer({ session, isAdmin }) {
 	const [openDrawer, setOpenDrawer] = useState(false)
 	const size = useWindowSize()
 
@@ -57,7 +57,7 @@ export default function HeaderDrawer({ session }) {
 					</div>
 				</Link>
 				<div className="hidden md:block md:justify-self-center">
-					<NavBar session={session} />
+					<NavBar session={session} isAdmin={isAdmin} />
 				</div>
 				<div className="hidden md:flex md:justify-self-end gap-4">
 					<AccountButton session={session} />

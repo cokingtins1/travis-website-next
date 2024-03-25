@@ -6,10 +6,13 @@ import Button from "@mui/material/Button"
 import Link from "next/link"
 import { useFormik } from "formik"
 import * as Yup from "yup"
-
-
+import supabaseClient from "@/libs/supabase/config/supabaseClient"
+import { useState } from "react"
+import { getURL } from "@/libs/supabase/getUrl"
 
 export default function ForgotPasswordForm() {
+	const [success, setSuccess] = useState(false)
+
 	const formik = useFormik({
 		initialValues: {
 			email: "",
@@ -21,12 +24,30 @@ export default function ForgotPasswordForm() {
 		}),
 	})
 
+	async function handleSubmit(e) {
+		e.preventDefault()
+
+		try {
+			const { data, error } =
+				await supabaseClient.auth.resetPasswordForEmail(
+					formik.values.email,
+					{ redirectTo: `${getURL()}update-password` }
+				)
+
+			if (data) {
+				setSuccess(true)
+			}
+		} catch (error) {
+			console.log(error)
+		}
+	}
+
 	return (
 		<>
 			{" "}
 			<form
-				action="/auth/reset-password"
-				method="post"
+				// action="/auth/forgot-password"
+				// method="post"
 				className={styles.loginForm}
 			>
 				<TextField
@@ -40,7 +61,12 @@ export default function ForgotPasswordForm() {
 					error={Boolean(formik.touched.email && formik.errors.email)}
 					helperText={formik.touched.email && formik.errors.email}
 				/>
-				<Button type="submit" variant="outlined">
+				<Button
+					type="submit"
+					onClick={(e) => handleSubmit(e)}
+					disabled={!formik.dirty || !formik.isValid}
+					variant="outlined"
+				>
 					Reset Passwrod
 				</Button>
 			</form>
@@ -55,6 +81,9 @@ export default function ForgotPasswordForm() {
 					<u className="text-blue-700">Login</u>
 				</Link>
 			</div>
+			{success && (
+				<p className="text-green-500">{`A password reset email has been sent to ${formik.values.email}`}</p>
+			)}
 		</>
 	)
 }

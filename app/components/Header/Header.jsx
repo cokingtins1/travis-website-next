@@ -11,7 +11,7 @@ import AccountButton from "./AccountButton"
 import { useState } from "react"
 import useWindowSize from "../CustomHooks/useWindowSize"
 
-export default function Header({ session }) {
+export default function Header({ session, isAdmin }) {
 	const [menuOpen, setMenuOpen] = useState(false)
 
 	const size = useWindowSize()
@@ -56,7 +56,7 @@ export default function Header({ session }) {
 					>
 						<ul className="flex flex-col md:flex-row md:items-center md:gap-[4vw] gap-4">
 							{size.width < 768 && (
-								<NavBar setMenuOpen={setMenuOpen} />
+								<NavBar setMenuOpen={setMenuOpen} isAdmin={isAdmin} />
 							)}
 							<div className="flex flex-col items gap-4 h-[88px] md:flex-row md:h-fit">
 								<AccountButton session={session} />

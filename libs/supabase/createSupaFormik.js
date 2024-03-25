@@ -8,10 +8,14 @@ export default function createFormik(formType) {
 	const form = useFormik({
 		initialValues: {
 			email: "",
-			...(formType === "signup" || formType === "login"
+			...(formType === "signup" ||
+			formType === "login" ||
+			formType === "forgotPassword"
 				? { password: "" }
 				: {}),
-			...(formType === "signup" ? { passVerify: "" } : {}),
+			...(formType === "signup" || formType === "forgotPassword"
+				? { passVerify: "" }
+				: {}),
 		},
 		validationSchema: Yup.object({
 			email: Yup.string()
@@ -19,11 +23,14 @@ export default function createFormik(formType) {
 				.required("A valid email is required"),
 			// Add other validation rules specific to the form type
 			...(formType === "signup" ||
-				("login" && {
-					password: Yup.string()
-						.required("A password is required")
-						.min(6, "Password must be at least 6 characters"),
-				})),
+			formType === "login" ||
+			formType === "forgotPassword"
+				? {
+						password: Yup.string()
+							.required("A password is required")
+							.min(6, "Password must be at least 6 characters"),
+				  }
+				: {}),
 			...(formType === "signup" && {
 				passVerify: Yup.string()
 					.oneOf([Yup.ref("password"), null], "Passwords must match")

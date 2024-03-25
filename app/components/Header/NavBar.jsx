@@ -6,7 +6,7 @@ import { useState } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import ThemeProvider from "@/libs/contexts/ThemeContext"
 
-export default function NavBar({ session, orientation }) {
+export default function NavBar({ session, orientation, isAdmin }) {
 	const path = usePathname()
 	const page = path.replace(/^[^/]*\/([^/]*)\/?.*$/, "$1")
 
@@ -17,7 +17,7 @@ export default function NavBar({ session, orientation }) {
 		{ index: 1, value: "Store", href: "store" },
 	]
 
-	if (session) {
+	if (session && isAdmin) {
 		indices.push({
 			index: indices.length,
 			value: "Dashboard",
