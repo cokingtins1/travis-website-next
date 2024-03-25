@@ -31,7 +31,7 @@ export default function ForgotPasswordForm() {
 			const { data, error } =
 				await supabaseClient.auth.resetPasswordForEmail(
 					formik.values.email,
-					{ redirectTo: `${getURL()}update-password` }
+					{ redirectTo: `${window.location.href}update-password` }
 				)
 
 			if (data) {
