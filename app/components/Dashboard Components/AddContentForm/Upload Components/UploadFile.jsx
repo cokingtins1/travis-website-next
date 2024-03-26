@@ -1,13 +1,13 @@
-import { styled } from "@mui/material/styles"
-import Button from "@mui/material/Button"
-import CloudUploadIcon from "@mui/icons-material/CloudUpload"
-import MusicNoteIcon from "@mui/icons-material/MusicNote"
-import FolderIcon from "@mui/icons-material/Folder"
-import CachedIcon from "@mui/icons-material/Cached"
-import { useEffect, useState } from "react"
-import PlayCircleIcon from "@mui/icons-material/PlayCircle"
-import PauseIcon from "@mui/icons-material/Pause"
-import { useAudio } from "@/libs/contexts/AudioContext"
+import { styled } from "@mui/material/styles";
+import Button from "@mui/material/Button";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import MusicNoteIcon from "@mui/icons-material/MusicNote";
+import FolderIcon from "@mui/icons-material/Folder";
+import CachedIcon from "@mui/icons-material/Cached";
+import { useEffect, useState } from "react";
+import PlayCircleIcon from "@mui/icons-material/PlayCircle";
+import PauseIcon from "@mui/icons-material/Pause";
+import { useAudio } from "@/libs/contexts/AudioContext";
 
 export default function UploadFile({
 	fileProps,
@@ -17,10 +17,10 @@ export default function UploadFile({
 	audioSource = null,
 	setAudioSrc = false,
 	type,
-	editing,
+	editing = true,
 }) {
-	const [error, setError] = useState("")
-	const [file, setFile] = useState(!!fileProps)
+	const [error, setError] = useState("");
+	const [file, setFile] = useState(!!fileProps);
 
 	const {
 		audioSrcId,
@@ -32,28 +32,28 @@ export default function UploadFile({
 		setTempWAV,
 		buttonId,
 		closeDrawer,
-	} = useAudio()
+	} = useAudio();
 
-	let typeExt
-	let fileType
+	let typeExt;
+	let fileType;
 	switch (type) {
 		case "MP3":
-			typeExt = ".mp3"
-			fileType = "audio/mpeg"
-			break
+			typeExt = ".mp3";
+			fileType = "audio/mpeg";
+			break;
 		case "WAV":
-			typeExt = ".wav"
-			fileType = "audio/wav"
-			break
+			typeExt = ".wav";
+			fileType = "audio/wav";
+			break;
 		case "STEM":
-			typeExt = ".zip or .rar"
-			fileType = "application/x-zip-compressed"
-			break
+			typeExt = ".zip or .rar";
+			fileType = "application/x-zip-compressed";
+			break;
 	}
 
 	useEffect(() => {
 		if (!setAudioSrc || !audioSource) {
-			return
+			return;
 		}
 
 		if (type === "MP3") {
@@ -65,7 +65,7 @@ export default function UploadFile({
 				title: fileNameProps,
 				fileSrcType: "audio/mpeg",
 				type: "MP3",
-			})
+			});
 		} else if (type === "WAV") {
 			setTempWAV({
 				file: fileProps,
@@ -75,18 +75,18 @@ export default function UploadFile({
 				title: fileNameProps,
 				fileSrcType: "audio/wav",
 				type: "WAV",
-			})
+			});
 		}
-	}, [setAudioSrc])
+	}, [setAudioSrc]);
 
 	function handleChange(e) {
-		if (!e.target.files) return
+		if (!e.target.files) return;
 		if (e.target.files[0].type !== fileType) {
-			setError(`Please upload files of type ${typeExt}`)
-			return
+			setError(`Please upload files of type ${typeExt}`);
+			return;
 		}
-		setError("")
-		let newFile = e.target.files[0]
+		setError("");
+		let newFile = e.target.files[0];
 		if (newFile) {
 			if (type === "MP3") {
 				setTempMP3({
@@ -97,7 +97,7 @@ export default function UploadFile({
 					title: newFile.name.split(".")[0],
 					fileSrcType: "audio/mpeg",
 					type: type,
-				})
+				});
 			} else if (type === "WAV") {
 				setTempWAV({
 					file: newFile,
@@ -107,7 +107,7 @@ export default function UploadFile({
 					title: newFile.name.split(".")[0],
 					fileSrcType: "audio/wav",
 					type: type,
-				})
+				});
 			}
 			updateFields({
 				file: newFile,
@@ -117,9 +117,9 @@ export default function UploadFile({
 				switch: true,
 				id: crypto.randomUUID(),
 				delete: false,
-			})
+			});
 		}
-		setFile(true)
+		setFile(true);
 	}
 
 	const handleRemove = (type) => {
@@ -131,11 +131,11 @@ export default function UploadFile({
 			switch: false,
 			id: crypto.randomUUID(),
 			delete: true,
-		})
+		});
 
 		if (type === "MP3") {
 			if (audioSrcId === tempMP3.audioSrc) {
-				closeDrawer()
+				closeDrawer();
 			}
 			setTempMP3({
 				file: null,
@@ -145,12 +145,12 @@ export default function UploadFile({
 				title: null,
 				fileSrcType: null,
 				type: null,
-			})
+			});
 		}
 
 		if (type === "WAV") {
 			if (audioSrcId === tempWAV.audioSrc) {
-				closeDrawer()
+				closeDrawer();
 			}
 			setTempWAV({
 				file: null,
@@ -160,10 +160,10 @@ export default function UploadFile({
 				title: null,
 				fileSrcType: null,
 				type: null,
-			})
+			});
 		}
-		setFile(false)
-	}
+		setFile(false);
+	};
 
 	const VisuallyHiddenInput = styled("input")({
 		clip: "rect(0 0 0 0)",
@@ -175,7 +175,7 @@ export default function UploadFile({
 		left: 0,
 		whiteSpace: "nowrap",
 		width: 1,
-	})
+	});
 
 	return (
 		<>
@@ -221,7 +221,7 @@ export default function UploadFile({
 								variant="outlined"
 								size="small"
 								onClick={() => {
-									handleRemove(type)
+									handleRemove(type);
 								}}
 								sx={{
 									marginRight: "2rem",
@@ -238,7 +238,6 @@ export default function UploadFile({
 					)}
 					{type !== "STEM" && (
 						<Button
-						
 							component="label"
 							variant="contained"
 							sx={{ width: "115px", height: "40px" }}
@@ -256,13 +255,13 @@ export default function UploadFile({
 										tempMP3.audioSrc,
 										"MP3",
 										tempMP3
-									)
+									);
 								} else if (type === "WAV") {
 									togglePlayPause(
 										tempWAV.audioSrc,
 										"WAV",
 										tempWAV
-									)
+									);
 								}
 							}}
 						>
@@ -285,12 +284,12 @@ export default function UploadFile({
 							name="file"
 							type="file"
 							onChange={(e) => {
-								handleChange(e)
+								handleChange(e);
 							}}
 						/>
 					</Button>
 				</div>
 			</div>
 		</>
-	)
+	);
 }
