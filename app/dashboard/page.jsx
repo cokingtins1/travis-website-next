@@ -1,16 +1,16 @@
-import Link from "next/link"
+import Link from "next/link";
 
-import styles from "./page.module.css"
-import { Button } from "../components/UI/Button"
-import Divider from "@mui/material/Divider"
+import styles from "./page.module.css";
+import { Button } from "../components/UI/Button";
+import Divider from "@mui/material/Divider";
 
-import DashboardProductCard from "../components/Dashboard Components/DashboardProductCard"
-import { getAllProductData } from "@/libs/supabase/supabaseQuery"
-import { Suspense } from "react"
-import DashboardCardSkeleton from "../components/Skeletons/DashboardCardSkeleton"
+import DashboardProductCard from "../components/Dashboard Components/DashboardProductCard";
+import { getAllProductData } from "@/libs/supabase/supabaseQuery";
+import { Suspense } from "react";
+import DashboardCardSkeleton from "../components/Skeletons/DashboardCardSkeleton";
 
 export default async function Page() {
-	const products = await getAllProductData()
+	const products = await getAllProductData();
 
 	return (
 		<>
@@ -57,5 +57,5 @@ export default async function Page() {
 				</ul>
 			</section>
 		</>
-	)
+	);
 }

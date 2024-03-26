@@ -1,6 +1,6 @@
 import { returnArray } from "@/libs/utils"
 import { NextResponse } from "next/server"
-import { revalidatePath } from "next/cache"
+import { revalidatePath, revalidateTag } from "next/cache"
 import { getFileSources, getPricingIdById } from "@/libs/supabase/supabaseQuery"
 import { useSession } from "@/libs/supabase/useSession"
 
@@ -250,6 +250,8 @@ export async function PUT(req) {
 		console.log(error)
 	}
 
+	revalidateTag("products");
+	revalidateTag("dashboardData");
 	revalidatePath("/")
 
 	return NextResponse.json(

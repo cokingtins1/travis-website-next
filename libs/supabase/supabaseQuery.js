@@ -1,7 +1,8 @@
-"use server"
+"use server";
 
-import supabaseClient from "@/libs/supabase/config/supabaseClient"
-import { useSession } from "./useSession"
+import supabaseClient from "@/libs/supabase/config/supabaseClient";
+import { useSession } from "./useSession";
+import { unstable_cache } from "next/cache";
 
 // Order getting functions:
 
@@ -10,25 +11,25 @@ export async function getSupabaseOrderData(order_id) {
 		.from("orders")
 		.select("*")
 		.match({ stripe_order_id: order_id })
-		.single()
+		.single();
 
-	if (!data) return null
+	if (!data) return null;
 
-	const rawData = JSON.parse(data.products_sold)
-	const customerEmail = data.customer_email
-	const orderAlias = data.order_id_alias
+	const rawData = JSON.parse(data.products_sold);
+	const customerEmail = data.customer_email;
+	const orderAlias = data.order_id_alias;
 
 	const orderData = rawData.map((productGroup) => {
-		const productName = Object.keys(productGroup)[0]
-		const productDetails = productGroup[productName]
+		const productName = Object.keys(productGroup)[0];
+		const productDetails = productGroup[productName];
 		return {
 			name: productName,
 			...productDetails,
 			customerEmail,
 			orderAlias,
-		}
-	})
-	return orderData
+		};
+	});
+	return orderData;
 }
 
 export async function getLikes(product_id) {
@@ -37,11 +38,11 @@ export async function getLikes(product_id) {
 			.from("product_likes")
 			.select("likes, liked_by_id, liked_by_email")
 			.match({ product_id: product_id })
-			.single()
+			.single();
 
-		return data
+		return data;
 	} catch (error) {
-		console.log(error)
+		console.log(error);
 	}
 }
 
@@ -51,11 +52,11 @@ export async function getCommentLikes(comment_id) {
 			.from("comments")
 			.select("comment_likes, liked_by_id, liked_by_email")
 			.match({ comment_id: comment_id })
-			.single()
+			.single();
 
-		return data
+		return data;
 	} catch (error) {
-		console.log(error)
+		console.log(error);
 	}
 }
 
@@ -65,11 +66,11 @@ export async function getReplyLikes(reply_id) {
 			.from("replies")
 			.select("reply_likes, liked_by_id, liked_by_email")
 			.match({ reply_id: reply_id })
-			.single()
+			.single();
 
-		return data
+		return data;
 	} catch (error) {
-		console.log(error)
+		console.log(error);
 	}
 }
 
@@ -79,38 +80,38 @@ export async function addLike(
 	user_email,
 	table = "product_likes"
 ) {
-	let result
-	let likesName
-	let primaryKey
-	let likes
+	let result;
+	let likesName;
+	let primaryKey;
+	let likes;
 
 	if (table === "product_likes") {
-		result = await getLikes(likedId)
-		likes = result.likes
-		likesName = "likes"
-		primaryKey = "product_id"
+		result = await getLikes(likedId);
+		likes = result.likes;
+		likesName = "likes";
+		primaryKey = "product_id";
 	} else if (table === "comments") {
-		result = await getCommentLikes(likedId)
-		likes = result.comment_likes
-		likesName = "comment_likes"
-		primaryKey = "comment_id"
+		result = await getCommentLikes(likedId);
+		likes = result.comment_likes;
+		likesName = "comment_likes";
+		primaryKey = "comment_id";
 	} else if (table === "replies") {
-		result = await getReplyLikes(likedId)
-		likes = result.reply_likes
-		likesName = "reply_likes"
-		primaryKey = "reply_id"
+		result = await getReplyLikes(likedId);
+		likes = result.reply_likes;
+		likesName = "reply_likes";
+		primaryKey = "reply_id";
 	}
 
 	if (
 		result?.liked_by_id &&
 		result?.liked_by_id?.some((user) => user === user_id)
 	)
-		return
+		return;
 
 	try {
-		const addLike = likes + 1
-		const addedLikedById = [...result.liked_by_id, user_id]
-		const addedLikedByEmail = [...result.liked_by_email, user_email]
+		const addLike = likes + 1;
+		const addedLikedById = [...result.liked_by_id, user_id];
+		const addedLikedByEmail = [...result.liked_by_email, user_email];
 
 		await supabaseClient
 			.from(table)
@@ -122,11 +123,11 @@ export async function addLike(
 			.match({ [primaryKey]: likedId })
 			.then((res) => {
 				if (res.error) {
-					console.log(res.error.message)
+					console.log(res.error.message);
 				}
-			})
+			});
 	} catch (error) {
-		console.log(error)
+		console.log(error);
 	}
 }
 
@@ -136,11 +137,11 @@ export async function getComments(product_id) {
 			.from("comments")
 			.select("*")
 			.match({ product_id: product_id })
-			.order("created_at", { ascending: false })
+			.order("created_at", { ascending: false });
 
-		return comments
+		return comments;
 	} catch (error) {
-		console.log(error)
+		console.log(error);
 	}
 }
 
@@ -163,11 +164,11 @@ export async function addComment(
 			})
 			.then((res) => {
 				if (res.error) {
-					console.log(res.error.message)
+					console.log(res.error.message);
 				}
-			})
+			});
 	} catch (error) {
-		console.log(error)
+		console.log(error);
 	}
 }
 
@@ -177,11 +178,11 @@ export async function getReplys(product_id) {
 			.from("replies")
 			.select("*")
 			.match({ product_id: product_id })
-			.order("created_at", { ascending: false })
+			.order("created_at", { ascending: false });
 
-		return comments
+		return comments;
 	} catch (error) {
-		console.log(error)
+		console.log(error);
 	}
 }
 
@@ -212,52 +213,58 @@ export async function addReply(
 			})
 			.then((res) => {
 				if (res.error) {
-					console.log(res.error.message)
+					console.log(res.error.message);
 				}
-			})
+			});
 	} catch (error) {
-		console.log(error)
+		console.log(error);
 	}
 }
 
 export async function getLikedByUser(user_id, product_id) {
-	const { liked_by_id } = await getLikes(product_id)
+	const { liked_by_id } = await getLikes(product_id);
 	// const data = await getLikes(product_id)
 
 	// const liked_by_id = data?.liked_by_id
 
-	let likedByUser = false
+	let likedByUser = false;
 	if (liked_by_id && user_id) {
-		likedByUser = liked_by_id?.some((user) => user === user_id)
+		likedByUser = liked_by_id?.some((user) => user === user_id);
 	}
 
-	return likedByUser
+	return likedByUser;
 }
 
 export async function likedByUser() {
 	const { data } = await supabaseClient
 		.from("product_likes")
-		.select("product_id, liked_by_id")
+		.select("product_id, liked_by_id");
 
-	return data
+	return data;
 }
 
 export async function getUserId() {
-	const { session } = await useSession()
+	const { session } = await useSession();
 
 	if (session) {
-		const userId = session.user.id
-		return userId
+		const userId = session.user.id;
+		return userId;
 	}
 
-	return null
+	return null;
 }
 
-export async function getAllProductData() {
-	const { data: products } = await supabaseClient.from("products").select()
+export const getAllProductData = unstable_cache(
+	async () => {
+		const { data: products } = await supabaseClient
+			.from("products")
+			.select();
 
-	return products
-}
+		return products;
+	},
+	["dashboardData"],
+	{ tags: ["dashboardData"] }
+);
 
 export async function getProductById(id) {
 	try {
@@ -265,13 +272,13 @@ export async function getProductById(id) {
 			.from("products")
 			.select()
 			.match({ product_id: id })
-			.single()
+			.single();
 
 		if (product) {
-			return product
+			return product;
 		}
 	} catch (error) {
-		console.log(error)
+		console.log(error);
 	}
 }
 
@@ -289,14 +296,14 @@ export async function getPricingIdById(id) {
 			{
 				p_product_id: id,
 			}
-		)
+		);
 		if (error) {
-			console.error("Error:", error)
+			console.error("Error:", error);
 		} else {
-			return url[0].file_ext
+			return url[0].file_ext;
 		}
 	} catch (error) {
-		console.log(error)
+		console.log(error);
 	}
 }
 
@@ -306,77 +313,78 @@ export async function insertOrderData(data) {
 		.insert(data)
 		.then((res) => {
 			if (res.error) {
-				console.log(res.error.message)
+				console.log(res.error.message);
 			}
-		})
+		});
 }
 
 export async function getDownloadUrls(productsSold) {
 	const getUrls = async (filePaths) => {
-		const result = []
+		const result = [];
 
 		for (const product of filePaths) {
 			const { data } = await supabaseClient
 				.from("product_files")
 				.select("file_url")
 				.match({ pricing_id: product.pricing_id })
-				.single()
+				.single();
 
-			result.push(data.file_url)
+			result.push(data.file_url);
 		}
 
-		return result
-	}
+		return result;
+	};
 
-	const publicUrls = await getUrls(productsSold)
+	const publicUrls = await getUrls(productsSold);
 
 	const processFilePath = async (publicUrls) => {
-		const expiresIn = 60 * 60 * 24 * 14
-		const result = []
+		const expiresIn = 60 * 60 * 24 * 14;
+		const result = [];
 
 		for (const url of publicUrls) {
-			const path = url.split("all_products/")[1]
+			const path = url.split("all_products/")[1];
 			const { data } = await supabaseClient.storage
 				.from("all_products")
-				.createSignedUrl(path, expiresIn, { download: true })
-			result.push(data.signedUrl)
+				.createSignedUrl(path, expiresIn, { download: true });
+			result.push(data.signedUrl);
 		}
-		return result
-	}
+		return result;
+	};
 
-	const downloadUrls = await processFilePath(publicUrls)
+	const downloadUrls = await processFilePath(publicUrls);
 
-	return downloadUrls
+	return downloadUrls;
 }
 
 export async function getFileSources(product) {
-	const productId = typeof product === "object" ? product.product_id : product
+	const productId =
+		typeof product === "object" ? product.product_id : product;
 
 	try {
 		const { data, error } = await supabaseClient.storage
 			.from(`all_products`)
 			.list(`${productId}`, {
 				offset: 0,
-			})
+			});
 
 		if (error) {
-			throw new Error(error.message)
+			throw new Error(error.message);
 		}
 
-		let audioFile_MP3 = null
-		let audioFile_WAV = null
-		let audioFile_STEM = null
-		let imageFile = null
+		let audioFile_MP3 = null;
+		let audioFile_WAV = null;
+		let audioFile_STEM = null;
+		let imageFile = null;
 
-		if (!data) return
+		if (!data) return;
 
 		if (data.some((file) => file.name === "MP3")) {
 			const { data: file, error } = await supabaseClient.storage
 				.from(`all_products`)
 				.list(`${productId}/MP3`, {
 					offset: 0,
-				})
-			audioFile_MP3 = file[0]
+				});
+			audioFile_MP3 = file[0];
 		}
 
 		if (data.some((file) => file.name === "WAV")) {
@@ -384,8 +392,8 @@ export async function getFileSources(product) {
 				.from(`all_products`)
 				.list(`${productId}/WAV`, {
 					offset: 0,
-				})
-			audioFile_WAV = file[0]
+				});
+			audioFile_WAV = file[0];
 		}
 
 		if (data.some((file) => file.name === "STEM")) {
@@ -393,8 +401,8 @@ export async function getFileSources(product) {
 				.from(`all_products`)
 				.list(`${productId}/STEM`, {
 					offset: 0,
-				})
-			audioFile_STEM = file[0]
+				});
+			audioFile_STEM = file[0];
 		}
 
 		if (data.some((file) => file.name === "productImage")) {
@@ -402,49 +410,49 @@ export async function getFileSources(product) {
 				.from(`all_products`)
 				.list(`${productId}/productImage`, {
 					offset: 0,
-				})
-			imageFile = file[0]
+				});
+			imageFile = file[0];
 		}
 
-		let audioSrc_MP3
-		let audioSrc_WAV
-		let audioSrc_STEM
-		let imageSrc
+		let audioSrc_MP3;
+		let audioSrc_WAV;
+		let audioSrc_STEM;
+		let imageSrc;
 
 		if (audioFile_MP3) {
 			const { data } = supabaseClient.storage
 				.from(`all_products`)
-				.getPublicUrl(`${productId}/MP3/${audioFile_MP3.name}`)
-			audioSrc_MP3 = data.publicUrl
+				.getPublicUrl(`${productId}/MP3/${audioFile_MP3.name}`);
+			audioSrc_MP3 = data.publicUrl;
 		}
 
 		if (audioFile_WAV) {
 			const { data } = supabaseClient.storage
 				.from(`all_products`)
-				.getPublicUrl(`${productId}/WAV/${audioFile_WAV.name}`)
-			audioSrc_WAV = data.publicUrl
+				.getPublicUrl(`${productId}/WAV/${audioFile_WAV.name}`);
+			audioSrc_WAV = data.publicUrl;
 		}
 
 		if (audioFile_STEM) {
 			const { data } = supabaseClient.storage
 				.from(`all_products`)
-				.getPublicUrl(`${productId}/STEM/${audioFile_STEM.name}`)
-			audioSrc_STEM = data.publicUrl
+				.getPublicUrl(`${productId}/STEM/${audioFile_STEM.name}`);
+			audioSrc_STEM = data.publicUrl;
 		}
 
 		if (imageFile) {
 			const { data } = supabaseClient.storage
 				.from(`all_products`)
-				.getPublicUrl(`${productId}/productImage/${imageFile.name}`)
-			imageSrc = data.publicUrl
+				.getPublicUrl(`${productId}/productImage/${imageFile.name}`);
+			imageSrc = data.publicUrl;
 		}
 
-		const srcType_MP3 = audioFile_MP3?.metadata?.mimetype
-		const srcType_WAV = audioFile_WAV?.metadata?.mimetype
-		const srcType_STEM = audioFile_STEM?.metadata?.mimetype
+		const srcType_MP3 = audioFile_MP3?.metadata?.mimetype;
+		const srcType_WAV = audioFile_WAV?.metadata?.mimetype;
+		const srcType_STEM = audioFile_STEM?.metadata?.mimetype;
 
-		const storeSrc = audioSrc_MP3 || audioSrc_WAV
-		const storeSrcType = srcType_MP3 || srcType_WAV || srcType_STEM
+		const storeSrc = audioSrc_MP3 || audioSrc_WAV;
+		const storeSrcType = srcType_MP3 || srcType_WAV || srcType_STEM;
 
 		return {
 			storeSrc,
@@ -465,10 +473,10 @@ export async function getFileSources(product) {
 
 			imageFile,
 			imageSrc,
-		}
+		};
 	} catch (error) {
-		console.error(error)
-		throw new Error("Failed to fetch audio source by ID")
+		console.error(error);
+		throw new Error("Failed to fetch audio source by ID");
 	}
 }
 
@@ -479,16 +487,16 @@ export async function getPricingById(id) {
 			{
 				p_product_id: id,
 			}
-		)
+		);
 
 		const { data: free } = await supabaseClient
 			.from("products")
 			.select("free")
 			.match({ product_id: id })
-			.single()
+			.single();
 
 		if (error) {
-			console.error("Error:", error)
+			console.error("Error:", error);
 		} else {
 			const sortedArray = price[0].type_ids
 				.map((type, index) => {
@@ -498,40 +506,40 @@ export async function getPricingById(id) {
 						pricing_id: price[0].pricing_ids[index],
 						product_id: price[0].product_ids[index],
 						isActive: price[0].is_active[index],
-					}
+					};
 				})
-				.sort((a, b) => a.price - b.price)
+				.sort((a, b) => a.price - b.price);
 
 			const basicPrice = sortedArray
 				.filter((item) => item.name === "basic")
 				.map(({ name, price, isActive }) => ({
 					[name]: { price, isActive },
 				}))
-				.find(Boolean)
+				.find(Boolean);
 
 			const premiumPrice = sortedArray
 				.filter((item) => item.name === "premium")
 				.map(({ name, price, isActive }) => ({
 					[name]: { price, isActive },
 				}))
-				.find(Boolean)
+				.find(Boolean);
 
 			const exclusivePrice = sortedArray
 				.filter((item) => item.name === "exclusive")
 				.map(({ name, price, isActive }) => ({
 					[name]: { price, isActive },
 				}))
-				.find(Boolean)
+				.find(Boolean);
 
 			const pricingShort = {
 				...basicPrice,
 				...premiumPrice,
 				...exclusivePrice,
-			}
+			};
 
 			const filteredArray = sortedArray.filter(
 				(obj) => obj.isActive === true
-			)
+			);
 
 			return {
 				// price return a [prices: [30, 350, 125], type_ids:['basic', exclusive', 'premium'], pricing_id:[three unique ids], product_id:[three ids (all the same)]}]
@@ -543,19 +551,19 @@ export async function getPricingById(id) {
 				pricingShort: pricingShort,
 				filteredPricing: filteredArray,
 				free: free.free,
-			}
+			};
 		}
 
-		return
+		return;
 	} catch (error) {
-		console.error("Unexpected error:", error.message)
-		return [] // Return an empty array in case of an error
+		console.error("Unexpected error:", error.message);
+		return []; // Return an empty array in case of an error
 	}
 }
 
 export async function getDownloadableImage(product_id) {
 	const productFileURL =
-		"https://njowjcfiaxbnflrcwcep.supabase.co/storage/v1/object/public/all_products"
+		"https://njowjcfiaxbnflrcwcep.supabase.co/storage/v1/object/public/all_products";
 
 	const { data } = await supabaseClient.storage
 		.from(`all_products`)
@@ -565,74 +573,74 @@ export async function getDownloadableImage(product_id) {
 				height: 100,
 				quality: 80,
 			},
-		})
+		});
 }
 
 export async function getImageSrc(product_id) {
 	const productFileURL =
-		"https://njowjcfiaxbnflrcwcep.supabase.co/storage/v1/object/public/all_products"
+		"https://njowjcfiaxbnflrcwcep.supabase.co/storage/v1/object/public/all_products";
 
 	const { data } = await supabaseClient.storage
 		.from(`all_products`)
 		.list(`${product_id}/productImage`, {
 			offset: 0,
-		})
+		});
 
 	if (data && data.length > 0) {
-		const imageData = data[0]
-		const src = `${productFileURL}/${product_id}/productImage/${imageData.name}`
+		const imageData = data[0];
+		const src = `${productFileURL}/${product_id}/productImage/${imageData.name}`;
 
-		return src
+		return src;
 	}
 
-	return null
+	return null;
 }
 
 export async function getImages() {
 	const productFileURL =
-		"https://njowjcfiaxbnflrcwcep.supabase.co/storage/v1/object/public/all_products"
+		"https://njowjcfiaxbnflrcwcep.supabase.co/storage/v1/object/public/all_products";
 
 	// https://njowjcfiaxbnflrcwcep.supabase.co/storage/v1/object/public/all_products/4d337ff9-675a-4470-bd88-74b5ccfd2ace/productImage/5AM Freestyle.jpg
 
 	const { data } = await supabaseClient
 		.from("products")
-		.select("product_id, image_name")
+		.select("product_id, image_name");
 
 	const imageSources = data.map((product) => ({
 		...product,
 		imageSrc: `${productFileURL}/${product.product_id}/productImage/${product.image_name}`,
-	}))
+	}));
 
-	return imageSources
+	return imageSources;
 }
 
 // Filter and Pricing Functions:
 
 export async function getUniqueTags() {
-	const { data: tags } = await supabaseClient.rpc("get_unique_tags")
+	const { data: tags } = await supabaseClient.rpc("get_unique_tags");
 
 	if (tags) {
-		return tags
+		return tags;
 	}
-	return null
+	return null;
 }
 
 export async function getUniqueGenres() {
-	const { data: genres } = await supabaseClient.rpc("get_unique_genres")
+	const { data: genres } = await supabaseClient.rpc("get_unique_genres");
 
 	if (genres) {
-		return genres
+		return genres;
 	}
-	return null
+	return null;
 }
 
 export async function getAllColVals(columnName) {
-	const { data } = await supabaseClient.from("products").select(columnName)
+	const { data } = await supabaseClient.from("products").select(columnName);
 
 	if (data) {
 		return data.reduce((acc, obj) => {
-			return acc.concat(obj[columnName])
-		}, [])
+			return acc.concat(obj[columnName]);
+		}, []);
 	}
-	return null
+	return null;
 }

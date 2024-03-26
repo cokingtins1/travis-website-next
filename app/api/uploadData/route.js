@@ -4,6 +4,7 @@ import { returnArray } from "@/libs/utils";
 import { revalidatePath } from "next/cache";
 import { useSession } from "@/libs/supabase/useSession";
 import { getFileSources, getProductById } from "@/libs/supabase/supabaseQuery";
+import { revalidateTag } from "next/cache";
 
 export async function POST(req) {
 	const { supabase } = await useSession();
@@ -163,24 +164,24 @@ export async function POST(req) {
 		})
 		.eq("product_id", product_id);
 
-	revalidatePath("/", "layout");
-
+	revalidateTag("products");
+	revalidateTag("dashboardData");
 	// Check supabase to see if data was uploaded
 	const data = await getProductById(product_id);
 
-	if (data && audioSrc_WAV) {
+	if (data && (audioSrc_MP3 || audioSrc_WAV || audioSrc_STEM)) {
 		revalidatePath("/", "layout");
 
 		return NextResponse.json(
 			{ message: "Product was uploaded susccessfully" },
 			{ status: 201 }
 		);
-	} else if (!data && audioSrc_WAV) {
+	} else if (!data && (audioSrc_MP3 || audioSrc_WAV || audioSrc_STEM)) {
 		return NextResponse.json(
 			{ message: "Error uploading product data" },
 			{ status: 500 }
 		);
-	} else if (data && !audioSrc_WAV) {
+	} else if (data && (!audioSrc_MP3 || !audioSrc_WAV || !audioSrc_STEM)) {
 		return NextResponse.json(
 			{ message: "Error uploading product files" },
 			{ status: 500 }

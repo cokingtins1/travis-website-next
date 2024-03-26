@@ -1,17 +1,15 @@
-import SearchComponent from "../components/SearchBar/SearchComponent"
-import { notFound } from "next/navigation"
-import ProductSection from "../components/Store Components/ProductSection"
-import { SearchContextProvider } from "@/libs/contexts/SearchContext"
-import { constructData } from "@/libs/supabase/supabseStoreData"
-import { Suspense } from "react"
-import StoreSkeleton from "../components/Skeletons/StoreSkeleton"
-import { getAudioList } from "@/libs/utils"
+import { notFound } from "next/navigation";
+import ProductSection from "../components/Store Components/ProductSection";
+import { SearchContextProvider } from "@/libs/contexts/SearchContext";
+import { constructData } from "@/libs/supabase/supabseStoreData";
+import { Suspense } from "react";
+import StoreSkeleton from "../components/Skeletons/StoreSkeleton";
 
 export default async function Store({ searchParams }) {
-	const data = await constructData()
+	const data = await constructData();
 
 	if (!data) {
-		notFound()
+		notFound();
 	}
 
 	return (
@@ -27,5 +25,5 @@ export default async function Store({ searchParams }) {
 				</Suspense>
 			</main>
 		</>
-	)
+	);
 }
