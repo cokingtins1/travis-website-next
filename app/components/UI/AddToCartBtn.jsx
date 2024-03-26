@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import { useShoppingCart } from "@/libs/contexts/CartContext"
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart"
-import DownloadIcon from "@mui/icons-material/Download"
-import Tooltip from "@mui/material/Tooltip"
-import FreeDownloadModal from "./FreeDownloadModal"
-import { useState } from "react"
+import { useShoppingCart } from "@/libs/contexts/CartContext";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import DownloadIcon from "@mui/icons-material/Download";
+import Tooltip from "@mui/material/Tooltip";
+import FreeDownloadModal from "./FreeDownloadModal";
+import { useState } from "react";
 
 export default function AddToCartBtn({
 	startingPrice,
@@ -13,8 +13,8 @@ export default function AddToCartBtn({
 	product,
 	free = false,
 }) {
-	const { addToCart } = useShoppingCart()
-	const [openModal, setOpenModal] = useState(false)
+	const { addToCart } = useShoppingCart();
+	const [openModal, setOpenModal] = useState(false);
 
 	return (
 		<div className="flex gap-2">
@@ -31,7 +31,7 @@ export default function AddToCartBtn({
 					<Tooltip title={"Free tagged MP3 download"}>
 						<button
 							onClick={() => {
-								setOpenModal(true)
+								setOpenModal(true);
 							}}
 							className="bg-bg-free rounded-md hover:ring-1 ring-white whitespace-nowrap px-2"
 						>
@@ -54,13 +54,15 @@ export default function AddToCartBtn({
 							price: startingPrice.price,
 							type: startingPrice.type_id.toUpperCase(),
 							imageSrc: imageSrc,
-						})
+						});
 					}}
 				>
-					<p className="hidden md:block">From ${startingPrice.price}</p>
+					<p className="hidden md:block">
+						From ${startingPrice.price}
+					</p>
 					<ShoppingCartIcon fontSize="small" />
 				</button>
 			</Tooltip>
 		</div>
-	)
+	);
 }

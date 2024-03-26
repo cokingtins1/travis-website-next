@@ -1,62 +1,59 @@
-"use server"
+"use server";
 
-import supabaseClient from "@/libs/supabase/config/supabaseClient"
-import { useSession } from "./useSession"
-import { likedByUser } from "./supabaseQuery"
+import supabaseClient from "@/libs/supabase/config/supabaseClient";
+import { useSession } from "./useSession";
+import { likedByUser } from "./supabaseQuery";
 
 async function getAllProductData() {
-	const { data, error } = await supabaseClient.rpc("get_product_data")
-	return data
+	const { data, error } = await supabaseClient.rpc("get_product_data");
+	return data;
 }
 
 export async function constructData() {
-	const start = Date.now()
+	const start = Date.now();
 
-	const data = await getAllProductData()
-	const { session } = await useSession()
+	const data = await getAllProductData();
+	const { session } = await useSession();
 
-	const userId = session?.user.id
+	const userId = session?.user.id;
 
-	const likeData = await likedByUser()
+	const likeData = await likedByUser();
 
 	for (const item of data) {
-		const activePrices = item.pricing.filter((price) => price.is_active)
-		const lowestPrice = activePrices.reduce((lowest, current) => {
-			if (
-				current.price < lowest.price ||
-				(!lowest.type_id && current.type_id === "basic")
-			) {
-				return current
-			} else {
-				return lowest
-			}
-		}, {})
-		item.startingPrice = lowestPrice
-			? Object.fromEntries(Object.entries(lowestPrice))
-			: null
+		const activePrices = item.pricing.filter((price) => price.is_active);
 
-		const isFree = item.product_data.free
-		item.isFree = isFree
+		const lowestPriceObject = activePrices.reduce(
+			(minPriceObject, currentPriceObject) =>
+				currentPriceObject.price < minPriceObject.price
+					? currentPriceObject
+					: minPriceObject,
+					activePrices[0]
+		);
 
-		const productLikes = item.product_likes.likes
-		item.productLikes = productLikes
+		item.startingPrice = lowestPriceObject;
+
+		const isFree = item.product_data.free;
+		item.isFree = isFree;
+
+		const productLikes = item.product_likes.likes;
+		item.productLikes = productLikes;
 
 		if (session) {
 			const likedByArray = likeData.find(
 				(p) => p.product_id === item.product_data.product_id
-			)
+			);
 
-			const likedByUser = likedByArray.liked_by_id.includes(userId)
+			const likedByUser = likedByArray.liked_by_id.includes(userId);
 
-			item.session = session
-			item.likedByUser = likedByUser
+			item.session = session;
+			item.likedByUser = likedByUser;
 		} else {
-			item.likedByUser = false
-			item.session = null
+			item.likedByUser = false;
+			item.session = null;
 		}
 	}
-	const end = Date.now()
+	const end = Date.now();
 	// console.log(end - start)
 
-	return data
+	return data;
 }

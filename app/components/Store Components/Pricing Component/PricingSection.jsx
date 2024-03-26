@@ -1,21 +1,21 @@
-"use client"
+"use client";
 
-import Divider from "@mui/material/Divider"
-import { useState } from "react"
-import Accordion from "@mui/material/Accordion"
-import Button from "@mui/material/Button"
-import AccordionSummary from "@mui/material/AccordionSummary"
-import AccordionDetails from "@mui/material/AccordionDetails"
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
-import UsageTerms from "./UsageTerms"
-import { useShoppingCart } from "@/libs/contexts/CartContext"
-import { formatCurrency } from "@/libs/utils"
+import Divider from "@mui/material/Divider";
+import { useState } from "react";
+import Accordion from "@mui/material/Accordion";
+import Button from "@mui/material/Button";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import UsageTerms from "./UsageTerms";
+import { useShoppingCart } from "@/libs/contexts/CartContext";
+import { formatCurrency } from "@/libs/utils";
 
 export default function PricingSection({ product, pricing, imageSrc }) {
-	const { addToCart } = useShoppingCart()
+	const { addToCart } = useShoppingCart();
 
-	const [selected, setSelected] = useState("")
-	const [cartTotal, setCartTotal] = useState(() => formatCurrency(0))
+	const [selected, setSelected] = useState("");
+	const [cartTotal, setCartTotal] = useState(() => formatCurrency(0));
 
 	const [selectedProduct, setSelectedProduct] = useState({
 		product_id: null,
@@ -23,29 +23,29 @@ export default function PricingSection({ product, pricing, imageSrc }) {
 		product_name: null,
 		type: null,
 		price: null,
-	})
+	});
 
 	if (!pricing) {
-		return null
+		return null;
 	}
 
 	function getFileType(name) {
-		let fileType
+		let fileType;
 		switch (name) {
 			case "basic":
-				fileType = "MP3"
-				break
+				fileType = "MP3";
+				break;
 			case "premium":
-				fileType = "MP3, WAV"
-				break
+				fileType = "WAV (Untagged)";
+				break;
 			case "exclusive":
-				fileType = "MP3, WAV, STEMS"
-				break
+				fileType = "WAV + STEMS (Untagged)";
+				break;
 			default:
-				fileType = ""
+				fileType = "";
 		}
 
-		return fileType
+		return fileType;
 	}
 
 	function PricingButton(name, price, pricing_id, product_id) {
@@ -60,7 +60,7 @@ export default function PricingSection({ product, pricing, imageSrc }) {
 						: "border-border-primary hover:bg-bg-hover"
 				}  `}
 				onClick={() => {
-					setSelected(name)
+					setSelected(name);
 					setSelectedProduct((prev) => {
 						return {
 							...prev,
@@ -69,10 +69,10 @@ export default function PricingSection({ product, pricing, imageSrc }) {
 							product_name: product.title,
 							type: name.toUpperCase(),
 							price: price,
-						}
-					})
+						};
+					});
 
-					setCartTotal(() => formatCurrency(price))
+					setCartTotal(() => formatCurrency(price));
 				}}
 			>
 				<div className="flex flex-col items-start">
@@ -83,7 +83,7 @@ export default function PricingSection({ product, pricing, imageSrc }) {
 					</p>
 				</div>
 			</button>
-		)
+		);
 	}
 
 	return (
@@ -110,7 +110,7 @@ export default function PricingSection({ product, pricing, imageSrc }) {
 										price: selectedProduct.price,
 										type: selectedProduct.type,
 										imageSrc: imageSrc,
-									})
+									});
 								}
 							}}
 							type="button"
@@ -153,5 +153,5 @@ export default function PricingSection({ product, pricing, imageSrc }) {
 				</div>
 			</div>
 		</>
-	)
+	);
 }

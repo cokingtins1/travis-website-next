@@ -1,8 +1,9 @@
-import MicNoneIcon from "@mui/icons-material/MicNone"
-import FilterNoneIcon from "@mui/icons-material/FilterNone"
-import CellTowerIcon from "@mui/icons-material/CellTower"
-import VideocamIcon from "@mui/icons-material/Videocam"
-import ReceiptLongIcon from "@mui/icons-material/ReceiptLong"
+import MicNoneIcon from "@mui/icons-material/MicNone";
+import FilterNoneIcon from "@mui/icons-material/FilterNone";
+import CellTowerIcon from "@mui/icons-material/CellTower";
+import VideocamIcon from "@mui/icons-material/Videocam";
+import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
+import RemoveIcon from "@mui/icons-material/Remove";
 
 export default function UsageTerms({ selected }) {
 	const icons = [
@@ -11,7 +12,8 @@ export default function UsageTerms({ selected }) {
 		{ key: 2, value: <CellTowerIcon /> },
 		{ key: 3, value: <VideocamIcon /> },
 		{ key: 4, value: <ReceiptLongIcon /> },
-	]
+		{ key: 5, value: <RemoveIcon /> },
+	];
 
 	const terms = {
 		basic: [
@@ -34,10 +36,11 @@ export default function UsageTerms({ selected }) {
 			"unlimited online audio streams",
 			"unlimited music videos",
 			"radio broadcasting rights",
+			"beat removed from store",
 		],
-	}
+	};
 
-	const selectedTerms = terms[selected] || null
+	const selectedTerms = terms[selected] || null;
 
 	return (
 		<ul className="flex flex-col md:grid grid-cols-3 gap-4">
@@ -51,5 +54,5 @@ export default function UsageTerms({ selected }) {
 					</li>
 				))}
 		</ul>
-	)
+	);
 }
