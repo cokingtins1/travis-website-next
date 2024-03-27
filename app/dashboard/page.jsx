@@ -8,8 +8,11 @@ import DashboardProductCard from "../components/Dashboard Components/DashboardPr
 import { getAllProductData } from "@/libs/supabase/supabaseQuery";
 import { Suspense } from "react";
 import DashboardCardSkeleton from "../components/Skeletons/DashboardCardSkeleton";
+import revalidate from "../actions/revalidate";
 
 export default async function Page() {
+	revalidate();
+
 	const products = await getAllProductData();
 
 	return (
