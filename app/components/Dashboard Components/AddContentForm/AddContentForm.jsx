@@ -11,6 +11,7 @@ import Tab from "@mui/material/Tab";
 import Divider from "@mui/material/Divider";
 import beatKitImage from "@/public/beatKitImage.jpg";
 import { toast } from "react-toastify";
+import { upload } from "@vercel/blob/client";
 
 import MetaData from "./MetaData";
 import Pricing from "./Pricing";
@@ -141,6 +142,13 @@ export default function AddContentForm() {
 		<Pricing key="pricing" {...data} updateFields={updateFields} />,
 	]);
 
+	async function createBlob(file) {
+		const newBlob = await upload(file.name, file, {
+			access: "public",
+			handleUploadUrl: "/api/deploymentUpload",
+		});
+	}
+
 	async function handleSubmit(e) {
 		e.preventDefault();
 		if (!isLastStep) return next();
@@ -153,6 +161,17 @@ export default function AddContentForm() {
 		} else setValidating(false);
 
 		const formData = createFormData(data);
+
+		// for (const e of formData) {
+		// 	const value = e[1];
+
+		// 	if (value instanceof File) {
+		// 		await upload(value.name, value, {
+		// 			access: "public",
+		// 			handleUploadUrl: "/api/deploymentUpload",
+		// 		}).then((res) => console.log(res));
+		// 	}
+		// }
 
 		try {
 			setDataLoading(true);
