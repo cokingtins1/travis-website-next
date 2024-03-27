@@ -1,26 +1,26 @@
-"use client"
+"use client";
 
-import TextField from "@mui/material/TextField"
-import MenuItem from "@mui/material/MenuItem"
-import Switch from "@mui/material/Switch"
-import Button from "@mui/material/Button"
-import EditIcon from "@mui/icons-material/Edit"
+import TextField from "@mui/material/TextField";
+import MenuItem from "@mui/material/MenuItem";
+import Switch from "@mui/material/Switch";
+import Button from "@mui/material/Button";
+import EditIcon from "@mui/icons-material/Edit";
 
-import { styled } from "@mui/material/styles"
-import beatKitImage from "@/public/beatKitImage.jpg"
-import Image from "next/image"
-import { useEffect, useState } from "react"
-import TagInput from "../AddContentForm/Upload Components/TagInput"
-import { toast } from "react-toastify"
-import PricingSwitch from "../AddContentForm/Upload Components/PricingSwitch"
-import SubmitModal from "../../UI/SubmitModal"
-import { createFormData } from "@/libs/utils"
-import { useAudio } from "@/libs/contexts/AudioContext"
-import AudioDrawer from "../../Audio/AudioDrawer"
-import Divider from "@mui/material/Divider"
-import UploadFile from "../AddContentForm/Upload Components/UploadFile"
-import { useRouter } from "next/navigation"
-import { revalidatePath } from "next/cache"
+import { styled } from "@mui/material/styles";
+import beatKitImage from "@/public/beatKitImage.jpg";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import TagInput from "../AddContentForm/Upload Components/TagInput";
+import { toast } from "react-toastify";
+import PricingSwitch from "../AddContentForm/Upload Components/PricingSwitch";
+import SubmitModal from "../../UI/SubmitModal";
+import { createFormData } from "@/libs/utils";
+import { useAudio } from "@/libs/contexts/AudioContext";
+import AudioDrawer from "../../Audio/AudioDrawer";
+import Divider from "@mui/material/Divider";
+import UploadFile from "../AddContentForm/Upload Components/UploadFile";
+import { useRouter } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
 export default function InfoEdit({
 	product,
@@ -74,28 +74,28 @@ export default function InfoEdit({
 		exclusiveFileDelete: false,
 
 		free: product.free || false,
-	}
+	};
 
-	const [data, setData] = useState(INITIAL_DATA)
-	const [editing, setEditing] = useState(false)
-	const [dataLoading, setDataLoading] = useState(false)
-	const [imageErr, setImageErr] = useState("")
-	const router = useRouter()
+	const [data, setData] = useState(INITIAL_DATA);
+	const [editing, setEditing] = useState(false);
+	const [dataLoading, setDataLoading] = useState(false);
+	const [imageErr, setImageErr] = useState("");
+	const router = useRouter();
 
-	const { audioSrcId, clearAudio, buttonId } = useAudio()
+	const { audioSrcId, clearAudio, buttonId } = useAudio();
 
 	useEffect(() => {
-		clearAudio()
-	}, [])
+		clearAudio();
+	}, []);
 
 	function abortEditing(e) {
-		setEditing(!editing)
-		setData(INITIAL_DATA)
+		setEditing(!editing);
+		setData(INITIAL_DATA);
 	}
 
 	async function deleteProduct() {
 		try {
-			setDataLoading(true)
+			setDataLoading(true);
 			const res = await toast.promise(
 				fetch("/api/deleteProduct", {
 					method: "DELETE",
@@ -106,28 +106,39 @@ export default function InfoEdit({
 					success: "Product deleted successfully",
 					error: "Error deleting product",
 				}
-			)
+			);
 
 			if (res.ok) {
-				setDataLoading(false)
-				setEditing(false)
-				router.push("/dashboard")
+				setDataLoading(false);
+				setEditing(false);
+				router.push("/dashboard");
 			} else {
-				setDataLoading(false)
-				throw new Error("There was an error updating the files")
+				setDataLoading(false);
+				throw new Error("There was an error updating the files");
 			}
 		} catch (error) {
-			console.log(error)
+			console.log(error);
 		}
-		revalidatePath("/")
+		revalidatePath("/");
 	}
 
 	async function handleSubmit(e) {
-		e.preventDefault()
+		e.preventDefault();
 
-		const formData = createFormData(data, "product_id", product.product_id)
+		let formData;
+		if (process.env.NODE_ENV !== "development") {
+			const { MP3_file, WAV_file, STEM_file, ...dataNoFile } = data;
+			formData = createFormData(
+				dataNoFile,
+				"product_id",
+				product.product_id
+			);
+		} else {
+			formData = createFormData(data, "product_id", product.product_id);
+		}
+
 		try {
-			setDataLoading(true)
+			setDataLoading(true);
 			const res = await toast.promise(
 				fetch("/api/updateData", {
 					method: "PUT",
@@ -138,17 +149,17 @@ export default function InfoEdit({
 					success: "Fields updated successfully",
 					error: "Error updating filds",
 				}
-			)
+			);
 
 			if (res.ok) {
-				setDataLoading(false)
-				setEditing(false)
+				setDataLoading(false);
+				setEditing(false);
 			} else {
-				setDataLoading(false)
-				throw new Error("There was an error updating the files")
+				setDataLoading(false);
+				throw new Error("There was an error updating the files");
 			}
 		} catch (error) {
-			console.log(error)
+			console.log(error);
 		}
 		// revalidatePath("/")
 	}
@@ -163,36 +174,36 @@ export default function InfoEdit({
 		left: 0,
 		whiteSpace: "nowrap",
 		width: 1,
-	})
+	});
 
 	const contentType = [
 		{ value: "Beat" },
 		{ value: "Drum Kit" },
 		{ value: "Melody" },
-	]
+	];
 
 	function updateFields(fields) {
 		setData((prev) => {
-			return { ...prev, ...fields }
-		})
+			return { ...prev, ...fields };
+		});
 	}
 
 	function handleChange(e) {
-		const file = e.target.files[0]
-		const fileIsImage = file.type.split("/")[0] === "image"
+		const file = e.target.files[0];
+		const fileIsImage = file.type.split("/")[0] === "image";
 
 		if (!fileIsImage) {
-			setImageErr("Please select a valid image file type")
-			return
+			setImageErr("Please select a valid image file type");
+			return;
 		} else {
-			setImageErr("")
+			setImageErr("");
 		}
 
 		if (file) {
 			updateFields({
 				productImage: file,
 				productImageSrc: URL.createObjectURL(file),
-			})
+			});
 		}
 	}
 
@@ -509,7 +520,7 @@ export default function InfoEdit({
 			"Xylophone",
 			"Yueqin",
 		],
-	}
+	};
 
 	return (
 		<form>
@@ -522,8 +533,8 @@ export default function InfoEdit({
 						disabled={dataLoading}
 						type="button"
 						onClick={(e) => {
-							setEditing(true)
-							e.preventDefault()
+							setEditing(true);
+							e.preventDefault();
 						}}
 					>
 						Edit Fields
@@ -540,7 +551,7 @@ export default function InfoEdit({
 						<SubmitModal
 							variant="update"
 							callback={(e) => {
-								handleSubmit(e)
+								handleSubmit(e);
 							}}
 						/>
 					</>
@@ -581,7 +592,7 @@ export default function InfoEdit({
 								<VisuallyHiddenInput
 									name="file"
 									onChange={(e) => {
-										handleChange(e)
+										handleChange(e);
 									}}
 									type="file"
 								/>
@@ -728,7 +739,7 @@ export default function InfoEdit({
 							select
 							value={data.type}
 							onChange={(e) => {
-								updateFields({ type: e.target.value })
+								updateFields({ type: e.target.value });
 							}}
 						>
 							{contentType.map((option) => (
@@ -756,7 +767,7 @@ export default function InfoEdit({
 								disabled={!editing}
 								value={data.tags}
 								onChange={(newTagList) => {
-									updateFields({ tags: newTagList })
+									updateFields({ tags: newTagList });
 								}}
 							/>
 						</div>
@@ -777,7 +788,7 @@ export default function InfoEdit({
 								disabled={!editing}
 								value={data.genres}
 								onChange={(newTagList) => {
-									updateFields({ genres: newTagList })
+									updateFields({ genres: newTagList });
 								}}
 							/>
 						</div>
@@ -799,7 +810,7 @@ export default function InfoEdit({
 								disabled={!editing}
 								value={data.moods}
 								onChange={(newTagList) => {
-									updateFields({ moods: newTagList })
+									updateFields({ moods: newTagList });
 								}}
 							/>
 						</div>
@@ -821,7 +832,7 @@ export default function InfoEdit({
 								disabled={!editing}
 								value={data.instruments}
 								onChange={(newTagList) => {
-									updateFields({ instruments: newTagList })
+									updateFields({ instruments: newTagList });
 								}}
 							/>
 						</div>
@@ -845,7 +856,7 @@ export default function InfoEdit({
 								type="text"
 								value={data.videoLink}
 								onChange={(e) => {
-									updateFields({ videoLink: e.target.value })
+									updateFields({ videoLink: e.target.value });
 								}}
 							/>
 						</div>
@@ -870,7 +881,7 @@ export default function InfoEdit({
 							select
 							value={data.keys}
 							onChange={(e) => {
-								updateFields({ keys: e.target.value })
+								updateFields({ keys: e.target.value });
 							}}
 						>
 							{DropDown.Keys.map((option) => (
@@ -898,7 +909,7 @@ export default function InfoEdit({
 							onChange={(e) => {
 								updateFields({
 									bpm: e.target.value,
-								})
+								});
 							}}
 						/>
 					</div>
@@ -920,12 +931,12 @@ export default function InfoEdit({
 								onCheckedChange={(newChecked) => {
 									updateFields({
 										basic: newChecked,
-									})
+									});
 								}}
 								onChange={(newPrice) => {
 									updateFields({
 										basicPrice: Number(newPrice),
-									})
+									});
 								}}
 							/>
 							<PricingSwitch
@@ -944,12 +955,12 @@ export default function InfoEdit({
 								onCheckedChange={(newChecked) => {
 									updateFields({
 										premium: newChecked,
-									})
+									});
 								}}
 								onChange={(newPrice) => {
 									updateFields({
 										premiumPrice: Number(newPrice),
-									})
+									});
 								}}
 							/>
 							<PricingSwitch
@@ -968,12 +979,12 @@ export default function InfoEdit({
 								onCheckedChange={(newChecked) => {
 									updateFields({
 										exclusive: newChecked,
-									})
+									});
 								}}
 								onChange={(newPrice) => {
 									updateFields({
 										exclusivePrice: Number(newPrice),
-									})
+									});
 								}}
 							/>
 							<div className="flex w-full">
@@ -987,7 +998,7 @@ export default function InfoEdit({
 											onChange={() => {
 												updateFields({
 													free: !data.free,
-												})
+												});
 											}}
 										/>
 									</span>
@@ -1004,5 +1015,5 @@ export default function InfoEdit({
 				</div>
 			</div>
 		</form>
-	)
+	);
 }

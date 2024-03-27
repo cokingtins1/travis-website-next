@@ -7,7 +7,6 @@ import { useSession } from "@/libs/supabase/useSession";
 export async function PUT(req) {
 	const formData = await req.formData();
 	const product_id = await formData.get("product_id");
-	const env = process.env.NODE_ENV;
 
 	const { supabase } = await useSession();
 
@@ -212,7 +211,7 @@ export async function PUT(req) {
 			const key = e[0];
 			const value = e[1];
 
-			if (value instanceof File && env === "development") {
+			if (value instanceof File) {
 				if (value.type.split("/")[0] == "image") {
 					await modifyStorageNEW(
 						`${product_id}/productImage/${currentImage.name}`,
