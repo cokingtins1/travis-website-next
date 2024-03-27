@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 
 export async function POST(request) {
 	const body = await request.json();
+	const { id: userId } = await useSession();
 
 	try {
 		const jsonResponse = await handleUpload({
@@ -25,7 +26,6 @@ export async function POST(request) {
 				// 	throw new Error("Not authorized");
 				// }
 
-				const { id: userId } = await useSession();
 				// console.log("userId", userId);
 
 				return {
