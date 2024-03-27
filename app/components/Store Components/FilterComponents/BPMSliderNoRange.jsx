@@ -1,44 +1,49 @@
-"use client"
+"use client";
 
-import Accordion from "@mui/material/Accordion"
-import AccordionSummary from "@mui/material/AccordionSummary"
-import AccordionDetails from "@mui/material/AccordionDetails"
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
-import Button from "@mui/material/Button"
-import Slider from "@mui/material/Slider"
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import Button from "@mui/material/Button";
+import Slider from "@mui/material/Slider";
 
-import Link from "next/link"
-import { useEffect, useState } from "react"
-import { useSearch } from "@/libs/contexts/SearchContext"
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { useSearch } from "@/libs/contexts/SearchContext";
 
 export default function BPMSliderNoRange({
-	selected,
 	allBpmRange,
 	setAllFilters,
+	searchParams,
 }) {
-	const [value, setValue] = useState([selected[0], selected[1]])
-	const [expanded, setExpanded] = useState(false)
+	const [value, setValue] = useState([allBpmRange[0], allBpmRange[1]]);
+	const [expanded, setExpanded] = useState(false);
 
-	const { pathname, createBPMQuery } = useSearch()
+	const { pathname, createBPMQuery } = useSearch();
 
 	useEffect(() => {
-		setValue([selected[0], selected[1]])
-	}, [selected])
+		if (searchParams.bpm) {
+			const bpm = searchParams.bpm.split(",");
+			setValue([parseFloat(bpm[0]), parseFloat(bpm[1])]);
+		} else {
+			setValue([allBpmRange[0], allBpmRange[1]]);
+		}
+	}, [searchParams]);
 
 	const handleChange = (event, newValue) => {
-		setValue(newValue)
+		setValue(newValue);
 		setAllFilters((prevFilters) => ({
 			...prevFilters,
 			bpm: String(newValue),
-		}))
-	}
+		}));
+	};
 
 	return (
-		<div className='flex'>
+		<div className="flex">
 			<Accordion
 				expanded={expanded}
 				onChange={() => {
-					setExpanded(!expanded)
+					setExpanded(!expanded);
 				}}
 				sx={{
 					boxShadow: "none",
@@ -92,5 +97,5 @@ export default function BPMSliderNoRange({
 				</AccordionDetails>
 			</Accordion>
 		</div>
-	)
+	);
 }

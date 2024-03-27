@@ -1,92 +1,86 @@
-"use client"
+"use client";
 
-import ProductCard from "../ProductCard/ProductCard"
+import ProductCard from "../ProductCard/ProductCard";
 
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 
 import {
 	getAudioList,
 	getBPMData,
 	productFilter,
 	returnFilters,
-} from "@/libs/utils"
+} from "@/libs/utils";
 
-import NewDropDown from "./FilterComponents/NewDropDown"
-import StoreSkeleton from "../Skeletons/StoreSkeleton"
-import TagList from "./FilterComponents/TagList"
-import BPMSliderNoRange from "./FilterComponents/BPMSliderNoRange"
-import ClearFilter from "./FilterComponents/ClearFilter"
-import { useSearch } from "@/libs/contexts/SearchContext"
+import NewDropDown from "./FilterComponents/NewDropDown";
+import TagList from "./FilterComponents/TagList";
+import BPMSliderNoRange from "./FilterComponents/BPMSliderNoRange";
+import ClearFilter from "./FilterComponents/ClearFilter";
+import { useSearch } from "@/libs/contexts/SearchContext";
 
 export default function ProductSection({ data, searchParams }) {
-	const { clearSearch } = useSearch()
+	const { clearSearch } = useSearch();
 
-	const [allFilters, setAllFilters] = useState(searchParams)
+	const [allFilters, setAllFilters] = useState(searchParams);
 	const [genreFilters, setGenreFilters] = useState(() =>
 		returnFilters(data, "genres")
-	)
+	);
 	const [moodFilters, setMoodFilters] = useState(() =>
 		returnFilters(data, "moods")
-	)
+	);
 	const [instrumentFilters, setInstrumentFilters] = useState(() =>
 		returnFilters(data, "instruments")
-	)
+	);
 
 	const [tagFilters, setTagFilters] = useState(() =>
 		returnFilters(data, "tags")
-	)
+	);
 
 	const [filteredData, setFilteredData] = useState(() => {
 		if (Object.keys(searchParams).length > 0) {
-			return productFilter(data, searchParams)
+			return productFilter(data, searchParams);
 		} else {
-			return data
+			return data;
 		}
-	})
+	});
 	const [audioList, setAudioList] = useState(
 		getAudioList(data.map((p) => p.product_files))
-	)
+	);
 
-	const [bpm, setBpm] = useState(() => getBPMData(filteredData))
-
-	const allBpmRange = getBPMData(data)
+	const allBpmRange = getBPMData(data);
 
 	useEffect(() => {
-		const [genres, allGenres] = returnFilters(filteredData, "genres")
-		setGenreFilters([genres, allGenres])
+		const [genres, allGenres] = returnFilters(filteredData, "genres");
+		setGenreFilters([genres, allGenres]);
 
-		const [moods, allMoods] = returnFilters(filteredData, "moods")
-		setMoodFilters([moods, allMoods])
+		const [moods, allMoods] = returnFilters(filteredData, "moods");
+		setMoodFilters([moods, allMoods]);
 
 		const [instruments, allInstruments] = returnFilters(
 			filteredData,
 			"instruments"
-		)
-		setInstrumentFilters([instruments, allInstruments])
+		);
+		setInstrumentFilters([instruments, allInstruments]);
 
-		const [tags, allTags] = returnFilters(filteredData, "tags")
-		setTagFilters([tags, allTags])
-		setBpm(() => getBPMData(filteredData))
-		setAudioList(getAudioList(filteredData.map((p) => p.product_files)))
-	}, [searchParams, filteredData])
-
-	useEffect(() => {
-		setAllFilters(searchParams)
-		setFilteredData(productFilter(data, searchParams))
-		setAudioList(getAudioList(filteredData.map((p) => p.product_files)))
-
-	}, [searchParams])
+		const [tags, allTags] = returnFilters(filteredData, "tags");
+		setTagFilters([tags, allTags]);
+		setAudioList(getAudioList(filteredData.map((p) => p.product_files)));
+	}, [searchParams, filteredData]);
 
 	useEffect(() => {
-		setFilteredData(productFilter(filteredData, allFilters))
-		setAudioList(getAudioList(filteredData.map((p) => p.product_files)))
+		setAllFilters(searchParams);
+		setFilteredData(productFilter(data, searchParams));
+		setAudioList(getAudioList(filteredData.map((p) => p.product_files)));
+	}, [searchParams]);
 
-	}, [allFilters])
+	useEffect(() => {
+		setFilteredData(productFilter(filteredData, allFilters));
+		setAudioList(getAudioList(filteredData.map((p) => p.product_files)));
+	}, [allFilters]);
 
-	const [genres, allGenres] = genreFilters
-	const [moods, allMoods] = moodFilters
-	const [instruments, allInstruments] = instrumentFilters
-	const [tags, allTags] = tagFilters
+	const [genres, allGenres] = genreFilters;
+	const [moods, allMoods] = moodFilters;
+	const [instruments, allInstruments] = instrumentFilters;
+	const [tags, allTags] = tagFilters;
 
 	const dropDowns = [
 		{
@@ -104,7 +98,7 @@ export default function ProductSection({ data, searchParams }) {
 			filter: instruments,
 			allFilters: allInstruments,
 		},
-	]
+	];
 
 	return (
 		<>
@@ -139,7 +133,6 @@ export default function ProductSection({ data, searchParams }) {
 						</div>
 					</div>
 					<BPMSliderNoRange
-						selected={bpm}
 						allBpmRange={allBpmRange}
 						setAllFilters={setAllFilters}
 						searchParams={searchParams}
@@ -157,10 +150,12 @@ export default function ProductSection({ data, searchParams }) {
 							/>
 						))
 					) : (
-						<StoreSkeleton />
+						<>
+							<div>No results</div>
+						</>
 					)}
 				</ul>
 			</section>
 		</>
-	)
+	);
 }
