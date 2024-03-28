@@ -11,7 +11,7 @@ import DashboardCardSkeleton from "../components/Skeletons/DashboardCardSkeleton
 import revalidate from "../actions/revalidate";
 
 export default async function Page() {
-	revalidate();
+	revalidate(["dashboardData", "products"]);
 
 	const products = await getAllProductData();
 

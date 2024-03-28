@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import { UploadButton } from '../utils/uploadthing';
+import { UploadButton } from "../utils/uploadthing";
 
 export default async function Page() {
 	return (
 		<main className="flex min-h-screen flex-col items-center justify-between p-24">
-			<UploadButton 
-				endpoint="mp3Uploader"
-				className='ut-button:bg-green-600'
+			<UploadButton
+				endpoint="stemUploader"
+				className="ut-button:bg-green-600"
 				onClientUploadComplete={(res) => {
 					// Do something with the response
 					console.log("Files: ", res);

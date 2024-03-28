@@ -23,7 +23,7 @@ export default function ProductSection({ data, searchParams }) {
 	const [allFilters, setAllFilters] = useState(searchParams);
 	const [genreFilters, setGenreFilters] = useState(() =>
 		returnFilters(data, "genres")
-	);npm 
+	);
 	const [moodFilters, setMoodFilters] = useState(() =>
 		returnFilters(data, "moods")
 	);

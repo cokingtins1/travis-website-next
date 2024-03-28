@@ -1,4 +1,4 @@
-import UploadFile from "./Upload Components/UploadFile"
+import UploadFile from "./Upload Components/UploadFile";
 
 export default function Files({
 	MP3_file,
@@ -70,5 +70,5 @@ export default function Files({
 				/>
 			</div>
 		</>
-	)
+	);
 }

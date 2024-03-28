@@ -7,7 +7,7 @@ import StoreSkeleton from "../components/Skeletons/StoreSkeleton";
 import revalidate from "../actions/revalidate";
 
 export default async function Store({ searchParams }) {
-	revalidate();
+	revalidate(["dashboardData", "products"]);
 	const data = await constructData();
 
 	if (!data) {

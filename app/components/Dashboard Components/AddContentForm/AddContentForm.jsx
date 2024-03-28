@@ -20,6 +20,8 @@ import { createFormData } from "@/libs/utils";
 import AudioDrawer from "../../Audio/AudioDrawer";
 import { useAudio } from "@/libs/contexts/AudioContext";
 import { useRouter } from "next/navigation";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 const INITIAL_DATA = {
 	MP3_file: null,
@@ -61,7 +63,7 @@ const INITIAL_DATA = {
 	free: false,
 };
 
-export default function AddContentForm() {
+export default function AddContentForm({ filesFromStorage, tempUploads }) {
 	const [data, setData] = useState(INITIAL_DATA);
 	const [tabValue, setTabValue] = useState(0);
 
@@ -136,8 +138,16 @@ export default function AddContentForm() {
 		next,
 		goTo,
 	} = useMultipleStepForm([
-		<Files key="files" {...data} updateFields={updateFields} />,
-		<BasicInfo key="basicInfo" {...data} updateFields={updateFields} />,
+		<Files
+			key="files"
+			{...data}
+			updateFields={updateFields}
+			filesFromStorage={filesFromStorage}
+			tempUploads={tempUploads}
+		/>,
+		<LocalizationProvider dateAdapter={AdapterDayjs}>
+			<BasicInfo key="basicInfo" {...data} updateFields={updateFields} />,
+		</LocalizationProvider>,
 		<MetaData key="metaData" {...data} updateFields={updateFields} />,
 		<Pricing key="pricing" {...data} updateFields={updateFields} />,
 	]);
