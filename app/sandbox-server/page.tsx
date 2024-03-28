@@ -71,14 +71,14 @@ export default async function Page() {
 
 			{signedurl && <Link href={signedurl}>{signedurl}</Link>}
 			<ul>
-				{filesFromStorage &&
+				{/* {filesFromStorage &&
 					filesFromStorage.map((file, index) => (
 						<li key={index}>
 							<p>Name: {file.name}</p>
 							<p>Key: {file.key}</p>
 							<p>CustomId: {file.customId}</p>
 						</li>
-					))}
+					))} */}
 			</ul>
 		</div>
 	);
