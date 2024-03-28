@@ -145,7 +145,7 @@ export default function AddContentForm({ filesFromStorage, tempUploads }) {
 			filesFromStorage={filesFromStorage}
 			tempUploads={tempUploads}
 		/>,
-		<LocalizationProvider dateAdapter={AdapterDayjs}>
+		<LocalizationProvider key="localization" dateAdapter={AdapterDayjs}>
 			<BasicInfo key="basicInfo" {...data} updateFields={updateFields} />,
 		</LocalizationProvider>,
 		<MetaData key="metaData" {...data} updateFields={updateFields} />,
