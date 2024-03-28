@@ -1,5 +1,4 @@
-import { UploadButton } from '../../utils/uploadthing';
-
+import { UploadButton } from "../../utils/uploadthing";
 
 export default function Uploader() {
 	return (

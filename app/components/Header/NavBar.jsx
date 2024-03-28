@@ -1,35 +1,37 @@
-"use client"
+"use client";
 
-import Tabs from "@mui/material/Tabs"
-import Tab from "@mui/material/Tab"
-import { useState } from "react"
-import { useRouter, usePathname } from "next/navigation"
-import ThemeProvider from "@/libs/contexts/ThemeContext"
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import { useState } from "react";
+import { useRouter, usePathname } from "next/navigation";
+import ThemeProvider from "@/libs/contexts/ThemeContext";
 
 export default function NavBar({ session, orientation, isAdmin }) {
-	const path = usePathname()
-	const page = path.replace(/^[^/]*\/([^/]*)\/?.*$/, "$1")
+	const path = usePathname();
+	const page = path.replace(/^[^/]*\/([^/]*)\/?.*$/, "$1");
 
-	const router = useRouter()
+	const router = useRouter();
 
 	const indices = [
 		{ index: 0, value: "Home", href: "" },
 		{ index: 1, value: "Store", href: "store" },
-	]
+		{ index: 2, value: "Client Upload", href: "sandbox2" },
+		{ index: 3, value: "Server", href: "sandbox-server" },
+	];
 
 	if (session && isAdmin) {
 		indices.push({
 			index: indices.length,
 			value: "Dashboard",
 			href: "dashboard",
-		})
+		});
 	}
 
 	const [tabValue, setTabValue] = useState(() => {
-		const foundIndex = indices.find((index) => index.href === page)
-		return foundIndex ? foundIndex.index : 0
-	})
-	const primaryAccent = "#1976D2"
+		const foundIndex = indices.find((index) => index.href === page);
+		return foundIndex ? foundIndex.index : 0;
+	});
+	const primaryAccent = "#1976D2";
 
 	const tabsStyles = {
 		color: primaryAccent,
@@ -39,7 +41,7 @@ export default function NavBar({ session, orientation, isAdmin }) {
 		"& .MuiTabs-indicator": {
 			backgroundColor: primaryAccent,
 		},
-	}
+	};
 
 	return (
 		<>
@@ -48,7 +50,7 @@ export default function NavBar({ session, orientation, isAdmin }) {
 					<Tabs
 						sx={tabsStyles}
 						onChange={(e) => {
-							setTabValue(e.target.value)
+							setTabValue(e.target.value);
 						}}
 						value={tabValue}
 						orientation={orientation}
@@ -62,8 +64,8 @@ export default function NavBar({ session, orientation, isAdmin }) {
 								key={step.index}
 								label={step.value}
 								onClick={() => {
-									setTabValue(step.index)
-									router.push(`/${step.href}`)
+									setTabValue(step.index);
+									router.push(`/${step.href}`);
 								}}
 							/>
 						))}
@@ -71,5 +73,5 @@ export default function NavBar({ session, orientation, isAdmin }) {
 				</div>
 			</ThemeProvider>
 		</>
-	)
+	);
 }
