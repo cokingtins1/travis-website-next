@@ -1,18 +1,16 @@
-import TextField from "@mui/material/TextField"
-import MenuItem from "@mui/material/MenuItem"
-import EditIcon from "@mui/icons-material/Edit"
-import { DatePicker } from "@mui/x-date-pickers/DatePicker"
-import { styled } from "@mui/material/styles"
-import Button from "@mui/material/Button"
+import TextField from "@mui/material/TextField";
+import MenuItem from "@mui/material/MenuItem";
+import EditIcon from "@mui/icons-material/Edit";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { styled } from "@mui/material/styles";
+import Button from "@mui/material/Button";
 
-import FormControl from "@mui/material/FormControl"
+import FormControl from "@mui/material/FormControl";
 
-import Image from "next/image"
-// import { Button } from "../../UI/Button"
-import { useState } from "react"
+import Image from "next/image";
+import { useState } from "react";
 
 export default function BasicInfo({
-	productImage,
 	productImageSrc,
 	title,
 	type,
@@ -20,7 +18,7 @@ export default function BasicInfo({
 	description,
 	updateFields,
 }) {
-	const [imageErr, setImageErr] = useState("")
+	const [imageErr, setImageErr] = useState("");
 
 	const VisuallyHiddenInput = styled("input")({
 		clip: "rect(0 0 0 0)",
@@ -32,30 +30,30 @@ export default function BasicInfo({
 		left: 0,
 		whiteSpace: "nowrap",
 		width: 1,
-	})
+	});
 
 	const contentType = [
 		{ value: "Beat" },
 		{ value: "Drum Kit" },
 		{ value: "Melody" },
-	]
+	];
 
 	function handleChange(e) {
-		const file = e.target.files[0]
-		const fileIsImage = file.type.split("/")[0] === "image"
+		const file = e.target.files[0];
+		const fileIsImage = file.type.split("/")[0] === "image";
 
 		if (!fileIsImage) {
-			setImageErr("Please select a valid image file type")
-			return
+			setImageErr("Please select a valid image file type");
+			return;
 		} else {
-			setImageErr("")
+			setImageErr("");
 		}
 
 		if (file) {
 			updateFields({
 				productImage: file,
 				productImageSrc: URL.createObjectURL(file),
-			})
+			});
 		}
 	}
 
@@ -88,7 +86,7 @@ export default function BasicInfo({
 								<VisuallyHiddenInput
 									name="file"
 									onChange={(e) => {
-										handleChange(e)
+										handleChange(e);
 									}}
 									type="file"
 								/>
@@ -116,7 +114,7 @@ export default function BasicInfo({
 							}}
 							value={title}
 							onChange={(e) => {
-								updateFields({ title: e.target.value })
+								updateFields({ title: e.target.value });
 							}}
 						/>
 						<TextField
@@ -132,7 +130,7 @@ export default function BasicInfo({
 							select
 							value={type}
 							onChange={(e) => {
-								updateFields({ type: e.target.value })
+								updateFields({ type: e.target.value });
 							}}
 						>
 							{contentType.map((option) => (
@@ -151,7 +149,7 @@ export default function BasicInfo({
 							value={releaseDate || undefined}
 							disablePast
 							onChange={(date) => {
-								updateFields({ releaseDate: date })
+								updateFields({ releaseDate: date });
 							}}
 						/>
 						<TextField
@@ -167,12 +165,12 @@ export default function BasicInfo({
 							onChange={(e) => {
 								updateFields({
 									description: e.target.value,
-								})
+								});
 							}}
 						/>
 					</div>
 				</FormControl>
 			</div>
 		</>
-	)
+	);
 }

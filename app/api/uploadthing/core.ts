@@ -1,6 +1,8 @@
+import supabaseServer from "@/libs/supabase/supabaseServer";
 import { useSession } from "@/libs/supabase/useSession";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { UploadThingError } from "uploadthing/server";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 const f = createUploadthing();
 
@@ -11,13 +13,76 @@ export const ourFileRouter = {
 	mp3Uploader: f({
 		"audio/mpeg": {
 			maxFileSize: "128MB",
+			contentDisposition: "inline",
+		},
+	})
+		// Set permissions and file types for this FileRoute
+		.middleware(async ({ req }) => {
+			// This code runs on your server before upload
+			const { id } = await useSession();
+
+			// If you throw, the user will not be able to upload
+			if (!id) throw new UploadThingError("Unauthorized");
+
+			// Whatever is returned here is accessible in onUploadComplete as `metadata`
+			return { userId: id, message: "hello" };
+		})
+		.onUploadComplete(async ({ metadata, file }) => {
+			// This code RUNS ON YOUR SERVER after upload
+			console.log("Upload complete for userId:", metadata.userId);
+			const { supabase } = await useSession();
+
+			await supabase.from("temp_uploads").insert({
+				upload_id: file.key,
+				file_type: file.type,
+				url: file.url,
+			});
+			// revalidateTag("temp_uploads");
+			revalidatePath("/dashboard/add-content");
+
+			console.log("file url", file.url);
+
+			// !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
+			return { uploadedBy: metadata.userId };
+		}),
+	wavUploader: f({
+		"audio/x-wav": {
+			maxFileSize: "128MB",
 			contentDisposition: "attachment",
 		},
 	})
-		// wavUploader : f({"audio/x-wav": {maxFileSize: '128MB'}}),
-		// StemUploader : f({"application/zip": {maxFileSize: '1GB'}}),
+		.middleware(async ({ req }) => {
+			// This code runs on your server before upload
+			const { id } = await useSession();
 
-		// Set permissions and file types for this FileRoute
+			// If you throw, the user will not be able to upload
+			if (!id) throw new UploadThingError("Unauthorized");
+
+			// Whatever is returned here is accessible in onUploadComplete as `metadata`
+			return { userId: id, message: "hello" };
+		})
+		.onUploadComplete(async ({ metadata, file }) => {
+			// This code RUNS ON YOUR SERVER after upload
+			console.log("Upload complete for userId:", metadata.userId);
+			const { supabase } = await useSession();
+
+			await supabase
+				.from("temp_uploads")
+				.insert({ id: file.key })
+				.then((res) => console.log(res));
+
+			console.log("file url", file.url);
+
+			// !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
+			return { uploadedBy: metadata.userId };
+		}),
+
+	stemUploader: f({
+		"application/zip": {
+			maxFileSize: "1GB",
+			contentDisposition: "attachment",
+		},
+	})
 		.middleware(async ({ req }) => {
 			// This code runs on your server before upload
 			const { id } = await useSession();

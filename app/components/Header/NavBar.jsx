@@ -17,6 +17,7 @@ export default function NavBar({ session, orientation, isAdmin }) {
 		{ index: 1, value: "Store", href: "store" },
 		{ index: 2, value: "Client Upload", href: "sandbox2" },
 		{ index: 3, value: "Server", href: "sandbox-server" },
+		{ index: 4, value: "custom hook", href: "useUploadThing" },
 	];
 
 	if (session && isAdmin) {

@@ -1,7 +1,10 @@
 {
-    "compilerOptions": {
-      "paths": {
-        "@/*": ["./*"]
-      }
-    }
-  }
+	"compilerOptions": {
+		"paths": {
+			"@/*": ["./*"]
+		}
+	},
+	"resolve": {
+		"extensions": [".js", ".json", ".ts", ".tsx"]
+	}
+}

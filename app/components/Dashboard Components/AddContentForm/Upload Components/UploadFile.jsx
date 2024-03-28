@@ -9,6 +9,9 @@ import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import PauseIcon from "@mui/icons-material/Pause";
 import { useAudio } from "@/libs/contexts/AudioContext";
 
+import { UploadButton } from "@/app/utils/uploadthing";
+import { deleteFileFromStorage } from "@/app/actions/deleteFileFromStorage";
+
 export default function UploadFile({
 	fileProps,
 	fileNameProps,
@@ -21,6 +24,8 @@ export default function UploadFile({
 }) {
 	const [error, setError] = useState("");
 	const [file, setFile] = useState(!!fileProps);
+
+	const [fileKey, setFileKey] = useState(null);
 
 	const {
 		audioSrcId,
@@ -36,18 +41,23 @@ export default function UploadFile({
 
 	let typeExt;
 	let fileType;
+	let endPoint;
 	switch (type) {
 		case "MP3":
 			typeExt = ".mp3";
 			fileType = "audio/mpeg";
+			endPoint = "mp3Uploader";
 			break;
 		case "WAV":
 			typeExt = ".wav";
 			fileType = "audio/wav";
+			endPoint = "wavUploader";
 			break;
 		case "STEM":
 			typeExt = ".zip or .rar";
 			fileType = "application/x-zip-compressed";
+			endPoint = "stemUploader";
+
 			break;
 	}
 
@@ -79,50 +89,50 @@ export default function UploadFile({
 		}
 	}, [setAudioSrc]);
 
-	function handleChange(e) {
-		if (!e.target.files) return;
-		if (e.target.files[0].type !== fileType) {
+	function handleChange(data) {
+		if (data.type !== fileType) {
 			setError(`Please upload files of type ${typeExt}`);
 			return;
 		}
 		setError("");
-		let newFile = e.target.files[0];
-		if (newFile) {
-			if (type === "MP3") {
-				setTempMP3({
-					file: newFile,
-					audioSrc: URL.createObjectURL(newFile),
-					fileName: newFile.name,
-					fileSize: `${Math.round(newFile.size * 10e-6)}MB`,
-					title: newFile.name.split(".")[0],
-					fileSrcType: "audio/mpeg",
-					type: type,
-				});
-			} else if (type === "WAV") {
-				setTempWAV({
-					file: newFile,
-					audioSrc: URL.createObjectURL(newFile),
-					fileName: newFile.name,
-					fileSize: `${Math.round(newFile.size * 10e-6)}MB`,
-					title: newFile.name.split(".")[0],
-					fileSrcType: "audio/wav",
-					type: type,
-				});
-			}
-			updateFields({
-				file: newFile,
-				fileName: newFile.name,
-				fileSize: newFile.size,
-				title: newFile.name.split(".")[0],
-				switch: true,
-				id: crypto.randomUUID(),
-				delete: false,
+
+		setFileKey(data.key);
+
+		if (type === "MP3") {
+			setTempMP3({
+				file: data.name,
+				audioSrc: data.url,
+				fileName: data.name,
+				fileSize: `${Math.round(data.size * 10e-6)}MB`,
+				title: data.name.split(".")[0],
+				fileSrcType: "audio/mpeg",
+				type: type,
+			});
+		} else if (type === "WAV") {
+			setTempWAV({
+				file: data.name,
+				audioSrc: data.url,
+				fileName: data.name,
+				fileSize: `${Math.round(data.size * 10e-6)}MB`,
+				title: data.name.split(".")[0],
+				fileSrcType: "audio/wav",
+				type: type,
 			});
 		}
+		updateFields({
+			file: data.name,
+			fileName: data.name,
+			fileSize: data.size,
+			title: data.name.split(".")[0],
+			switch: true,
+			id: crypto.randomUUID(),
+			delete: false,
+		});
+
 		setFile(true);
 	}
 
-	const handleRemove = (type) => {
+	const handleRemove = async (type) => {
 		updateFields({
 			file: null,
 			fileName: null,
@@ -220,9 +230,7 @@ export default function UploadFile({
 								disabled={!editing}
 								variant="outlined"
 								size="small"
-								onClick={() => {
-									handleRemove(type);
-								}}
+								onClick={() => deleteFileFromStorage(fileKey)}
 								sx={{
 									marginRight: "2rem",
 									whiteSpace: "nowrap",
@@ -269,7 +277,7 @@ export default function UploadFile({
 						</Button>
 					)}
 
-					<Button
+					{/* <Button
 						component="label"
 						variant="contained"
 						disabled={!editing}
@@ -287,7 +295,19 @@ export default function UploadFile({
 								handleChange(e);
 							}}
 						/>
-					</Button>
+					</Button> */}
+
+					<UploadButton
+						endpoint={endPoint}
+						className="ut-button:bg-green-600"
+						onClientUploadComplete={(res) => {
+							if (res.length === 0) return;
+							handleChange(res[0]);
+						}}
+						onUploadError={(error) => {
+							alert(`ERROR! ${error.message}`);
+						}}
+					/>
 				</div>
 			</div>
 		</>
