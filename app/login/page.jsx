@@ -1,8 +1,8 @@
-import { useSession } from "@/libs/supabase/useSession"
-import SupabaseLoginForm from "../components/SupabaseLoginForm/SupabaseLoginForm"
+import { getSession } from "@/libs/supabase/getSession";
+import SupabaseLoginForm from "../components/SupabaseLoginForm/SupabaseLoginForm";
 
 export default async function Page() {
-	const { session } = await useSession()
+	const { session } = await getSession();
 
 	return (
 		<main className="h-[32rem] flex justify-center items-center">
@@ -11,5 +11,5 @@ export default async function Page() {
 				<SupabaseLoginForm session={session} />
 			</div>
 		</main>
-	)
+	);
 }

@@ -1,11 +1,11 @@
-import { NextResponse } from "next/server"
-import { revalidatePath } from "next/cache"
-import { useSession } from "@/libs/supabase/useSession"
+import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
+import { getSession } from "@/libs/supabase/getSession";
 
 export async function DELETE(req) {
-	const { supabase } = await useSession()
+	const { supabase } = await getSession();
 
-	const product_id = await req.json()
+	const product_id = await req.json();
 
 	if (product_id) {
 		// Delete data from DB
@@ -13,43 +13,43 @@ export async function DELETE(req) {
 			const { error } = await supabase
 				.from("products")
 				.delete()
-				.eq("product_id", product_id)
+				.eq("product_id", product_id);
 
 			if (error) {
-				throw error
+				throw error;
 			}
 		} catch (error) {
-			console.log(error)
+			console.log(error);
 		}
 
 		// Delete files from storage
 		try {
 			const { data: productFiles } = await supabase.storage
 				.from("all_products")
-				.list(product_id)
+				.list(product_id);
 
-			if (!productFiles) return
+			if (!productFiles) return;
 
-			const filesToRemove = productFiles.map((file) => file.name)
+			const filesToRemove = productFiles.map((file) => file.name);
 
 			if (filesToRemove) {
 				for (const file in filesToRemove) {
-					let fileName
-					const folder = `${product_id}/${filesToRemove[file]}`
+					let fileName;
+					const folder = `${product_id}/${filesToRemove[file]}`;
 
 					const { data } = await supabase.storage
 						.from("all_products")
-						.list(folder)
+						.list(folder);
 
-					fileName = data[0].name
+					fileName = data[0].name;
 
 					await supabase.storage
 						.from("all_products")
-						.remove(`${folder}/${fileName}`)
+						.remove(`${folder}/${fileName}`);
 				}
 			}
 		} catch (error) {
-			console.log(error)
+			console.log(error);
 		}
 	}
 
@@ -58,5 +58,5 @@ export async function DELETE(req) {
 	return NextResponse.json(
 		{ message: "Product deleted successfully" },
 		{ status: 200 }
-	)
+	);
 }

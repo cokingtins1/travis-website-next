@@ -1,6 +1,6 @@
 "use server";
 
-import { useSession } from "@/libs/supabase/useSession";
+import { getSession } from "@/libs/supabase/getSession";
 import { utapi } from "../server/uploadthing";
 
 type FileProps = {
@@ -15,7 +15,7 @@ export async function tempFileIntoSupabase(
 	file: FileProps,
 	operation: Operation
 ) {
-	const { supabase } = await useSession();
+	const { supabase } = await getSession();
 
 	if (operation === "insert") {
 		await supabase.from("temp_uploads").insert({

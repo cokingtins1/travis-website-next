@@ -2,13 +2,13 @@ import { returnArray } from "@/libs/utils";
 import { NextResponse } from "next/server";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { getFileSources } from "@/libs/supabase/supabaseQuery";
-import { useSession } from "@/libs/supabase/useSession";
+import { getSession } from "@/libs/supabase/getSession";
 
 export async function PUT(req) {
 	const formData = await req.formData();
 	const product_id = await formData.get("product_id");
 
-	const { supabase } = await useSession();
+	const { supabase } = await getSession();
 
 	const {
 		audioFile_MP3: currentMP3,

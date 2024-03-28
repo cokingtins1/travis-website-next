@@ -1,32 +1,32 @@
-import { useSession } from "@/libs/supabase/useSession"
-import { notFound, redirect } from "next/navigation"
+import { getSession } from "@/libs/supabase/getSession";
+import { notFound, redirect } from "next/navigation";
 import {
 	getFileSources,
 	getPricingById,
 	getPricingIdById,
-} from "@/libs/supabase/supabaseQuery"
-import InfoEdit from "@/app/components/Dashboard Components/Edit Content/InfoEdit"
+} from "@/libs/supabase/supabaseQuery";
+import InfoEdit from "@/app/components/Dashboard Components/Edit Content/InfoEdit";
 
 export default async function Page({ params: { id } }) {
-	const { session, supabase } = await useSession()
+	const { session, supabase } = await getSession();
 
 	if (!session) {
-		redirect("/login")
+		redirect("/login");
 	}
 
-	const productFilePaths = await getPricingIdById(id)
+	const productFilePaths = await getPricingIdById(id);
 
-	const pricing = await getPricingById(id)
+	const pricing = await getPricingById(id);
 
 	if (!productFilePaths) {
-		notFound()
+		notFound();
 	}
 
 	const { data: product } = await supabase
 		.from("products")
 		.select("*")
 		.match({ product_id: id })
-		.single()
+		.single();
 
 	const {
 		audioSrc_MP3,
@@ -37,15 +37,15 @@ export default async function Page({ params: { id } }) {
 		audioFile_STEM: STEM_file,
 		imageFile,
 		imageSrc,
-	} = await getFileSources(product)
+	} = await getFileSources(product);
 
-	const productFiles = { MP3_file, WAV_file, STEM_file, imageFile, imageSrc }
+	const productFiles = { MP3_file, WAV_file, STEM_file, imageFile, imageSrc };
 
 	const audioSources = {
 		MP3: audioSrc_MP3,
 		WAV: audioSrc_WAV,
 		STEM: audioSrc_STEM,
-	}
+	};
 
 	return (
 		<>
@@ -58,5 +58,5 @@ export default async function Page({ params: { id } }) {
 				/>
 			</main>
 		</>
-	)
+	);
 }

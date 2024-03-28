@@ -2,12 +2,12 @@ import { NextResponse } from "next/server";
 import dayjs from "dayjs";
 import { returnArray } from "@/libs/utils";
 import { revalidatePath } from "next/cache";
-import { useSession } from "@/libs/supabase/useSession";
+import { getSession } from "@/libs/supabase/getSession";
 import { getFileSources, getProductById } from "@/libs/supabase/supabaseQuery";
 import { revalidateTag } from "next/cache";
 
 export async function POST(req) {
-	const { supabase } = await useSession();
+	const { supabase } = await getSession();
 
 	const formData = await req.formData();
 

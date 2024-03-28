@@ -1,7 +1,7 @@
 "use server";
 
 import supabaseClient from "@/libs/supabase/config/supabaseClient";
-import { useSession } from "./useSession";
+import { getSession } from "./getSession";
 import { likedByUser } from "./supabaseQuery";
 import { unstable_cache } from "next/cache";
 
@@ -13,7 +13,7 @@ async function getAllProductData() {
 export const constructData = unstable_cache(
 	async () => {
 		const data = await getAllProductData();
-		const { session } = await useSession();
+		const { session } = await getSession();
 
 		const userId = session?.user.id;
 

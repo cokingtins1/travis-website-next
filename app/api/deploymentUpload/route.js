@@ -1,10 +1,10 @@
-import { useSession } from "@/libs/supabase/useSession";
+import { getSession } from "@/libs/supabase/getSession";
 import { handleUpload } from "@vercel/blob/client";
 import { NextResponse } from "next/server";
 
 export async function POST(request) {
 	const body = await request.json();
-	const { id: userId } = await useSession();
+	const { id: userId } = await getSession();
 
 	try {
 		const jsonResponse = await handleUpload({

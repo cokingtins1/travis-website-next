@@ -1,7 +1,7 @@
 "use server";
 
 import supabaseClient from "@/libs/supabase/config/supabaseClient";
-import { useSession } from "./useSession";
+import { getSession } from "./getSession";
 import { unstable_cache } from "next/cache";
 
 // Order getting functions:
@@ -244,7 +244,7 @@ export async function likedByUser() {
 }
 
 export async function getUserId() {
-	const { session } = await useSession();
+	const { session } = await getSession();
 
 	if (session) {
 		const userId = session.user.id;

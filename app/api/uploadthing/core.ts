@@ -1,4 +1,4 @@
-import { useSession } from "@/libs/supabase/useSession";
+import { getSession } from "@/libs/supabase/getSession";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { UploadThingError } from "uploadthing/server";
 import { tempFileIntoSupabase } from "@/app/actions/tempFileIntoSupabase";
@@ -13,7 +13,7 @@ export const ourFileRouter = {
 		},
 	})
 		.middleware(async () => {
-			const { id } = await useSession();
+			const { id } = await getSession();
 
 			if (!id) throw new UploadThingError("Unauthorized");
 
@@ -34,7 +34,7 @@ export const ourFileRouter = {
 		},
 	})
 		.middleware(async () => {
-			const { id } = await useSession();
+			const { id } = await getSession();
 
 			if (!id) throw new UploadThingError("Unauthorized");
 
@@ -56,7 +56,7 @@ export const ourFileRouter = {
 		},
 	})
 		.middleware(async () => {
-			const { id } = await useSession();
+			const { id } = await getSession();
 
 			if (!id) throw new UploadThingError("Unauthorized");
 

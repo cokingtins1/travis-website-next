@@ -1,29 +1,29 @@
-import CommentSection from "@/app/components/Store Components/Comments Component/CommentSection"
-import ProductMedia from "@/app/components/Store Components/Media Components/ProductMedia"
+import CommentSection from "@/app/components/Store Components/Comments Component/CommentSection";
+import ProductMedia from "@/app/components/Store Components/Media Components/ProductMedia";
 
-import ProductMeta from "@/app/components/Store Components/ProductMeta/ProductMeta"
+import ProductMeta from "@/app/components/Store Components/ProductMeta/ProductMeta";
 import {
 	getFileSources,
 	getComments,
 	getPricingById,
 	getProductById,
 	getReplys,
-} from "@/libs/supabase/supabaseQuery"
-import { notFound } from "next/navigation"
-import { Suspense } from "react"
-import dynamic from "next/dynamic"
-import AudioPlayStore from "@/app/components/Audio/AudioPlayStore"
-import { useSession } from "@/libs/supabase/useSession"
+} from "@/libs/supabase/supabaseQuery";
+import { notFound } from "next/navigation";
+import { Suspense } from "react";
+import dynamic from "next/dynamic";
+import AudioPlayStore from "@/app/components/Audio/AudioPlayStore";
+import { getSession } from "@/libs/supabase/getSession";
 
 export default async function Page({ params: { id } }) {
-	const product = await getProductById(id)
-	const imageSrc = product.image_name
-	const { filteredPricing } = await getPricingById(id)
-	const storeSrc = await getFileSources(id)
-	const storeSrcType = await getFileSources(id)
-	const { session } = await useSession()
-	const comments = await getComments(id)
-	const replies = await getReplys(id)
+	const product = await getProductById(id);
+	const imageSrc = product.image_name;
+	const { filteredPricing } = await getPricingById(id);
+	const storeSrc = await getFileSources(id);
+	const storeSrcType = await getFileSources(id);
+	const { session } = await getSession();
+	const comments = await getComments(id);
+	const replies = await getReplys(id);
 
 	const DynamicPricing = dynamic(
 		() =>
@@ -33,17 +33,17 @@ export default async function Page({ params: { id } }) {
 		{
 			ssr: false,
 		}
-	)
+	);
 
 	if (!product) {
-		notFound()
+		notFound();
 	}
 
 	const media = {
 		mainLg: "lg:grid-cols-12",
 		metaLg: "lg:col-span-3 px-2",
 		pricingLg: "lg:col-span-9 px-2",
-	}
+	};
 
 	return (
 		<>
@@ -95,5 +95,5 @@ export default async function Page({ params: { id } }) {
 				</section>
 			</main>
 		</>
-	)
+	);
 }
