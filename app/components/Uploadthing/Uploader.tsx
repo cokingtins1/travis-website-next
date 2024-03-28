@@ -5,7 +5,7 @@ export default function Uploader() {
 	return (
 		<main className="flex min-h-screen flex-col items-center justify-between p-24">
 			<UploadButton
-				endpoint="imageUploader"
+				endpoint="mp3Uploader"
 				onClientUploadComplete={(res) => {
 					// Do something with the response
 					console.log("Files: ", res);

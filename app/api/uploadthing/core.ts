@@ -10,7 +10,12 @@ const auth = (req: Request) => ({ id: "fakeId" }); // Fake auth function
 export const ourFileRouter = {
 	// Define as many FileRoutes as you like, each with a unique routeSlug
 	// imageUploader: f({ image: { maxFileSize: "4MB" } })
-	mp3Uploader: f({ "audio/mpeg": { maxFileSize: "128MB", contentDisposition: "attachment" } })
+	mp3Uploader: f({
+		"audio/mpeg": {
+			maxFileSize: "128MB",
+			contentDisposition: "attachment",
+		},
+	})
 		// wavUploader : f({"audio/x-wav": {maxFileSize: '128MB'}}),
 		// StemUploader : f({"application/zip": {maxFileSize: '1GB'}}),
 
