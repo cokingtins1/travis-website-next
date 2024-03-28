@@ -1,48 +1,30 @@
-import supabaseServer from "@/libs/supabase/supabaseServer";
 import { useSession } from "@/libs/supabase/useSession";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { UploadThingError } from "uploadthing/server";
-import { revalidatePath, revalidateTag } from "next/cache";
+import { tempFileIntoSupabase } from "@/app/actions/tempFileIntoSupabase";
 
 const f = createUploadthing();
 
-// FileRouter for your app, can contain multiple FileRoutes
 export const ourFileRouter = {
-	// Define as many FileRoutes as you like, each with a unique routeSlug
-	// imageUploader: f({ image: { maxFileSize: "4MB" } })
 	mp3Uploader: f({
 		"audio/mpeg": {
 			maxFileSize: "128MB",
 			contentDisposition: "inline",
 		},
 	})
-		// Set permissions and file types for this FileRoute
-		.middleware(async ({ req }) => {
-			// This code runs on your server before upload
+		.middleware(async () => {
 			const { id } = await useSession();
 
-			// If you throw, the user will not be able to upload
 			if (!id) throw new UploadThingError("Unauthorized");
 
-			// Whatever is returned here is accessible in onUploadComplete as `metadata`
-			return { userId: id, message: "hello" };
+			return { userId: id };
 		})
 		.onUploadComplete(async ({ metadata, file }) => {
-			// This code RUNS ON YOUR SERVER after upload
 			console.log("Upload complete for userId:", metadata.userId);
-			const { supabase } = await useSession();
 
-			await supabase.from("temp_uploads").insert({
-				upload_id: file.key,
-				file_type: file.type,
-				url: file.url,
-			});
-			// revalidateTag("temp_uploads");
-			revalidatePath("/dashboard/add-content");
+			await tempFileIntoSupabase(file, "insert");
 
-			console.log("file url", file.url);
-
-			// !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
+			// return of below can be sent to client:
 			return { uploadedBy: metadata.userId };
 		}),
 	wavUploader: f({
@@ -51,29 +33,19 @@ export const ourFileRouter = {
 			contentDisposition: "attachment",
 		},
 	})
-		.middleware(async ({ req }) => {
-			// This code runs on your server before upload
+		.middleware(async () => {
 			const { id } = await useSession();
 
-			// If you throw, the user will not be able to upload
 			if (!id) throw new UploadThingError("Unauthorized");
 
-			// Whatever is returned here is accessible in onUploadComplete as `metadata`
-			return { userId: id, message: "hello" };
+			return { userId: id };
 		})
 		.onUploadComplete(async ({ metadata, file }) => {
-			// This code RUNS ON YOUR SERVER after upload
 			console.log("Upload complete for userId:", metadata.userId);
-			const { supabase } = await useSession();
 
-			await supabase
-				.from("temp_uploads")
-				.insert({ id: file.key })
-				.then((res) => console.log(res));
+			await tempFileIntoSupabase(file, "insert");
 
-			console.log("file url", file.url);
-
-			// !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
+			// return of below can be sent to client:
 			return { uploadedBy: metadata.userId };
 		}),
 
@@ -83,23 +55,19 @@ export const ourFileRouter = {
 			contentDisposition: "attachment",
 		},
 	})
-		.middleware(async ({ req }) => {
-			// This code runs on your server before upload
+		.middleware(async () => {
 			const { id } = await useSession();
 
-			// If you throw, the user will not be able to upload
 			if (!id) throw new UploadThingError("Unauthorized");
 
-			// Whatever is returned here is accessible in onUploadComplete as `metadata`
-			return { userId: id, message: "hello" };
+			return { userId: id };
 		})
 		.onUploadComplete(async ({ metadata, file }) => {
-			// This code RUNS ON YOUR SERVER after upload
 			console.log("Upload complete for userId:", metadata.userId);
 
-			console.log("file url", file.url);
+			await tempFileIntoSupabase(file, "insert");
 
-			// !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
+			// return of below can be sent to client:
 			return { uploadedBy: metadata.userId };
 		}),
 } satisfies FileRouter;

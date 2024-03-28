@@ -24,17 +24,20 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 const INITIAL_DATA = {
-	MP3_file: null,
-	MP3_fileName: null,
-	MP3_fileSize: null,
+	MP3_storage_url: null,
+	MP3_storage_key: null,
+	MP3_storage_name: null,
+	MP3_storage_size: null,
 
-	WAV_file: null,
-	WAV_fileName: null,
-	WAV_fileSize: null,
+	WAV_storage_url: null,
+	WAV_storage_key: null,
+	WAV_storage_name: null,
+	WAV_storage_size: null,
 
-	STEM_file: null,
-	STEM_fileName: null,
-	STEM_fileSize: null,
+	STEM_storage_url: null,
+	STEM_storage_key: null,
+	STEM_storage_name: null,
+	STEM_storage_size: null,
 
 	productImage: beatKitImage,
 	productImageSrc: beatKitImage,
@@ -151,13 +154,6 @@ export default function AddContentForm({ filesFromStorage, tempUploads }) {
 		<MetaData key="metaData" {...data} updateFields={updateFields} />,
 		<Pricing key="pricing" {...data} updateFields={updateFields} />,
 	]);
-
-	async function createBlob(file) {
-		const newBlob = await upload(file.name, file, {
-			access: "public",
-			handleUploadUrl: "/api/deploymentUpload",
-		});
-	}
 
 	async function handleSubmit(e) {
 		e.preventDefault();

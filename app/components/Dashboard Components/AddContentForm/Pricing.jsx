@@ -1,61 +1,60 @@
-import PricingSwitch from "./Upload Components/PricingSwitch"
-import Switch from "@mui/material/Switch"
-import { useState } from "react"
+import PricingSwitch from "./Upload Components/PricingSwitch";
+import Switch from "@mui/material/Switch";
+import { useState } from "react";
 
 export default function Pricing({
-	MP3_file,
-	WAV_file,
-	STEM_file,
+	MP3_storage_url,
+	WAV_storage_url,
+	STEM_storage_url,
 	updateFields,
 	basicPrice,
 	premiumPrice,
 	exclusivePrice,
 	free,
 }) {
-	const [freeChecked, setFreeChecked] = useState(free)
+	const [freeChecked, setFreeChecked] = useState(free);
 	return (
 		<>
-
 			<div className="mt-4 flex flex-col gap-2">
 				<p className="m-2 text-text-secondary">Regular</p>
 				<PricingSwitch
 					nameSwitch="basic"
 					namePrice="basicPrice"
-					defaultChecked={MP3_file}
+					defaultChecked={MP3_storage_url}
 					contractTitle={"Basic License"}
 					contractSubtext={"MP3"}
 					value={basicPrice}
-					type={'MP3'}
-					file={MP3_file}
+					type={"MP3"}
+					file={MP3_storage_url}
 					onCheckedChange={(newChecked) => {
 						updateFields({
 							basic: newChecked,
-						})
+						});
 					}}
 					onChange={(newPrice) => {
 						updateFields({
 							basicPrice: newPrice,
-						})
+						});
 					}}
 				/>
 				<PricingSwitch
 					nameSwitch="premium"
 					namePrice="premiumPrice"
-					defaultChecked={WAV_file}
+					defaultChecked={WAV_storage_url}
 					contractTitle={"Premium License"}
 					contractSubtext={"WAV, MP3"}
 					value={premiumPrice}
-					type={'WAV'}
-					file={WAV_file}
+					type={"WAV"}
+					file={WAV_storage_url}
 					onCheckedChange={(newChecked) => {
 						updateFields({
 							premium: newChecked,
-						})
+						});
 					}}
 					onChange={(newPrice) => {
 						updateFields({
 							premiumPrice: newPrice,
-						})
+						});
 					}}
 				/>
 			</div>
@@ -64,21 +63,21 @@ export default function Pricing({
 				<PricingSwitch
 					nameSwitch="exclusive"
 					namePrice="exclusivePrice"
-					defaultChecked={STEM_file}
+					defaultChecked={STEM_storage_url}
 					contractTitle={"Exclusive License"}
 					contractSubtext={"WAV, MP3, STEMS"}
-					type={'STEM'}
+					type={"STEM"}
 					value={exclusivePrice}
-					file={STEM_file}
+					file={STEM_storage_url}
 					onCheckedChange={(newChecked) => {
 						updateFields({
 							exclusive: newChecked,
-						})
+						});
 					}}
 					onChange={(newPrice) => {
 						updateFields({
 							exclusivePrice: newPrice,
-						})
+						});
 					}}
 				/>
 			</div>
@@ -91,10 +90,10 @@ export default function Pricing({
 							checked={freeChecked}
 							value={freeChecked}
 							onChange={() => {
-								setFreeChecked(!freeChecked)
+								setFreeChecked(!freeChecked);
 								updateFields({
 									free: !freeChecked,
-								})
+								});
 							}}
 						/>
 					</span>
@@ -107,5 +106,5 @@ export default function Pricing({
 				</div>
 			</div>
 		</>
-	)
+	);
 }

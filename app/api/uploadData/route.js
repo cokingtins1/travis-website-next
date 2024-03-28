@@ -115,46 +115,57 @@ export async function POST(req) {
 		liked_by_email: [],
 	});
 
-	for (const e of formData) {
-		const value = e[1];
+	// for (const e of formData) {
+	// 	const value = e[1];
 
-		if (value instanceof File) {
-			// catch STEM files for now. Will upgrade to pro soon.
+	// 	if (value instanceof File) {
+	// 		// catch STEM files for now. Will upgrade to pro soon.
 
-			if (value.type.split("/")[0] == "image") {
-				await uploadFile(image_url, value);
-			} else if (value.name.endsWith(".mp3")) {
-				await uploadFile(file_url_mp3, value);
-			} else if (value.name.endsWith(".wav")) {
-				await uploadFile(file_url_wav, value);
-			} else if (value.name.endsWith(".zip")) {
-				await uploadFile(file_url_zip, value);
-			}
-		}
-	}
+	// 		if (value.type.split("/")[0] == "image") {
+	// 			await uploadFile(image_url, value);
+	// 		} else if (value.name.endsWith(".mp3")) {
+	// 			await uploadFile(file_url_mp3, value);
+	// 		} else if (value.name.endsWith(".wav")) {
+	// 			await uploadFile(file_url_wav, value);
+	// 		} else if (value.name.endsWith(".zip")) {
+	// 			await uploadFile(file_url_zip, value);
+	// 		}
+	// 	}
+	// }
 
 	const { audioSrc_MP3, audioSrc_WAV, audioSrc_STEM, imageSrc } =
 		await getFileSources(product_id);
 
 	await supabase.from("product_files").insert({
+		// product_id: product_id,
+		// pricing_id: pricing_id_mp3,
+		// file_url: audioSrc_MP3,
 		product_id: product_id,
 		pricing_id: pricing_id_mp3,
 		file_extension: ".mp3",
-		file_url: audioSrc_MP3,
+		file_url: formData.get("MP3_storage_url"),
+		storage_key: formData.get("MP3_storage_key"),
+		storage_name: formData.get("MP3_storage_name"),
 	});
 
 	await supabase.from("product_files").insert({
 		product_id: product_id,
 		pricing_id: pricing_id_wav,
 		file_extension: ".wav",
-		file_url: audioSrc_WAV,
+		// file_url: audioSrc_WAV,
+		file_url: formData.get("WAV_storage_url"),
+		storage_key: formData.get("WAV_storage_key"),
+		storage_name: formData.get("WAV_storage_name"),
 	});
 
 	await supabase.from("product_files").insert({
 		product_id: product_id,
 		pricing_id: pricing_id_zip,
 		file_extension: ".zip",
-		file_url: audioSrc_STEM,
+		// file_url: audioSrc_STEM,
+		file_url: formData.get("STEM_storage_url"),
+		storage_key: formData.get("STEM_storage_key"),
+		storage_name: formData.get("STEM_storage_name"),
 	});
 
 	await supabase

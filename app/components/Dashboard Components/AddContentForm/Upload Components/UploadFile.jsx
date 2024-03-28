@@ -10,7 +10,7 @@ import PauseIcon from "@mui/icons-material/Pause";
 import { useAudio } from "@/libs/contexts/AudioContext";
 
 import { UploadButton } from "@/app/utils/uploadthing";
-import { deleteFileFromStorage } from "@/app/actions/deleteFileFromStorage";
+import { tempFileIntoSupabase } from "@/app/actions/tempFileIntoSupabase";
 
 export default function UploadFile({
 	fileProps,
@@ -24,8 +24,6 @@ export default function UploadFile({
 }) {
 	const [error, setError] = useState("");
 	const [file, setFile] = useState(!!fileProps);
-
-	const [fileKey, setFileKey] = useState(null);
 
 	const {
 		audioSrcId,
@@ -68,20 +66,16 @@ export default function UploadFile({
 
 		if (type === "MP3") {
 			setTempMP3({
-				file: fileProps,
 				audioSrc: audioSource,
 				fileName: fileNameProps,
-				fileSize: fileSizeProps,
 				title: fileNameProps,
 				fileSrcType: "audio/mpeg",
 				type: "MP3",
 			});
 		} else if (type === "WAV") {
 			setTempWAV({
-				file: fileProps,
 				audioSrc: audioSource,
 				fileName: fileNameProps,
-				fileSize: fileSizeProps,
 				title: fileNameProps,
 				fileSrcType: "audio/wav",
 				type: "WAV",
@@ -95,8 +89,6 @@ export default function UploadFile({
 			return;
 		}
 		setError("");
-
-		setFileKey(data.key);
 
 		if (type === "MP3") {
 			setTempMP3({
@@ -120,8 +112,9 @@ export default function UploadFile({
 			});
 		}
 		updateFields({
-			file: data.name,
 			fileName: data.name,
+			fileUrl: data.url,
+			fileKey: data.key,
 			fileSize: data.size,
 			title: data.name.split(".")[0],
 			switch: true,
@@ -132,10 +125,11 @@ export default function UploadFile({
 		setFile(true);
 	}
 
-	const handleRemove = async (type) => {
+	const handleRemove = (type) => {
 		updateFields({
-			file: null,
 			fileName: null,
+			fileUrl: null,
+			fileKey: null,
 			fileSize: null,
 			title: null,
 			switch: false,
@@ -230,7 +224,11 @@ export default function UploadFile({
 								disabled={!editing}
 								variant="outlined"
 								size="small"
-								onClick={() => deleteFileFromStorage(fileKey)}
+								onClick={() => {
+									const fileObj = { key: fileProps };
+									tempFileIntoSupabase(fileObj, "delete");
+									handleRemove(type);
+								}}
 								sx={{
 									marginRight: "2rem",
 									whiteSpace: "nowrap",
