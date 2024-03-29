@@ -29,20 +29,20 @@ export default function InfoEdit({
 	audioSources,
 }) {
 	const INITIAL_DATA = {
-		MP3_file: productFiles.MP3_file || null,
-		MP3_fileName: productFiles.MP3_file?.name || null,
-		MP3_fileSize: productFiles.MP3_file?.metadata?.size || null,
-		MP3_update: !!productFiles.MP3_file,
+		MP3_file: productFiles.basic.file_url || null,
+		MP3_fileName: productFiles.basic.storage_name || null,
+		MP3_fileSize: productFiles.basic.storage_size || null,
+		MP3_update: !!productFiles.basic.file_url,
 
-		WAV_file: productFiles.WAV_file || null,
-		WAV_fileName: productFiles.WAV_file?.name || null,
-		WAV_fileSize: productFiles.WAV_file?.metadata?.size || null,
-		WAV_update: !!productFiles.WAV_file,
+		WAV_file: productFiles.premium.file_url || null,
+		WAV_fileName: productFiles.premium.storage_name || null,
+		WAV_fileSize: productFiles.premium.storage_size || null,
+		WAV_update: !!productFiles.premium.file_url,
 
-		STEM_file: productFiles.STEM_file || null,
-		STEM_fileName: productFiles.STEM_file?.name || null,
-		STEM_fileSize: productFiles.STEM_file?.metadata?.size || null,
-		STEM_update: !!productFiles.STEM_file,
+		STEM_file: productFiles.exclusive.file_url || null,
+		STEM_fileName: productFiles.exclusive.storage_name || null,
+		STEM_fileSize: productFiles.exclusive.storage_size || null,
+		STEM_update: !!productFiles.exclusive.file_url,
 
 		productImage: productFiles.imageFile,
 		productImageSrc: productFiles.imageSrc,

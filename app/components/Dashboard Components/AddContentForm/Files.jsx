@@ -1,30 +1,14 @@
 import UploadFile from "./Upload Components/UploadFile";
 
 export default function Files({
-	// MP3_file,
-	// MP3_fileName,
-	// MP3_fileSize,
-
-	MP3_storage_url,
 	MP3_storage_key,
 	MP3_storage_name,
 	MP3_storage_size,
 
-	// WAV_file,
-	// WAV_fileName,
-	// WAV_fileSize,
-
-	WAV_storage_url,
 	WAV_storage_key,
 	WAV_storage_name,
 	WAV_storage_size,
 
-	// STEM_file,
-	// STEM_fileName,
-	// STEM_fileSize,
-	// updateFields,
-
-	STEM_storage_url,
 	STEM_storage_key,
 	STEM_storage_name,
 	STEM_storage_size,
@@ -69,8 +53,8 @@ export default function Files({
 							title: fields.fileName
 								? fields.fileName.split(".")[0]
 								: null,
-							basic: fields.switch,
-							basicPriceId: fields.id,
+							premium: fields.switch,
+							premiumPriceId: fields.id,
 						})
 					}
 				/>
@@ -88,8 +72,8 @@ export default function Files({
 							title: fields.fileName
 								? fields.fileName.split(".")[0]
 								: null,
-							basic: fields.switch,
-							basicPriceId: fields.id,
+							exclusive: fields.switch,
+							exclusivePriceId: fields.id,
 						})
 					}
 				/>

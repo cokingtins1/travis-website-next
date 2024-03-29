@@ -1,19 +1,19 @@
-"use client"
+"use client";
 
-import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled"
-import PauseCircleFilledIcon from "@mui/icons-material/PauseCircleFilled"
-import SkipNextIcon from "@mui/icons-material/SkipNext"
-import SkipPreviousIcon from "@mui/icons-material/SkipPrevious"
-import IconButton from "@mui/material/IconButton"
-import VolumeDown from "@mui/icons-material/VolumeDown"
-import VolumeOffIcon from "@mui/icons-material/VolumeOff"
-import Slider from "@mui/material/Slider"
-import { useEffect, useRef, useState } from "react"
-import AudioProgressBar from "./AudioProgressBar"
-import Tooltip from "@mui/material/Tooltip"
-import CloseIcon from "@mui/icons-material/Close"
-import { useAudio } from "@/libs/contexts/AudioContext"
-import AudioProductSection from "./AudioProductSection"
+import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled";
+import PauseCircleFilledIcon from "@mui/icons-material/PauseCircleFilled";
+import SkipNextIcon from "@mui/icons-material/SkipNext";
+import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
+import IconButton from "@mui/material/IconButton";
+import VolumeDown from "@mui/icons-material/VolumeDown";
+import VolumeOffIcon from "@mui/icons-material/VolumeOff";
+import Slider from "@mui/material/Slider";
+import { useEffect, useRef, useState } from "react";
+import AudioProgressBar from "./AudioProgressBar";
+import Tooltip from "@mui/material/Tooltip";
+import CloseIcon from "@mui/icons-material/Close";
+import { useAudio } from "@/libs/contexts/AudioContext";
+import AudioProductSection from "./AudioProductSection";
 
 export default function AudioDrawer({
 	audioSrc, //required
@@ -27,11 +27,11 @@ export default function AudioDrawer({
 	imageSrc = null,
 	free = false,
 }) {
-	const audioRef = useRef(null)
-	const [isReady, setIsReady] = useState(false)
-	const [duration, setDuration] = useState(0)
-	const [currentProgress, setCurrentProgress] = useState(0)
-	const [buffered, setBuffered] = useState(0)
+	const audioRef = useRef(null);
+	const [isReady, setIsReady] = useState(false);
+	const [duration, setDuration] = useState(0);
+	const [currentProgress, setCurrentProgress] = useState(0);
+	const [buffered, setBuffered] = useState(0);
 
 	const {
 		audioSrcId,
@@ -48,94 +48,94 @@ export default function AudioDrawer({
 		setListLength,
 		currentIndex,
 		setCurrentIndex,
-	} = useAudio()
+	} = useAudio();
 
 	useEffect(() => {
 		if (audioRef.current) {
-			setDuration(audioRef.current.duration)
+			setDuration(audioRef.current.duration);
 
-			if (!audioList) return
+			if (!audioList) return;
 
-			const currentSong = audioList.find((item) => item.src === audioSrc)
-			const currentIndex = currentSong?.index
-			setCurrentIndex(currentIndex)
-			setListLength(Object.entries(audioList).length)
+			const currentSong = audioList.find((item) => item.src === audioSrc);
+			const currentIndex = currentSong?.index;
+			setCurrentIndex(currentIndex);
+			setListLength(Object.entries(audioList).length);
 		}
-	}, [])
+	}, []);
 
 	useEffect(() => {
-		getRef(audioRef)
+		getRef(audioRef);
 
-		if (!playOnMount) return
-		audioRef.current?.pause()
+		if (!playOnMount) return;
+		audioRef.current?.pause();
 
 		const timeOut = setTimeout(() => {
-			audioRef.current?.play()
-		}, 500)
+			audioRef.current?.play();
+		}, 500);
 
 		return () => {
-			clearTimeout(timeOut)
-		}
-	}, [audioSrcId])
+			clearTimeout(timeOut);
+		};
+	}, [audioSrcId]);
 
 	const handleNextPrev = (step) => {
 		setAudioSrcId(() => {
 			if (currentIndex === listLength && step === 1) {
-				return audioList.find((item) => item.index === 1).src
+				return audioList.find((item) => item.index === 1).src;
 			} else if (currentIndex === listLength && step === -1) {
 				return audioList.find(
 					(item) => item.index === currentIndex + step
-				).src
+				).src;
 			} else if (currentIndex === 1 && step === -1) {
-				return audioList.find((item) => item.index === listLength).src
+				return audioList.find((item) => item.index === listLength).src;
 			} else {
 				return audioList.find(
 					(item) => item.index === currentIndex + step
-				).src
+				).src;
 			}
-		})
+		});
 
 		setCurrentIndex((prev) => {
 			if (currentIndex === listLength && step === 1) {
-				return 1
+				return 1;
 			} else if (currentIndex === listLength && step === -1) {
-				prev + step
+				prev + step;
 			} else if (currentIndex === 1 && step === -1) {
-				return listLength
+				return listLength;
 			} else {
-				return prev + step
+				return prev + step;
 			}
-		})
-	}
+		});
+	};
 
 	const closePlayer = () => {
-		togglePlayPause(audioSrc)
-		setDrawerOpen(false)
-		setPlaying(false)
-		setAudioSrcId(null)
-		getRef(null)
-	}
+		togglePlayPause(audioSrc);
+		setDrawerOpen(false);
+		setPlaying(false);
+		setAudioSrcId(null);
+		getRef(null);
+	};
 
 	const handleVolumeChange = (e) => {
-		if (!audioRef.current) return
-		const volumeValue = e.target.value
-		audioRef.current.volume = volumeValue
-		setVolume(volumeValue)
-	}
+		if (!audioRef.current) return;
+		const volumeValue = e.target.value;
+		audioRef.current.volume = volumeValue;
+		setVolume(volumeValue);
+	};
 
 	const handleMuteUnmute = () => {
-		if (!audioRef.current) return
+		if (!audioRef.current) return;
 
 		if (audioRef.current.volume !== 0) {
-			audioRef.current.volume = 0
+			audioRef.current.volume = 0;
 		} else {
-			audioRef.current.volume = 0.3
+			audioRef.current.volume = 0.3;
 		}
-	}
+	};
 
 	const handleBufferProgress = (e) => {
-		const audio = e.currentTarget
-		const dur = audio.duration
+		const audio = e.currentTarget;
+		const dur = audio.duration;
 		if (dur > 0) {
 			for (let i = 0; i < audio.buffered.length; i++) {
 				if (
@@ -144,16 +144,16 @@ export default function AudioDrawer({
 				) {
 					const bufferedLength = audio.buffered.end(
 						audio.buffered.length - 1 - i
-					)
-					setBuffered(bufferedLength)
-					break
+					);
+					setBuffered(bufferedLength);
+					break;
 				}
 			}
 		}
-	}
+	};
 
 	function volumeLabelFormat(value) {
-		return (value * 100).toFixed()
+		return (value * 100).toFixed();
 	}
 
 	return (
@@ -175,12 +175,12 @@ export default function AudioDrawer({
 					onPlaying={() => setPlaying(true)}
 					onPause={() => setPlaying(false)}
 					onCanPlay={(e) => {
-						e.currentTarget.volume = volume
-						setIsReady(true)
+						e.currentTarget.volume = volume;
+						setIsReady(true);
 					}}
 					onTimeUpdate={(e) => {
-						setCurrentProgress(e.currentTarget.currentTime)
-						handleBufferProgress(e)
+						setCurrentProgress(e.currentTarget.currentTime);
+						handleBufferProgress(e);
 					}}
 					onProgress={handleBufferProgress}
 					onVolumeChange={(e) => setVolume(e.currentTarget.volume)}
@@ -239,10 +239,10 @@ export default function AudioDrawer({
 									currentProgress={currentProgress}
 									buffered={buffered}
 									onChange={(e, value) => {
-										if (!audioRef.current) return
-										audioRef.current.currentTime = value
+										if (!audioRef.current) return;
+										audioRef.current.currentTime = value;
 
-										setCurrentProgress(value)
+										setCurrentProgress(value);
 									}}
 								/>
 							)}
@@ -300,12 +300,12 @@ export default function AudioDrawer({
 							value={volume}
 							sx={{ color: "#ffeec2" }}
 							onChange={(e) => {
-								handleVolumeChange(e)
+								handleVolumeChange(e);
 							}}
 						/>
 					</div>
 				</div>
 			</div>
 		</>
-	)
+	);
 }

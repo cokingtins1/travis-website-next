@@ -79,18 +79,20 @@ export function formatDurationDisplay(duration) {
 	return formatted;
 }
 
-export function returnFileType(type) {
+export function returnFileType(ext) {
 	let fileType;
-	switch (type) {
-		case "BASIC":
-			fileType = "MP3";
+	switch (ext) {
+		case ".mp3":
+			fileType = "audio/mpeg";
 			break;
-		case "PREMIUM":
-			fileType = "WAV";
+		case ".wav":
+			fileType = "audio/wav";
 			break;
-		case "STEM" || "ZIP":
-			fileType = "STEMs";
+		case ".zip":
+			fileType = "applicaiton/zip";
 			break;
+		default:
+			null;
 	}
 
 	return fileType;

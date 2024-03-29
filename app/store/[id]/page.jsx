@@ -14,13 +14,14 @@ import { Suspense } from "react";
 import dynamic from "next/dynamic";
 import AudioPlayStore from "@/app/components/Audio/AudioPlayStore";
 import { getSession } from "@/libs/supabase/getSession";
+import { getAudioSrc } from "@/libs/supabase/getAudioSrc";
 
 export default async function Page({ params: { id } }) {
 	const product = await getProductById(id);
 	const imageSrc = product.image_name;
 	const { filteredPricing } = await getPricingById(id);
-	const storeSrc = await getFileSources(id);
-	const storeSrcType = await getFileSources(id);
+	const { storeSrc } = await getAudioSrc(id);
+	const { storeSrcType } = await getAudioSrc(id);
 	const { session } = await getSession();
 	const comments = await getComments(id);
 	const replies = await getReplys(id);
@@ -62,8 +63,8 @@ export default async function Page({ params: { id } }) {
 					<section className=" bg-bg-elevated rounded-xl p-4">
 						{storeSrc && storeSrcType && (
 							<AudioPlayStore
-								audioSrc={storeSrc.storeSrc}
-								audioSrcType={storeSrcType.storeSrcType}
+								audioSrc={storeSrc}
+								audioSrcType={storeSrcType}
 								product={product}
 							/>
 						)}

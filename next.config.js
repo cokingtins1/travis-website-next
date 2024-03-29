@@ -7,8 +7,14 @@ const nextConfig = {
 				hostname: "njowjcfiaxbnflrcwcep.supabase.co",
 				pathname: "/storage/v1/object/public/all_products/**",
 			},
+			{
+				protocol: "https",
+				hostname: "utfs.io",
+			},
 		],
 	},
-}
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
+
+// utfs.io

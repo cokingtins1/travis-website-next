@@ -7,6 +7,8 @@ import {
 } from "@/libs/supabase/supabaseQuery";
 import InfoEdit from "@/app/components/Dashboard Components/Edit Content/InfoEdit";
 
+import { getAudioSrc } from "@/libs/supabase/getAudioSrc";
+
 export default async function Page({ params: { id } }) {
 	const { session, supabase } = await getSession();
 
@@ -28,31 +30,37 @@ export default async function Page({ params: { id } }) {
 		.match({ product_id: id })
 		.single();
 
-	const {
-		audioSrc_MP3,
-		audioSrc_WAV,
-		audioSrc_STEM,
-		audioFile_MP3: MP3_file,
-		audioFile_WAV: WAV_file,
-		audioFile_STEM: STEM_file,
-		imageFile,
-		imageSrc,
-	} = await getFileSources(product);
+	// const {
+	// 	audioSrc_MP3,
+	// 	audioSrc_WAV,
+	// 	audioSrc_STEM,
+	// 	audioFile_MP3: MP3_file,
+	// 	audioFile_WAV: WAV_file,
+	// 	audioFile_STEM: STEM_file,
+	// 	imageFile,
+	// 	imageSrc,
+	// } = await getFileSources(product);
 
-	const productFiles = { MP3_file, WAV_file, STEM_file, imageFile, imageSrc };
+	const { fileDataObject } = await getAudioSrc(product);
+
+	console.log(fileDataObject)
+
+	// const productFiles = { MP3_file, WAV_file, STEM_file, imageFile, imageSrc };
 
 	const audioSources = {
-		MP3: audioSrc_MP3,
-		WAV: audioSrc_WAV,
-		STEM: audioSrc_STEM,
+		MP3: fileDataObject.basic.file_url,
+		WAV: fileDataObject.premium.file_url,
+		STEM: fileDataObject.exclusive.file_url,
 	};
+
+	console.log(audioSources);
 
 	return (
 		<>
 			<main>
 				<InfoEdit
 					product={product}
-					productFiles={productFiles}
+					productFiles={fileDataObject}
 					pricing={pricing.pricingShort}
 					audioSources={audioSources}
 				/>

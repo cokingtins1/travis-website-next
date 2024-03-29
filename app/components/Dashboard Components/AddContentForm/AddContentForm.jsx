@@ -11,7 +11,6 @@ import Tab from "@mui/material/Tab";
 import Divider from "@mui/material/Divider";
 import beatKitImage from "@/public/beatKitImage.jpg";
 import { toast } from "react-toastify";
-import { upload } from "@vercel/blob/client";
 
 import MetaData from "./MetaData";
 import Pricing from "./Pricing";
@@ -39,8 +38,14 @@ const INITIAL_DATA = {
 	STEM_storage_name: null,
 	STEM_storage_size: null,
 
+	image_storage_url: null,
+	image_storage_key: null,
+	image_storage_name: null,
+	image_storage_size: null,
+
 	productImage: beatKitImage,
 	productImageSrc: beatKitImage,
+	productImageKey: null,
 	title: "",
 	type: "",
 	releaseDate: dayjs(),
@@ -84,9 +89,8 @@ export default function AddContentForm({ filesFromStorage, tempUploads }) {
 	}, []);
 
 	useEffect(() => {
-		const fileError =
-			"You must upload a .mp3, .wav, or .zip file to publish this product";
-		if (!data.MP3_file && !data.WAV_file && !data.STEM_file) {
+		const fileError = "You must upload a .mp3 file to publish this product";
+		if (!data.MP3_storage_url) {
 			addError(fileError);
 		} else {
 			removeError(fileError);
@@ -99,7 +103,12 @@ export default function AddContentForm({ filesFromStorage, tempUploads }) {
 		} else {
 			removeError(imageError);
 		}
-	}, [data.MP3_file, data.WAV_file, data.STEM_file, data.productImage]);
+	}, [
+		data.MP3_storage_url,
+		data.WAV_storage_url,
+		data.STEM_storage_url,
+		data.productImage,
+	]);
 
 	const indices = [
 		{ index: 0, value: "Upload Files" },
@@ -158,26 +167,15 @@ export default function AddContentForm({ filesFromStorage, tempUploads }) {
 	async function handleSubmit(e) {
 		e.preventDefault();
 		if (!isLastStep) return next();
-		setError("");
 
 		setValidating(true);
 
+		console.log(error);
 		if (error.length > 0) {
 			return;
 		} else setValidating(false);
 
 		const formData = createFormData(data);
-
-		// for (const e of formData) {
-		// 	const value = e[1];
-
-		// 	if (value instanceof File) {
-		// 		await upload(value.name, value, {
-		// 			access: "public",
-		// 			handleUploadUrl: "/api/deploymentUpload",
-		// 		}).then((res) => console.log(res));
-		// 	}
-		// }
 
 		try {
 			setDataLoading(true);

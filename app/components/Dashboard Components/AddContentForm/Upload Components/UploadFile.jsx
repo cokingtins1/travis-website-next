@@ -24,6 +24,7 @@ export default function UploadFile({
 }) {
 	const [error, setError] = useState("");
 	const [file, setFile] = useState(!!fileProps);
+	const [fileUploaded, setFileUploaded] = useState(false);
 
 	const {
 		audioSrcId,
@@ -90,6 +91,10 @@ export default function UploadFile({
 		}
 		setError("");
 
+		if (fileUploaded) {
+			handleRemove(type);
+		}
+
 		if (type === "MP3") {
 			setTempMP3({
 				file: data.name,
@@ -122,10 +127,14 @@ export default function UploadFile({
 			delete: false,
 		});
 
+		setFileUploaded(true);
 		setFile(true);
 	}
 
 	const handleRemove = (type) => {
+		const fileObj = { key: fileProps };
+		tempFileIntoSupabase(fileObj, "delete");
+
 		updateFields({
 			fileName: null,
 			fileUrl: null,
@@ -166,20 +175,9 @@ export default function UploadFile({
 				type: null,
 			});
 		}
+		setFileUploaded(true);
 		setFile(false);
 	};
-
-	const VisuallyHiddenInput = styled("input")({
-		clip: "rect(0 0 0 0)",
-		clipPath: "inset(50%)",
-		height: 1,
-		overflow: "hidden",
-		position: "absolute",
-		bottom: 0,
-		left: 0,
-		whiteSpace: "nowrap",
-		width: 1,
-	});
 
 	return (
 		<>
@@ -232,6 +230,8 @@ export default function UploadFile({
 								sx={{
 									marginRight: "2rem",
 									whiteSpace: "nowrap",
+									width: "115px",
+									height: "40px",
 								}}
 								color="warning"
 							>
@@ -274,26 +274,6 @@ export default function UploadFile({
 							{buttonId === type && playing ? "Pause" : "Play"}
 						</Button>
 					)}
-
-					{/* <Button
-						component="label"
-						variant="contained"
-						disabled={!editing}
-						startIcon={
-							!fileProps ? <CloudUploadIcon /> : <CachedIcon />
-						}
-						sx={{ width: "115px", height: "40px" }}
-					>
-						{!fileProps ? "Upload" : "Replace"}
-						<VisuallyHiddenInput
-							id="file"
-							name="file"
-							type="file"
-							onChange={(e) => {
-								handleChange(e);
-							}}
-						/>
-					</Button> */}
 
 					<UploadButton
 						endpoint={endPoint}

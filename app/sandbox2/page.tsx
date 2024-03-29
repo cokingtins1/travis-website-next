@@ -1,23 +1,14 @@
-"use client";
-
-import { UploadButton } from "../utils/uploadthing";
+import { getAudioSrc } from "@/libs/supabase/getAudioSrc";
 
 export default async function Page() {
+	const id = "971e7af6-4fdc-444f-a1b4-9e3826d29707";
+
+	const { url } = await getAudioSrc(id);
+
+
 	return (
 		<main className="flex min-h-screen flex-col items-center justify-between p-24">
-			<UploadButton
-				endpoint="stemUploader"
-				className="ut-button:bg-green-600"
-				onClientUploadComplete={(res) => {
-					// Do something with the response
-					console.log("Files: ", res);
-					alert("Upload Completed");
-				}}
-				onUploadError={(error: Error) => {
-					// Do something with the error.
-					alert(`ERROR! ${error.message}`);
-				}}
-			/>
+			{JSON.stringify(url)}
 		</main>
 	);
 }

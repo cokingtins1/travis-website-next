@@ -3,6 +3,7 @@
 import supabaseClient from "@/libs/supabase/config/supabaseClient";
 import { getSession } from "./getSession";
 import { unstable_cache } from "next/cache";
+import { utapi } from "@/app/server/uploadthing";
 
 // Order getting functions:
 
@@ -18,6 +19,7 @@ export async function getSupabaseOrderData(order_id) {
 	const rawData = JSON.parse(data.products_sold);
 	const customerEmail = data.customer_email;
 	const orderAlias = data.order_id_alias;
+	const orderDate = data.created_at;
 
 	const orderData = rawData.map((productGroup) => {
 		const productName = Object.keys(productGroup)[0];
@@ -25,6 +27,7 @@ export async function getSupabaseOrderData(order_id) {
 		return {
 			name: productName,
 			...productDetails,
+			orderDate,
 			customerEmail,
 			orderAlias,
 		};
@@ -325,33 +328,33 @@ export async function getDownloadUrls(productsSold) {
 		for (const product of filePaths) {
 			const { data } = await supabaseClient
 				.from("product_files")
-				.select("file_url")
+				.select("storage_key")
 				.match({ pricing_id: product.pricing_id })
 				.single();
 
-			result.push(data.file_url);
+			result.push(data.storage_key);
 		}
 
 		return result;
 	};
 
-	const publicUrls = await getUrls(productsSold);
+	const storageKeys = await getUrls(productsSold);
 
-	const processFilePath = async (publicUrls) => {
-		const expiresIn = 60 * 60 * 24 * 14;
+	const processFilePath = async (storageKeys) => {
+		const expiresIn = 60 * 60 * 24 * 7;
 		const result = [];
 
-		for (const url of publicUrls) {
-			const path = url.split("all_products/")[1];
-			const { data } = await supabaseClient.storage
-				.from("all_products")
-				.createSignedUrl(path, expiresIn, { download: true });
-			result.push(data.signedUrl);
+		for (const key of storageKeys) {
+			const url = await utapi.getSignedURL(key, {
+				expiresIn: expiresIn,
+			});
+
+			result.push(url);
 		}
 		return result;
 	};
 
-	const downloadUrls = await processFilePath(publicUrls);
+	const downloadUrls = await processFilePath(storageKeys);
 
 	return downloadUrls;
 }

@@ -3,8 +3,9 @@ import dayjs from "dayjs";
 import { returnArray } from "@/libs/utils";
 import { revalidatePath } from "next/cache";
 import { getSession } from "@/libs/supabase/getSession";
-import { getFileSources, getProductById } from "@/libs/supabase/supabaseQuery";
+import { getProductById } from "@/libs/supabase/supabaseQuery";
 import { revalidateTag } from "next/cache";
+import { getAudioSrc } from "@/libs/supabase/getAudioSrc";
 
 export async function POST(req) {
 	const { supabase } = await getSession();
@@ -18,49 +19,12 @@ export async function POST(req) {
 		);
 	}
 
-	async function uploadFile(path, file) {
-		try {
-			const { error } = await supabase.storage
-				.from("all_products")
-				.upload(path, file);
-
-			if (error) {
-				throw error;
-			}
-		} catch (error) {
-			console.log(error);
-		}
-	}
-
 	// Foreign Keys:
 	const product_id = crypto.randomUUID();
 
 	const pricing_id_mp3 = crypto.randomUUID();
 	const pricing_id_wav = crypto.randomUUID();
 	const pricing_id_zip = crypto.randomUUID();
-
-	// Storage Foreign Keys:
-
-	const file_url_mp3 = `${product_id}/MP3/${formData.get(
-		"title"
-	)} ${formData.get("bpm")} BPM-@trav-MP3`;
-	const file_url_wav = `${product_id}/WAV/${formData.get(
-		"title"
-	)} ${formData.get("bpm")} BPM-@trav-WAV`;
-	const file_url_zip = `${product_id}/STEM/${formData.get(
-		"title"
-	)} ${formData.get("bpm")} BPM-@trav-STEM`;
-
-	let image_url;
-	for (const e of formData) {
-		const value = e[1];
-		if (value instanceof File) {
-			if (value.type.split("/")[0] == "image") {
-				image_url = `${product_id}/productImage/${value.name}`;
-				break;
-			}
-		}
-	}
 
 	await supabase.from("products").insert({
 		product_id: product_id,
@@ -79,7 +43,7 @@ export async function POST(req) {
 		keys: formData.get("keys"),
 		bpm: formData.get("bpm"),
 		video_link: formData.get("videoLink"),
-		image_name: "",
+		image_name: formData.get("productImageSrc"),
 		free: formData.get("free"),
 		plays: Math.floor(Math.random() * (10000 - 1000 + 1)) + 1000,
 	});
@@ -115,86 +79,60 @@ export async function POST(req) {
 		liked_by_email: [],
 	});
 
-	// for (const e of formData) {
-	// 	const value = e[1];
-
-	// 	if (value instanceof File) {
-	// 		// catch STEM files for now. Will upgrade to pro soon.
-
-	// 		if (value.type.split("/")[0] == "image") {
-	// 			await uploadFile(image_url, value);
-	// 		} else if (value.name.endsWith(".mp3")) {
-	// 			await uploadFile(file_url_mp3, value);
-	// 		} else if (value.name.endsWith(".wav")) {
-	// 			await uploadFile(file_url_wav, value);
-	// 		} else if (value.name.endsWith(".zip")) {
-	// 			await uploadFile(file_url_zip, value);
-	// 		}
-	// 	}
-	// }
-
-	const { audioSrc_MP3, audioSrc_WAV, audioSrc_STEM, imageSrc } =
-		await getFileSources(product_id);
+	console.log(
+		"file_urls:",
+		formData.get("MP3_storage_url"),
+		formData.get("WAV_storage_url"),
+		formData.get("STEM_storage_url")
+	);
 
 	await supabase.from("product_files").insert({
-		// product_id: product_id,
-		// pricing_id: pricing_id_mp3,
-		// file_url: audioSrc_MP3,
 		product_id: product_id,
 		pricing_id: pricing_id_mp3,
 		file_extension: ".mp3",
 		file_url: formData.get("MP3_storage_url"),
 		storage_key: formData.get("MP3_storage_key"),
 		storage_name: formData.get("MP3_storage_name"),
+		storage_size: formData.get("MP3_storage_size"),
 	});
 
 	await supabase.from("product_files").insert({
 		product_id: product_id,
 		pricing_id: pricing_id_wav,
 		file_extension: ".wav",
-		// file_url: audioSrc_WAV,
 		file_url: formData.get("WAV_storage_url"),
 		storage_key: formData.get("WAV_storage_key"),
 		storage_name: formData.get("WAV_storage_name"),
+		storage_size: formData.get("WAV_storage_size"),
 	});
 
 	await supabase.from("product_files").insert({
 		product_id: product_id,
 		pricing_id: pricing_id_zip,
 		file_extension: ".zip",
-		// file_url: audioSrc_STEM,
 		file_url: formData.get("STEM_storage_url"),
 		storage_key: formData.get("STEM_storage_key"),
 		storage_name: formData.get("STEM_storage_name"),
+		storage_size: formData.get("STEM_storage_size"),
 	});
-
-	await supabase
-		.from("products")
-		.update({
-			image_name: imageSrc,
-		})
-		.eq("product_id", product_id);
 
 	revalidateTag("products");
 	revalidateTag("dashboardData");
 	// Check supabase to see if data was uploaded
+	// const { storeSrc } = await getAudioSrc(product_id);
+
 	const data = await getProductById(product_id);
 
-	if (data && (audioSrc_MP3 || audioSrc_WAV || audioSrc_STEM)) {
+	if (data) {
 		revalidatePath("/", "layout");
 
 		return NextResponse.json(
 			{ message: "Product was uploaded susccessfully" },
 			{ status: 201 }
 		);
-	} else if (!data && (audioSrc_MP3 || audioSrc_WAV || audioSrc_STEM)) {
+	} else if (!data) {
 		return NextResponse.json(
 			{ message: "Error uploading product data" },
-			{ status: 500 }
-		);
-	} else if (data && (!audioSrc_MP3 || !audioSrc_WAV || !audioSrc_STEM)) {
-		return NextResponse.json(
-			{ message: "Error uploading product files" },
 			{ status: 500 }
 		);
 	}

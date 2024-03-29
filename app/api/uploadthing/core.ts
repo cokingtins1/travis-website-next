@@ -70,6 +70,27 @@ export const ourFileRouter = {
 			// return of below can be sent to client:
 			return { uploadedBy: metadata.userId };
 		}),
+	imageUploader: f({
+		image: {
+			maxFileSize: "128MB",
+			contentDisposition: "inline",
+		},
+	})
+		.middleware(async () => {
+			const { id } = await getSession();
+
+			if (!id) throw new UploadThingError("Unauthorized");
+
+			return { userId: id };
+		})
+		.onUploadComplete(async ({ metadata, file }) => {
+			console.log("Upload complete for userId:", metadata.userId);
+
+			await tempFileIntoSupabase(file, "insert");
+
+			// return of below can be sent to client:
+			return { uploadedBy: metadata.userId };
+		}),
 } satisfies FileRouter;
 
 export type OurFileRouter = typeof ourFileRouter;

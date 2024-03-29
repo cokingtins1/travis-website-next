@@ -4,33 +4,25 @@ import EditIcon from "@mui/icons-material/Edit";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
+import { UploadButton } from "@/app/utils/uploadthing";
+import beatKitImage from "@/public/beatKitImage.jpg";
 
 import FormControl from "@mui/material/FormControl";
 
 import Image from "next/image";
 import { useState } from "react";
+import { tempFileIntoSupabase } from "@/app/actions/tempFileIntoSupabase";
 
 export default function BasicInfo({
 	productImageSrc,
+	productImageKey,
 	title,
 	type,
 	releaseDate,
 	description,
 	updateFields,
 }) {
-	const [imageErr, setImageErr] = useState("");
-
-	const VisuallyHiddenInput = styled("input")({
-		clip: "rect(0 0 0 0)",
-		clipPath: "inset(50%)",
-		height: 1,
-		overflow: "hidden",
-		position: "absolute",
-		bottom: 0,
-		left: 0,
-		whiteSpace: "nowrap",
-		width: 1,
-	});
+	const [fileUploaded, setFileUploaded] = useState(false);
 
 	const contentType = [
 		{ value: "Beat" },
@@ -38,23 +30,24 @@ export default function BasicInfo({
 		{ value: "Melody" },
 	];
 
-	function handleChange(e) {
-		const file = e.target.files[0];
-		const fileIsImage = file.type.split("/")[0] === "image";
-
-		if (!fileIsImage) {
-			setImageErr("Please select a valid image file type");
-			return;
-		} else {
-			setImageErr("");
-		}
-
-		if (file) {
+	function handleChange(data) {
+		if (fileUploaded) {
+			const fileObj = { key: productImageKey };
+			tempFileIntoSupabase(fileObj, "delete");
 			updateFields({
-				productImage: file,
-				productImageSrc: URL.createObjectURL(file),
+				productImage: data.key,
+				productImageSrc: data.url,
+				productImageKey: data.key,
+			});
+		} else {
+			updateFields({
+				productImage: data.key,
+				productImageSrc: data.url,
+				productImageKey: data.key,
 			});
 		}
+
+		setFileUploaded(true);
 	}
 
 	return (
@@ -71,32 +64,17 @@ export default function BasicInfo({
 							alt="product image"
 						/>
 
-						<Button
-							type="button"
-							size="lg"
-							sx={{
-								color: "#a7a7a7",
-								"&:hover": { backgroundColor: "#2a2a2a" },
+						<UploadButton
+							endpoint="imageUploader"
+							className="ut-button:bg-green-600"
+							onClientUploadComplete={(res) => {
+								if (res.length === 0) return;
+								handleChange(res[0]);
 							}}
-							startIcon={<EditIcon />}
-						>
-							<label className="cursor-pointer">
-								{" "}
-								Edit Picture
-								<VisuallyHiddenInput
-									name="file"
-									onChange={(e) => {
-										handleChange(e);
-									}}
-									type="file"
-								/>
-							</label>
-						</Button>
-						{imageErr && (
-							<span className="text-sm text-text-error">
-								{imageErr}
-							</span>
-						)}
+							onUploadError={(error) => {
+								alert(`ERROR! ${error.message}`);
+							}}
+						/>
 					</div>
 				</div>
 				<FormControl className="col-span-4">

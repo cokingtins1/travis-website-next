@@ -1,16 +1,24 @@
-"use client"
+"use client";
 
-import Image from "next/image"
-import Button from "@mui/material/Button"
-import Link from "next/link"
-import Divider from "@mui/material/Divider"
-import FollowButtons from "./FollowButtons"
-import { useRouter } from "next/navigation"
+import Image from "next/image";
+import Button from "@mui/material/Button";
+import Link from "next/link";
+import Divider from "@mui/material/Divider";
+import FollowButtons from "./FollowButtons";
+import { useRouter } from "next/navigation";
+import dayjs from "dayjs";
 
 export default function CheckoutOrder({ orderDetails }) {
-	const router = useRouter()
+	const router = useRouter();
 	if (orderDetails?.length === 0) {
-		router.refresh()
+		router.refresh();
+	}
+
+	let expiration = null;
+	if (orderDetails[0]?.orderDate) {
+		expiration = dayjs(orderDetails[0]?.orderDate)
+			.add(7, "day")
+			.format("MMMM D, YYYY [at] h:mm A");
 	}
 
 	return (
@@ -25,7 +33,11 @@ export default function CheckoutOrder({ orderDetails }) {
 					{orderDetails[0].customerEmail}{" "}
 				</p>
 
-				<p className="my-4">Click the links below to download:</p>
+				<p className="mt-4">Click the links below to download:</p>
+				<p className="text-xs text-balance text-center text-text-secondary">{`Each link will expire in 7 days`}</p>
+				{expiration && (
+					<p className="text-xs text-balance text-center text-text-secondary">{`You have until ${expiration} to download your files`}</p>
+				)}
 			</div>
 			<Divider />
 			<ul className="flex flex-col gap-4">
@@ -83,5 +95,5 @@ export default function CheckoutOrder({ orderDetails }) {
 				</p>
 			</div>
 		</div>
-	)
+	);
 }
