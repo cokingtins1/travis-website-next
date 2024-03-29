@@ -100,6 +100,8 @@ export default function ProductSection({ data, searchParams }) {
 		},
 	];
 
+	console.log(audioList)
+
 	return (
 		<>
 			<div className="flex flex-col justify-center items-center w-full mt-12 mb-8">

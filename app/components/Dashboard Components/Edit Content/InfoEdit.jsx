@@ -44,8 +44,8 @@ export default function InfoEdit({
 		STEM_fileSize: productFiles.exclusive.storage_size || null,
 		STEM_update: !!productFiles.exclusive.file_url,
 
-		productImage: productFiles.imageFile,
-		productImageSrc: productFiles.imageSrc,
+		productImage: productFiles.image,
+		productImageSrc: productFiles.image,
 
 		title: product.title || "",
 		description: product.description || "",

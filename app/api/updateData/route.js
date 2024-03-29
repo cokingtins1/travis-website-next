@@ -207,49 +207,49 @@ export async function PUT(req) {
 		}
 
 		// Inserting or updating files
-		for (const e of formData) {
-			const key = e[0];
-			const value = e[1];
+	// 	for (const e of formData) {
+	// 		const key = e[0];
+	// 		const value = e[1];
 
-			if (value instanceof File) {
-				if (value.type.split("/")[0] == "image") {
-					await modifyStorageNEW(
-						`${product_id}/productImage/${currentImage.name}`,
-						image_url,
-						value,
-						"true",
-						"false"
-					);
-				} else if (value.name.endsWith(".mp3")) {
-					await modifyStorageNEW(
-						`${product_id}/MP3/${currentMP3?.name}`,
-						file_url_mp3,
-						value,
-						formData.get("MP3_update"),
-						formData.get("basicFileDelete")
-					);
-					await updateFileUrls(file_url_mp3);
-				} else if (value.name.endsWith(".wav")) {
-					await modifyStorageNEW(
-						`${product_id}/WAV/${currentWAV?.name}`,
-						file_url_wav,
-						value,
-						formData.get("WAV_update"),
-						formData.get("basicFileDelete")
-					);
-					await updateFileUrls(file_url_wav);
-				} else if (value.name.endsWith(".zip")) {
-					await modifyStorageNEW(
-						`${product_id}/STEM/${currentSTEM?.name}`,
-						file_url_zip,
-						value,
-						formData.get("STEM_update"),
-						formData.get("basicFileDelete")
-					);
-					await updateFileUrls(file_url_zip);
-				}
-			}
-		}
+	// 		if (value instanceof File) {
+	// 			if (value.type.split("/")[0] == "image") {
+	// 				await modifyStorageNEW(
+	// 					`${product_id}/productImage/${currentImage.name}`,
+	// 					image_url,
+	// 					value,
+	// 					"true",
+	// 					"false"
+	// 				);
+	// 			} else if (value.name.endsWith(".mp3")) {
+	// 				await modifyStorageNEW(
+	// 					`${product_id}/MP3/${currentMP3?.name}`,
+	// 					file_url_mp3,
+	// 					value,
+	// 					formData.get("MP3_update"),
+	// 					formData.get("basicFileDelete")
+	// 				);
+	// 				await updateFileUrls(file_url_mp3);
+	// 			} else if (value.name.endsWith(".wav")) {
+	// 				await modifyStorageNEW(
+	// 					`${product_id}/WAV/${currentWAV?.name}`,
+	// 					file_url_wav,
+	// 					value,
+	// 					formData.get("WAV_update"),
+	// 					formData.get("basicFileDelete")
+	// 				);
+	// 				await updateFileUrls(file_url_wav);
+	// 			} else if (value.name.endsWith(".zip")) {
+	// 				await modifyStorageNEW(
+	// 					`${product_id}/STEM/${currentSTEM?.name}`,
+	// 					file_url_zip,
+	// 					value,
+	// 					formData.get("STEM_update"),
+	// 					formData.get("basicFileDelete")
+	// 				);
+	// 				await updateFileUrls(file_url_zip);
+	// 			}
+	// 		}
+	// 	}
 	} catch (error) {
 		console.log(error);
 	}

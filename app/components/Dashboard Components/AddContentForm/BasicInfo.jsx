@@ -66,7 +66,7 @@ export default function BasicInfo({
 
 						<UploadButton
 							endpoint="imageUploader"
-							className="ut-button:bg-green-600"
+							className="ut-button:bg-[#1976D2]"
 							onClientUploadComplete={(res) => {
 								if (res.length === 0) return;
 								handleChange(res[0]);
