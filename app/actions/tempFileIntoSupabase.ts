@@ -1,7 +1,7 @@
 "use server";
 
 import { getSession } from "@/libs/supabase/getSession";
-import { utapi } from "../server/uploadthing";
+import { utapi } from "./server/uploadthing";
 
 type FileProps = {
 	key?: string;

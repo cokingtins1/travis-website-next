@@ -3,7 +3,7 @@
 import supabaseClient from "@/libs/supabase/config/supabaseClient";
 import { getSession } from "./getSession";
 import { unstable_cache } from "next/cache";
-import { utapi } from "@/app/server/uploadthing";
+import { utapi } from "@/app/actions/server/uploadthing";
 
 // Order getting functions:
 
