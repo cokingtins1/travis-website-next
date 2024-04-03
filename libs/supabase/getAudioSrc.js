@@ -21,7 +21,9 @@ export async function getAudioSrc(product) {
 
 	const { data: imageSrc } = await supabaseClient
 		.from("products")
-		.select("image_name")
+		.select(
+			"image_url, image_storage_name, image_storage_size, image_storage_key"
+		)
 		.match({ product_id: productId });
 
 	// fileDataObject = {
@@ -56,7 +58,12 @@ export async function getAudioSrc(product) {
 		}
 	});
 
-	fileDataObject["image"] = imageSrc[0].image_name;
+	fileDataObject["image"] = {
+		image_url: imageSrc[0]?.image_url,
+		image_storage_name: imageSrc[0]?.image_storage_name,
+		image_storage_size: imageSrc[0]?.image_storage_size,
+		image_storage_key: imageSrc[0]?.image_storage_key,
+	};
 
 	storeSrc = fileDataObject.basic.file_url || fileDataObject.premium.file_url;
 	storeSrcType =

@@ -274,6 +274,30 @@ export function getAudioList(fileArrays) {
 	const audioList = [];
 	let indexCounter = 0;
 
+	// const test = [[
+	// 	{
+	// 		product_id: "95ea5cc8-c9ef-448a-8849-cf4a653932f9",
+	// 		pricing_id: "a732f1ad-5460-4ff5-847b-5bfcd6fcd324",
+	// 		file_extension: ".wav",
+	// 		file_url:
+	// 			"https://utfs.io/f/cf8be977-0ff2-43b2-8e2b-b8a033472a2a-uhwmh7.zip",
+	// 	},
+	// 	{
+	// 		product_id: "95ea5cc8-c9ef-448a-8849-cf4a653932f9",
+	// 		pricing_id: "16ba56c5-4e7c-4fbf-8cfc-7355e4816f03",
+	// 		file_extension: ".zip",
+	// 		file_url:
+	// 			"https://utfs.io/f/138e1dd0-acdd-40d9-b7fd-0ece99c917db-580324.wav",
+	// 	},
+	// 	{
+	// 		product_id: "95ea5cc8-c9ef-448a-8849-cf4a653932f9",
+	// 		pricing_id: "4141b8ec-4715-42ca-a40a-f7066eb182a7",
+	// 		file_extension: ".mp3",
+	// 		file_url:
+	// 			"https://utfs.io/f/cca95f85-d033-43e5-a75f-d2c84e567199-sy5hvy.mp3",
+	// 	},
+	// ]];
+
 	for (const files of fileArrays) {
 		const storeSrc = files.find(
 			(file) =>

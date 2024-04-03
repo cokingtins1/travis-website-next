@@ -46,6 +46,8 @@ export default function ProductSection({ data, searchParams }) {
 		getAudioList(data.map((p) => p.product_files))
 	);
 
+	console.log(getAudioList())
+
 	const allBpmRange = getBPMData(data);
 
 	useEffect(() => {
@@ -99,8 +101,6 @@ export default function ProductSection({ data, searchParams }) {
 			allFilters: allInstruments,
 		},
 	];
-
-	console.log(audioList)
 
 	return (
 		<>

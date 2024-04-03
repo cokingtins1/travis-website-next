@@ -1,12 +1,8 @@
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
-import EditIcon from "@mui/icons-material/Edit";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { styled } from "@mui/material/styles";
-import Button from "@mui/material/Button";
+import ImageIcon from "@mui/icons-material/Image";
 import { UploadButton } from "@/app/utils/uploadthing";
-import beatKitImage from "@/public/beatKitImage.jpg";
-
 import FormControl from "@mui/material/FormControl";
 
 import Image from "next/image";
@@ -14,8 +10,8 @@ import { useState } from "react";
 import { tempFileIntoSupabase } from "@/app/actions/tempFileIntoSupabase";
 
 export default function BasicInfo({
-	productImageSrc,
-	productImageKey,
+	image_storage_url,
+	image_storage_key,
 	title,
 	type,
 	releaseDate,
@@ -32,18 +28,20 @@ export default function BasicInfo({
 
 	function handleChange(data) {
 		if (fileUploaded) {
-			const fileObj = { key: productImageKey };
+			const fileObj = { key: image_storage_key };
 			tempFileIntoSupabase(fileObj, "delete");
 			updateFields({
-				productImage: data.key,
-				productImageSrc: data.url,
-				productImageKey: data.key,
+				image_storage_url: data.url,
+				image_storage_key: data.key,
+				image_storage_name: data.name,
+				image_storage_size: data.size,
 			});
 		} else {
 			updateFields({
-				productImage: data.key,
-				productImageSrc: data.url,
-				productImageKey: data.key,
+				image_storage_url: data.url,
+				image_storage_key: data.key,
+				image_storage_name: data.name,
+				image_storage_size: data.size,
 			});
 		}
 
@@ -55,14 +53,28 @@ export default function BasicInfo({
 			<div className="grid grid-cols-6 gap-4">
 				<div className="col-span-2 flex items-start justify-center">
 					<div className="flex flex-col items-center gap-2 ">
-						<Image
-							id="productImage"
-							width={250}
-							height={250}
-							className="border rounded-lg"
-							src={productImageSrc}
-							alt="product image"
-						/>
+						{image_storage_url ? (
+							<div className="relative size-[250px] border rounded-lg">
+								<Image
+									src={image_storage_url}
+									sizes="(max-width: 430px), 250px "
+									fill={true}
+									style={{ objectFit: "cover" }}
+									priority={true}
+									alt="product image"
+									id="productImage"
+								/>
+							</div>
+						) : (
+							<div className="size-[250px] flex flex-col justify-center items-center border border-text-secondary rounded-lg">
+								<ImageIcon
+									sx={{ fontSize: "7rem", color: "#a7a7a7" }}
+								/>
+								<p className="text-text-secondary">
+									Upload Image
+								</p>
+							</div>
+						)}
 
 						<UploadButton
 							endpoint="imageUploader"

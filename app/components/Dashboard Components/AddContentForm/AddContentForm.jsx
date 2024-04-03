@@ -9,18 +9,20 @@ import dayjs from "dayjs";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Divider from "@mui/material/Divider";
-import beatKitImage from "@/public/beatKitImage.jpg";
+
 import { toast } from "react-toastify";
 
 import MetaData from "./MetaData";
 import Pricing from "./Pricing";
-import { Button } from "../../UI/Button";
+import { Button as UIButton } from "../../UI/Button";
 import { createFormData } from "@/libs/utils";
 import AudioDrawer from "../../Audio/AudioDrawer";
 import { useAudio } from "@/libs/contexts/AudioContext";
 import { useRouter } from "next/navigation";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import SubmitModal from "../../UI/SubmitModal";
+import { clearTempUploads } from "@/app/actions/clearTempUploads";
 
 const INITIAL_DATA = {
 	MP3_storage_url: null,
@@ -43,9 +45,6 @@ const INITIAL_DATA = {
 	image_storage_name: null,
 	image_storage_size: null,
 
-	productImage: beatKitImage,
-	productImageSrc: beatKitImage,
-	productImageKey: null,
 	title: "",
 	type: "",
 	releaseDate: dayjs(),
@@ -98,7 +97,7 @@ export default function AddContentForm({ filesFromStorage, tempUploads }) {
 
 		const imageError =
 			"You must upload a product image to publish this product";
-		if (data.productImage === beatKitImage) {
+		if (!data.image_storage_url) {
 			addError(imageError);
 		} else {
 			removeError(imageError);
@@ -107,7 +106,7 @@ export default function AddContentForm({ filesFromStorage, tempUploads }) {
 		data.MP3_storage_url,
 		data.WAV_storage_url,
 		data.STEM_storage_url,
-		data.productImage,
+		data.image_storage_url,
 	]);
 
 	const indices = [
@@ -170,7 +169,6 @@ export default function AddContentForm({ filesFromStorage, tempUploads }) {
 
 		setValidating(true);
 
-		console.log(error);
 		if (error.length > 0) {
 			return;
 		} else setValidating(false);
@@ -206,12 +204,25 @@ export default function AddContentForm({ filesFromStorage, tempUploads }) {
 		}
 	}
 
+	async function handleAbort() {
+		const deleteKeys = [
+			data.MP3_storage_key,
+			data.WAV_storage_key,
+			data.STEM_storage_key,
+			data.image_storage_key,
+		];
+
+		await clearTempUploads(deleteKeys);
+
+		router.push("/dashboard");
+	}
+
 	return (
 		<>
 			<div className="w-full bg-bg-elevated border border-black p-4 rounded-md ">
 				<form>
 					<div className="flex flex-col">
-						<div>
+						<div className="flex justify-between">
 							<Tabs
 								onChange={(e) => {
 									setTabValue(e.target.value);
@@ -229,6 +240,13 @@ export default function AddContentForm({ filesFromStorage, tempUploads }) {
 									/>
 								))}
 							</Tabs>
+
+							<SubmitModal
+								variant="abort"
+								callback={(e) => {
+									handleAbort(e);
+								}}
+							/>
 						</div>
 						<div className="h-[32rem] overflow-auto p-2 mt-4">
 							{step}
@@ -269,7 +287,7 @@ export default function AddContentForm({ filesFromStorage, tempUploads }) {
 									</p>
 								)}
 								{!isFirstStep && (
-									<Button
+									<UIButton
 										size="lg"
 										onClick={() => {
 											back();
@@ -278,9 +296,9 @@ export default function AddContentForm({ filesFromStorage, tempUploads }) {
 										type="button"
 									>
 										Back
-									</Button>
+									</UIButton>
 								)}
-								<Button
+								<UIButton
 									size="lg"
 									disabled={fileLoading || dataLoading}
 									type={isLastStep ? "submit" : "button"}
@@ -291,7 +309,7 @@ export default function AddContentForm({ filesFromStorage, tempUploads }) {
 									}}
 								>
 									{isLastStep ? "Upload" : "Next"}
-								</Button>
+								</UIButton>
 							</div>
 						</div>
 					</div>

@@ -5,7 +5,8 @@ import { revalidatePath } from "next/cache";
 import { getSession } from "@/libs/supabase/getSession";
 import { getProductById } from "@/libs/supabase/supabaseQuery";
 import { revalidateTag } from "next/cache";
-import { getAudioSrc } from "@/libs/supabase/getAudioSrc";
+import { clearTempUploads } from "@/app/actions/clearTempUploads";
+import { clearZombieFiles } from "@/app/actions/clearZombieFiles";
 
 export async function POST(req) {
 	const { supabase } = await getSession();
@@ -43,9 +44,13 @@ export async function POST(req) {
 		keys: formData.get("keys"),
 		bpm: formData.get("bpm"),
 		video_link: formData.get("videoLink"),
-		image_name: formData.get("productImageSrc"),
 		free: formData.get("free"),
 		plays: Math.floor(Math.random() * (10000 - 1000 + 1)) + 1000,
+		image_url: formData.get("image_storage_url"),
+		image_name: formData.get("image_storage_url"),
+		image_storage_key: formData.get("image_storage_key"),
+		image_storage_name: formData.get("image_storage_name"),
+		image_storage_size: formData.get("image_storage_size"),
 	});
 
 	await supabase.from("pricing").insert({
@@ -79,42 +84,81 @@ export async function POST(req) {
 		liked_by_email: [],
 	});
 
-	console.log(
-		"file_urls:",
-		formData.get("MP3_storage_url"),
-		formData.get("WAV_storage_url"),
-		formData.get("STEM_storage_url")
-	);
-
 	await supabase.from("product_files").insert({
 		product_id: product_id,
 		pricing_id: pricing_id_mp3,
 		file_extension: ".mp3",
-		file_url: formData.get("MP3_storage_url"),
-		storage_key: formData.get("MP3_storage_key"),
-		storage_name: formData.get("MP3_storage_name"),
-		storage_size: formData.get("MP3_storage_size"),
+		file_url:
+			formData.get("MP3_storage_url") === "null"
+				? null
+				: formData.get("MP3_storage_url"),
+		storage_key:
+			formData.get("MP3_storage_key") === "null"
+				? null
+				: formData.get("MP3_storage_key"),
+		storage_name:
+			formData.get("MP3_storage_name") === "null"
+				? null
+				: formData.get("MP3_storage_name"),
+		storage_size:
+			formData.get("MP3_storage_size") === "null"
+				? null
+				: formData.get("MP3_storage_size"),
 	});
 
 	await supabase.from("product_files").insert({
 		product_id: product_id,
 		pricing_id: pricing_id_wav,
 		file_extension: ".wav",
-		file_url: formData.get("WAV_storage_url"),
-		storage_key: formData.get("WAV_storage_key"),
-		storage_name: formData.get("WAV_storage_name"),
-		storage_size: formData.get("WAV_storage_size"),
+		file_url:
+			formData.get("WAV_storage_url") === "null"
+				? null
+				: formData.get("WAV_storage_url"),
+		storage_key:
+			formData.get("WAV_storage_key") === "null"
+				? null
+				: formData.get("WAV_storage_key"),
+		storage_name:
+			formData.get("WAV_storage_name") === "null"
+				? null
+				: formData.get("WAV_storage_name"),
+		storage_size:
+			formData.get("WAV_storage_size") === "null"
+				? null
+				: formData.get("WAV_storage_size"),
 	});
 
 	await supabase.from("product_files").insert({
 		product_id: product_id,
 		pricing_id: pricing_id_zip,
 		file_extension: ".zip",
-		file_url: formData.get("STEM_storage_url"),
-		storage_key: formData.get("STEM_storage_key"),
-		storage_name: formData.get("STEM_storage_name"),
-		storage_size: formData.get("STEM_storage_size"),
+		file_url:
+			formData.get("STEM_storage_url") === "null"
+				? null
+				: formData.get("STEM_storage_url"),
+		storage_key:
+			formData.get("STEM_storage_key") === "null"
+				? null
+				: formData.get("STEM_storage_key"),
+		storage_name:
+			formData.get("STEM_storage_name") === "null"
+				? null
+				: formData.get("STEM_storage_name"),
+		storage_size:
+			formData.get("STEM_storage_size") === "null"
+				? null
+				: formData.get("STEM_storage_size"),
 	});
+
+	const deleteKeys = [
+		formData.get("MP3_storage_key"),
+		formData.get("WAV_storage_key"),
+		formData.get("STEM_storage_key"),
+		formData.get("image_storage_key"),
+	];
+
+	await clearTempUploads(deleteKeys);
+	await clearZombieFiles();
 
 	revalidateTag("products");
 	revalidateTag("dashboardData");

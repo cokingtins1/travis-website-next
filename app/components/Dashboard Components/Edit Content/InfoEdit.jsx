@@ -6,7 +6,6 @@ import Switch from "@mui/material/Switch";
 import Button from "@mui/material/Button";
 import EditIcon from "@mui/icons-material/Edit";
 
-import { styled } from "@mui/material/styles";
 import beatKitImage from "@/public/beatKitImage.jpg";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -21,6 +20,9 @@ import Divider from "@mui/material/Divider";
 import UploadFile from "../AddContentForm/Upload Components/UploadFile";
 import { useRouter } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { UploadButton } from "@/app/utils/uploadthing";
+import { tempFileIntoSupabase } from "@/app/actions/tempFileIntoSupabase";
+import { tempEditIntoSupabase } from "@/app/actions/tempEditIntoSupabase";
 
 export default function InfoEdit({
 	product,
@@ -29,23 +31,25 @@ export default function InfoEdit({
 	audioSources,
 }) {
 	const INITIAL_DATA = {
-		MP3_file: productFiles.basic.file_url || null,
-		MP3_fileName: productFiles.basic.storage_name || null,
-		MP3_fileSize: productFiles.basic.storage_size || null,
-		MP3_update: !!productFiles.basic.file_url,
+		MP3_storage_url: productFiles.basic?.file_url || null,
+		MP3_storage_key: productFiles.basic?.storage_key || null,
+		MP3_storage_name: productFiles.basic?.storage_name || null,
+		MP3_storage_size: productFiles.basic?.storage_size || null,
 
-		WAV_file: productFiles.premium.file_url || null,
-		WAV_fileName: productFiles.premium.storage_name || null,
-		WAV_fileSize: productFiles.premium.storage_size || null,
-		WAV_update: !!productFiles.premium.file_url,
+		WAV_storage_url: productFiles.premium?.file_url || null,
+		WAV_storage_key: productFiles.premium?.storage_key || null,
+		WAV_storage_name: productFiles.premium?.storage_name || null,
+		WAV_storage_size: productFiles.premium?.storage_size || null,
 
-		STEM_file: productFiles.exclusive.file_url || null,
-		STEM_fileName: productFiles.exclusive.storage_name || null,
-		STEM_fileSize: productFiles.exclusive.storage_size || null,
-		STEM_update: !!productFiles.exclusive.file_url,
+		STEM_storage_url: productFiles.exclusive?.file_url || null,
+		STEM_storage_key: productFiles.exclusive?.storage_key || null,
+		STEM_storage_name: productFiles.exclusive?.storage_name || null,
+		STEM_storage_size: productFiles.exclusive?.storage_size || null,
 
-		productImage: productFiles.image,
-		productImageSrc: productFiles.image,
+		image_storage_url: productFiles.image?.image_url,
+		image_storage_key: productFiles.image?.image_storage_key,
+		image_storage_name: productFiles.image?.image_storage_name,
+		image_storage_size: productFiles.image?.image_storage_size,
 
 		title: product.title || "",
 		description: product.description || "",
@@ -80,6 +84,8 @@ export default function InfoEdit({
 	const [editing, setEditing] = useState(false);
 	const [dataLoading, setDataLoading] = useState(false);
 	const [imageErr, setImageErr] = useState("");
+	const [fileUploaded, setFileUploaded] = useState(false);
+
 	const router = useRouter();
 
 	const { audioSrcId, clearAudio, buttonId } = useAudio();
@@ -91,7 +97,10 @@ export default function InfoEdit({
 	function abortEditing(e) {
 		setEditing(!editing);
 		setData(INITIAL_DATA);
+		const file = {};
+		tempEditIntoSupabase(file, product.product_id, "abort");
 	}
+
 
 	async function deleteProduct() {
 		try {
@@ -125,17 +134,12 @@ export default function InfoEdit({
 	async function handleSubmit(e) {
 		e.preventDefault();
 
-		let formData;
-		if (process.env.NODE_ENV !== "development") {
-			const { MP3_file, WAV_file, STEM_file, ...dataNoFile } = data;
-			formData = createFormData(
-				dataNoFile,
-				"product_id",
-				product.product_id
-			);
-		} else {
-			formData = createFormData(data, "product_id", product.product_id);
-		}
+		const formData = createFormData(
+			data,
+			"product_id",
+			product.product_id,
+			"update"
+		);
 
 		try {
 			setDataLoading(true);
@@ -164,18 +168,6 @@ export default function InfoEdit({
 		// revalidatePath("/")
 	}
 
-	const VisuallyHiddenInput = styled("input")({
-		clip: "rect(0 0 0 0)",
-		clipPath: "inset(50%)",
-		height: 1,
-		overflow: "hidden",
-		position: "absolute",
-		bottom: 0,
-		left: 0,
-		whiteSpace: "nowrap",
-		width: 1,
-	});
-
 	const contentType = [
 		{ value: "Beat" },
 		{ value: "Drum Kit" },
@@ -188,23 +180,38 @@ export default function InfoEdit({
 		});
 	}
 
-	function handleChange(e) {
-		const file = e.target.files[0];
-		const fileIsImage = file.type.split("/")[0] === "image";
-
-		if (!fileIsImage) {
-			setImageErr("Please select a valid image file type");
-			return;
-		} else {
-			setImageErr("");
-		}
-
-		if (file) {
+	function handleChange(data) {
+		if (fileUploaded) {
+			const fileObj = { key: image_storage_key };
+			tempFileIntoSupabase(fileObj, "delete");
 			updateFields({
-				productImage: file,
-				productImageSrc: URL.createObjectURL(file),
+				image_storage_url: data.url,
+				image_storage_key: data.key,
+				image_storage_name: data.name,
+				image_storage_size: data.size,
+			});
+		} else {
+			updateFields({
+				image_storage_url: data.url,
+				image_storage_key: data.key,
+				image_storage_name: data.name,
+				image_storage_size: data.size,
 			});
 		}
+
+		setFileUploaded(true);
+	}
+
+	async function handleEditing() {
+		setEditing(true);
+
+		const file = [
+			data.MP3_storage_key,
+			data.WAV_storage_key,
+			data.STEM_storage_key,
+			data.image_storage_key,
+		];
+		await tempEditIntoSupabase(file, product.product_id, "insert");
 	}
 
 	const DropDown = {
@@ -533,7 +540,7 @@ export default function InfoEdit({
 						disabled={dataLoading}
 						type="button"
 						onClick={(e) => {
-							setEditing(true);
+							handleEditing();
 							e.preventDefault();
 						}}
 					>
@@ -564,12 +571,12 @@ export default function InfoEdit({
 					<div
 						className={`flex flex-col items-center justify-center mb-4`}
 					>
-						<div className="relative w-[250px] h-[300px]">
+						<div className="relative w-[250px] h-[300px] mb-4">
 							<Image
 								alt=""
 								src={
-									data.productImageSrc
-										? data.productImageSrc
+									data.image_storage_url
+										? data.image_storage_url
 										: beatKitImage
 								}
 								style={{ objectFit: "cover" }}
@@ -577,27 +584,17 @@ export default function InfoEdit({
 								sizes="(max-width: 430px), 300px "
 							/>
 						</div>
-						<Button
-							type="button"
-							size="lg"
-							sx={{
-								color: "#a7a7a7",
-								"&:hover": { backgroundColor: "#2a2a2a" },
+						<UploadButton
+							endpoint="imageUploader"
+							className="ut-button:bg-[#1976D2]"
+							onClientUploadComplete={(res) => {
+								if (res.length === 0) return;
+								handleChange(res[0]);
 							}}
-							startIcon={<EditIcon />}
-						>
-							<label className="cursor-pointer">
-								{" "}
-								Edit Picture
-								<VisuallyHiddenInput
-									name="file"
-									onChange={(e) => {
-										handleChange(e);
-									}}
-									type="file"
-								/>
-							</label>
-						</Button>
+							onUploadError={(error) => {
+								alert(`ERROR! ${error.message}`);
+							}}
+						/>
 						{imageErr && (
 							<span className="text-sm text-text-error">
 								{imageErr}
@@ -609,15 +606,16 @@ export default function InfoEdit({
 							type="MP3"
 							setAudioSrc={true}
 							audioSource={audioSources.MP3}
-							fileProps={data.MP3_file}
-							fileNameProps={data.MP3_fileName}
-							fileSizeProps={data.MP3_fileSize}
+							fileProps={data.MP3_storage_key}
+							fileNameProps={data.MP3_storage_name}
+							fileSizeProps={data.MP3_storage_size}
 							editing={editing}
 							updateFields={(fields) =>
 								updateFields({
-									MP3_file: fields.file,
-									MP3_fileName: fields.fileName,
-									MP3_fileSize: fields.fileSize,
+									MP3_storage_name: fields.fileName,
+									MP3_storage_url: fields.fileUrl,
+									MP3_storage_key: fields.fileKey,
+									MP3_storage_size: fields.fileSize,
 									basic: fields.switch,
 									basicPriceId: fields.id,
 									basicFileDelete: fields.delete,
@@ -629,15 +627,16 @@ export default function InfoEdit({
 							setAudioSrc={true}
 							type="WAV"
 							audioSource={audioSources.WAV}
-							fileProps={data.WAV_file}
-							fileNameProps={data.WAV_fileName}
-							fileSizeProps={data.WAV_fileSize}
+							fileProps={data.WAV_storage_key}
+							fileNameProps={data.WAV_storage_name}
+							fileSizeProps={data.WAV_storage_size}
 							editing={editing}
 							updateFields={(fields) =>
 								updateFields({
-									WAV_file: fields.file,
-									WAV_fileName: fields.fileName,
-									WAV_fileSize: fields.fileSize,
+									WAV_storage_name: fields.fileName,
+									WAV_storage_url: fields.fileUrl,
+									WAV_storage_key: fields.fileKey,
+									WAV_storage_size: fields.fileSize,
 									premium: fields.switch,
 									premiumPriceId: fields.id,
 									premiumFileDelete: fields.delete,
@@ -647,15 +646,16 @@ export default function InfoEdit({
 						<UploadFile
 							setAudioSrc={true}
 							type="STEM"
-							fileProps={data.STEM_file}
-							fileNameProps={data.STEM_fileName}
-							fileSizeProps={data.STEM_fileSize}
+							fileProps={data.STEM_storage_key}
+							fileNameProps={data.STEM_storage_name}
+							fileSizeProps={data.STEM_storage_size}
 							editing={editing}
 							updateFields={(fields) =>
 								updateFields({
-									STEM_file: fields.file,
-									STEM_fileName: fields.fileName,
-									STEM_fileSize: fields.fileSize,
+									STEM_storage_name: fields.fileName,
+									STEM_storage_url: fields.fileUrl,
+									STEM_storage_key: fields.fileKey,
+									STEM_storage_size: fields.fileSize,
 									exclusive: fields.switch,
 									exclusivePriceId: fields.id,
 									exclusiveFileDelete: fields.delete,
@@ -921,8 +921,8 @@ export default function InfoEdit({
 								disabled={!editing}
 								nameSwitch="basic"
 								namePrice="basicPrice"
-								defaultChecked={data.MP3_file}
-								file={data.MP3_file}
+								defaultChecked={data.basic}
+								file={data.MP3_storage_url}
 								contractTitle={"Basic License"}
 								contractSubtext={"MP3"}
 								type={"MP3"}
@@ -945,8 +945,8 @@ export default function InfoEdit({
 								disabled={!editing}
 								nameSwitch="premium"
 								namePrice="premiumPrice"
-								defaultChecked={data.WAV_file}
-								file={data.WAV_file}
+								defaultChecked={data.premium}
+								file={data.WAV_storage_url}
 								contractTitle={"Premium License"}
 								contractSubtext={"WAV, MP3"}
 								value={data.premiumPrice}
@@ -969,8 +969,8 @@ export default function InfoEdit({
 								disabled={!editing}
 								nameSwitch="exclusive"
 								namePrice="exclusivePrice"
-								defaultChecked={data.STEM_file}
-								file={data.STEM_file}
+								defaultChecked={data.exclusive}
+								file={data.STEM_storage_url}
 								contractTitle={"Exclusive License"}
 								contractSubtext={"WAV, MP3, STEMS"}
 								value={data.exclusivePrice}

@@ -7,9 +7,11 @@ type FileProps = {
 	key?: string;
 	type?: string;
 	url?: string;
+	size?: number;
+	deleteKeys?: string[];
 };
 
-type Operation = "insert" | "delete";
+type Operation = "insert" | "delete" | "abort" | "clearTemp";
 
 export async function tempFileIntoSupabase(
 	file: FileProps,
@@ -21,12 +23,24 @@ export async function tempFileIntoSupabase(
 		await supabase.from("temp_uploads").insert({
 			upload_id: file.key,
 			file_type: file.type,
-			url: file.url,
+			file_url: file.url,
+			file_size: file.size,
 		});
 	} else if (operation === "delete") {
 		await supabase.from("temp_uploads").delete().eq("upload_id", file.key);
 
 		await utapi.deleteFiles(file.key);
+	} else if (operation === "abort" || operation === "clearTemp") {
+		for (const key of file.deleteKeys) {
+			if (key)
+				await supabase
+					.from("temp_uploads")
+					.delete()
+					.eq("upload_id", key);
+			if (operation === "abort") {
+				await utapi.deleteFiles(key);
+			}
+		}
 	}
 
 	return;

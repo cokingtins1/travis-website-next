@@ -1,9 +1,6 @@
-import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import FolderIcon from "@mui/icons-material/Folder";
-import CachedIcon from "@mui/icons-material/Cached";
 import { useEffect, useState } from "react";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import PauseIcon from "@mui/icons-material/Pause";
@@ -175,7 +172,7 @@ export default function UploadFile({
 				type: null,
 			});
 		}
-		setFileUploaded(true);
+		setFileUploaded(false);
 		setFile(false);
 	};
 

@@ -1,8 +1,4 @@
 import AddContentForm from "@/app/components/Dashboard Components/AddContentForm/AddContentForm";
-import Link from "next/link";
-
-import { Button } from "@/app/components/UI/Button";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 import { getStorageItems } from "@/app/actions/getStorageItems";
 import { getTempUploads } from "@/app/actions/getTempUploads";
@@ -15,16 +11,7 @@ export default async function AddContent() {
 
 	return (
 		<>
-			<div className="flex flex-col gap-4 p-4 ">
-				<div className="flex flex-shrink">
-					<Link href={"/dashboard"}>
-						<Button
-							size="circle"
-							variant="circle"
-							icon={<ArrowBackIcon />}
-						/>
-					</Link>
-				</div>
+			<div className="p-4 ">
 				<AddContentForm
 					filesFromStorage={filesFromStorage}
 					tempUploads={tempUploads}
