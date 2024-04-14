@@ -16,7 +16,7 @@ export default function ProductMedia({ url }) {
 						src={`https://www.youtube.com/embed/${embeddedUrl}`}
 						width="560"
 						height="315"
-						allowfullscreen
+						allowFullScreen
 					></iframe>
 				</p>
 			</div>

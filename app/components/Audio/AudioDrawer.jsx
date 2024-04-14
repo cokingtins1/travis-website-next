@@ -248,7 +248,7 @@ export default function AudioDrawer({
 							)}
 						</div>
 						<div className="block text-center sm:hidden">
-							<p className="text-text-secondary text-sm">
+							<p className="text-text-secondary text-sm pb-2">
 								{product?.title}
 							</p>
 						</div>

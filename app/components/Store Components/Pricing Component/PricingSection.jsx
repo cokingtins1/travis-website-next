@@ -29,6 +29,7 @@ export default function PricingSection({ product, pricing, imageSrc }) {
 		return null;
 	}
 
+
 	function getFileType(name) {
 		let fileType;
 		switch (name) {
@@ -48,13 +49,15 @@ export default function PricingSection({ product, pricing, imageSrc }) {
 		return fileType;
 	}
 
+	const buttonWidth = `w-1/${pricing.length}`
+
 	function PricingButton(name, price, pricing_id, product_id) {
 		return (
 			<button
 				key={pricing_id}
 				type="button"
 				value={price}
-				className={`flex items-center border rounded-xl p-4 w-1/3 ${
+				className={`flex items-center border rounded-xl p-4 ${buttonWidth} ${
 					selected === name
 						? "border-border-btn-select bg-bg-btn-select hover:none "
 						: "border-border-primary hover:bg-bg-hover"
@@ -75,7 +78,7 @@ export default function PricingSection({ product, pricing, imageSrc }) {
 					setCartTotal(() => formatCurrency(price));
 				}}
 			>
-				<div className="flex flex-col items-start">
+				<div className="flex flex-col items-center lg:items-start">
 					<p className="text-sm font-bold">{name.toUpperCase()}</p>
 					<p className="text-sm">{`$${price}`}</p>
 					<p className="text-xs text-text-secondary">
