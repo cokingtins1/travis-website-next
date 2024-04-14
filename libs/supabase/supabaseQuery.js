@@ -325,15 +325,28 @@ export async function getDownloadUrls(productsSold) {
 	const getUrls = async (filePaths) => {
 		const result = [];
 
+		//Only .zip will be sold
 		for (const product of filePaths) {
 			const { data } = await supabaseClient
 				.from("product_files")
 				.select("storage_key")
-				.match({ pricing_id: product.pricing_id })
+				.match({ product_id: product.product_id })
+				.match({ file_extension: ".zip" })
 				.single();
 
 			result.push(data.storage_key);
 		}
+
+		// WAV and ZIP sold separately
+		// for (const product of filePaths) {
+		// 	const { data } = await supabaseClient
+		// 		.from("product_files")
+		// 		.select("storage_key")
+		// 		.match({ pricing_id: product.pricing_id })
+		// 		.single();
+
+		// 	result.push(data.storage_key);
+		// }
 
 		return result;
 	};
@@ -345,6 +358,7 @@ export async function getDownloadUrls(productsSold) {
 		const result = [];
 
 		for (const key of storageKeys) {
+			if (!key) return;
 			const url = await utapi.getSignedURL(key, {
 				expiresIn: expiresIn,
 			});

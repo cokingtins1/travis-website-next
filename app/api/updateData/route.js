@@ -3,13 +3,13 @@ import { NextResponse } from "next/server";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { getSession } from "@/libs/supabase/getSession";
 import { clearTempUploads } from "@/app/actions/clearTempUploads";
-import { clearZombieFiles } from "@/app/actions/clearZombieFiles";
+import { clearOrphanedFiles } from "@/app/actions/clearOrphanedFiles";
 
 export async function PUT(req) {
 	const { supabase } = await getSession();
-	
+
 	const formData = await req.formData();
-	
+
 	if (!formData) {
 		return NextResponse.json(
 			{ message: "Missing form data" },
@@ -53,7 +53,7 @@ export async function PUT(req) {
 		await supabase
 			.from("pricing")
 			.update({
-				is_active: formData.get("basic"),
+				is_active: false,
 				price: formData.get("basicPrice"),
 			})
 			.eq("product_id", product_id)
@@ -146,8 +146,6 @@ export async function PUT(req) {
 			.eq("product_id", product_id)
 			.eq("file_extension", ".zip");
 
-		//  update storage keys and delete zombie files (old storage records will no longer have a supabse DB record)
-
 		const deleteKeys = [
 			formData.get("MP3_storage_key"),
 			formData.get("WAV_storage_key"),
@@ -156,20 +154,9 @@ export async function PUT(req) {
 		];
 
 		await clearTempUploads(deleteKeys);
-		await clearZombieFiles();
+		await clearOrphanedFiles();
 	} catch (error) {
 		console.log(error);
-	}
-
-	// Deleting files
-	if (formData.get("basicFileDelete") === "true") {
-		// Delete
-	}
-	if (formData.get("premiumFileDelete") === "true") {
-		// Delete
-	}
-	if (formData.get("exclusiveFileDelete") === "true") {
-		// Delete
 	}
 
 	revalidateTag("products");

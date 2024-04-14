@@ -6,7 +6,7 @@ import { getSession } from "@/libs/supabase/getSession";
 import { getProductById } from "@/libs/supabase/supabaseQuery";
 import { revalidateTag } from "next/cache";
 import { clearTempUploads } from "@/app/actions/clearTempUploads";
-import { clearZombieFiles } from "@/app/actions/clearZombieFiles";
+import { clearOrphanedFiles } from "@/app/actions/clearOrphanedFiles";
 
 export async function POST(req) {
 	const { supabase } = await getSession();
@@ -57,7 +57,7 @@ export async function POST(req) {
 		pricing_id: pricing_id_mp3,
 		product_id: product_id,
 		type_id: "basic",
-		is_active: formData.get("basic"),
+		is_active: false, // Forced FALSE 
 		price: formData.get("basicPrice"),
 	});
 
@@ -158,7 +158,7 @@ export async function POST(req) {
 	];
 
 	await clearTempUploads(deleteKeys);
-	await clearZombieFiles();
+	await clearOrphanedFiles();
 
 	revalidateTag("products");
 	revalidateTag("dashboardData");

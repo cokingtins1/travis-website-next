@@ -15,6 +15,7 @@ import ExpandMore from "@mui/icons-material/ExpandMore"
 import LibraryMusicIcon from "@mui/icons-material/LibraryMusic"
 import AlbumIcon from "@mui/icons-material/Album"
 import YouTubeIcon from "@mui/icons-material/YouTube"
+import NotesIcon from '@mui/icons-material/Notes';
 import AddIcon from "@mui/icons-material/Add"
 
 // React/Next
@@ -28,9 +29,9 @@ export default function SideBar() {
 
 	const myContent = [
 		{ id: 1, text: "Add Content", icon: <AddIcon />, href: "add-content" },
-		{ id: 2, text: "Tracks", icon: <LibraryMusicIcon />, href: "" },
-		{ id: 3, text: "Albums", icon: <AlbumIcon />, href: "" },
-		{ id: 4, text: "Videos", icon: <YouTubeIcon />, href: "" },
+		{ id: 2, text: "Usage Notes", icon: <NotesIcon />, href: "usage-notes" },
+		// { id: 3, text: "Albums", icon: <AlbumIcon />, href: "" },
+		// { id: 4, text: "Videos", icon: <YouTubeIcon />, href: "" },
 	]
 
 	return (

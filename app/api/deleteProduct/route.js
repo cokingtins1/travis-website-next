@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { getSession } from "@/libs/supabase/getSession";
+
+import { clearOrphanedFiles } from "@/app/actions/clearOrphanedFiles";
 
 export async function DELETE(req) {
 	const { supabase } = await getSession();
@@ -23,37 +25,10 @@ export async function DELETE(req) {
 		}
 
 		// Delete files from storage
-		try {
-			const { data: productFiles } = await supabase.storage
-				.from("all_products")
-				.list(product_id);
-
-			if (!productFiles) return;
-
-			const filesToRemove = productFiles.map((file) => file.name);
-
-			if (filesToRemove) {
-				for (const file in filesToRemove) {
-					let fileName;
-					const folder = `${product_id}/${filesToRemove[file]}`;
-
-					const { data } = await supabase.storage
-						.from("all_products")
-						.list(folder);
-
-					fileName = data[0].name;
-
-					await supabase.storage
-						.from("all_products")
-						.remove(`${folder}/${fileName}`);
-				}
-			}
-		} catch (error) {
-			console.log(error);
-		}
+		await clearOrphanedFiles();
 	}
 
-	// revalidatePath("/")
+	revalidatePath("/", "layout");
 
 	return NextResponse.json(
 		{ message: "Product deleted successfully" },

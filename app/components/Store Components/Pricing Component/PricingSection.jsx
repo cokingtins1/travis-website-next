@@ -36,10 +36,10 @@ export default function PricingSection({ product, pricing, imageSrc }) {
 				fileType = "MP3";
 				break;
 			case "premium":
-				fileType = "WAV (Untagged)";
+				fileType = "WAV + STEMs (Untagged)";
 				break;
 			case "exclusive":
-				fileType = "WAV + STEMS (Untagged)";
+				fileType = "WAV + STEMs (Untagged) + Exclusive Licensing";
 				break;
 			default:
 				fileType = "";

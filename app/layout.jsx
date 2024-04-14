@@ -23,7 +23,7 @@ export default function RootLayout({ children }) {
 		<html lang="en">
 			<body className={inter.className}>
 				<SupabaseContext>
-					<ShoppingCartProvider>
+				<ShoppingCartProvider>
 						<AudioContextProvider>
 							<HeaderWrapper/>
 							<main className=" mx-auto max-w-[1440px] mt-[80px] mb-[100px]">

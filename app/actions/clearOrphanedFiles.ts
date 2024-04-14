@@ -3,7 +3,7 @@
 import { getSession } from "@/libs/supabase/getSession";
 import { utapi } from "./server/uploadthing";
 
-export async function clearZombieFiles() {
+export async function clearOrphanedFiles() {
 	const { supabase } = await getSession();
 
 	const { data: existingKeys } = await supabase

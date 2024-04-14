@@ -58,7 +58,7 @@ const INITIAL_DATA = {
 	videoLink: "",
 
 	basic: false,
-	basicPrice: 30,
+	basicPrice: 0,
 	basicPriceId: crypto.randomUUID(),
 	premium: false,
 	premiumPrice: 125,

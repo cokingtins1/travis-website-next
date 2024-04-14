@@ -1,0 +1,8 @@
+.mainWrapper {
+	padding: 1rem;
+}
+
+ .sectionWrapper > ol > ul {
+    list-style-type: decimal;
+}
+
