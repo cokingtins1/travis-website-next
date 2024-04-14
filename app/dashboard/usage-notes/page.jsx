@@ -13,8 +13,8 @@ export default function Page() {
 								streaming from this file for the playback
 								functionality. Technically, someone could trace
 								the source of this file and download it for
-								free, but since you are not selling MP3's, it
-								doesn’t matter. As a fallback, the WAV file will
+								free, but since you are not selling MP3s, it
+								does not matter. As a fallback, the WAV file will
 								be used for playback, but again, someone could
 								technically trace the source and download it for
 								free.
@@ -39,8 +39,8 @@ export default function Page() {
 						Editing Files
 						<ul className="space-y-2 list-disc ml-4 mt-2 text-base">
 							<li>
-								Changing the name of the beat under "Product
-								Metadata" will not change the name of the file.
+								Changing the name of the beat under &quot;Product
+								Metadata&quot; will not change the name of the file.
 								You need to re-upload the respective files in
 								order to change their names.
 							</li>
