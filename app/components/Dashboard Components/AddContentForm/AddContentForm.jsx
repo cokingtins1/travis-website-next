@@ -67,7 +67,7 @@ const INITIAL_DATA = {
 	exclusivePrice: 350,
 	exclusivePriceId: crypto.randomUUID(),
 
-	free: false,
+	free: true,
 };
 
 export default function AddContentForm({ filesFromStorage, tempUploads }) {

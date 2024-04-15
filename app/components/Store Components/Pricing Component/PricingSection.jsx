@@ -14,7 +14,7 @@ import { formatCurrency } from "@/libs/utils";
 export default function PricingSection({ product, pricing, imageSrc }) {
 	const { addToCart } = useShoppingCart();
 
-	const [selected, setSelected] = useState("");
+	const [selected, setSelected] = useState("default");
 	const [cartTotal, setCartTotal] = useState(() => formatCurrency(0));
 
 	const [selectedProduct, setSelectedProduct] = useState({
@@ -34,13 +34,13 @@ export default function PricingSection({ product, pricing, imageSrc }) {
 		let fileType;
 		switch (name) {
 			case "basic":
-				fileType = "MP3";
+				fileType = "WAV (Untagged)";
 				break;
 			case "premium":
-				fileType = "WAV + STEMs (Untagged)";
+				fileType = "WAV + STEMS (Untagged)";
 				break;
 			case "exclusive":
-				fileType = "WAV + STEMs (Untagged) + Exclusive Licensing";
+				fileType = "WAV + STEMS (Untagged) + Exclusive Licensing";
 				break;
 			default:
 				fileType = "";
@@ -49,7 +49,6 @@ export default function PricingSection({ product, pricing, imageSrc }) {
 		return fileType;
 	}
 
-	const buttonWidth = `w-1/${pricing.length}`
 
 	function PricingButton(name, price, pricing_id, product_id) {
 		return (
@@ -57,7 +56,7 @@ export default function PricingSection({ product, pricing, imageSrc }) {
 				key={pricing_id}
 				type="button"
 				value={price}
-				className={`flex items-center border rounded-xl p-4 ${buttonWidth} ${
+				className={`flex items-center border rounded-xl p-4 w-1/3 ${
 					selected === name
 						? "border-border-btn-select bg-bg-btn-select hover:none "
 						: "border-border-primary hover:bg-bg-hover"
@@ -145,7 +144,7 @@ export default function PricingSection({ product, pricing, imageSrc }) {
 							expandIcon={<ExpandMoreIcon />}
 						>
 							Usage Terms{" "}
-							{selected && (
+							{selected !== "default" && (
 								<span className="font-semibold">{`: (${selected.toUpperCase()})`}</span>
 							)}
 						</AccordionSummary>

@@ -22,7 +22,7 @@ export default function Pricing({
 					namePrice="basicPrice"
 					defaultChecked={MP3_storage_url}
 					contractTitle={"Basic License"}
-					contractSubtext={"*MP3 Required - For playback only"}
+					contractSubtext={"Untagged WAV"}
 					value={basicPrice}
 					type={"MP3"}
 					file={MP3_storage_url}
@@ -42,7 +42,7 @@ export default function Pricing({
 					namePrice="premiumPrice"
 					defaultChecked={WAV_storage_url}
 					contractTitle={"Premium License"}
-					contractSubtext={"WAV + STEMS"}
+					contractSubtext={"Untagged WAV + STEMS"}
 					value={premiumPrice}
 					type={"WAV"}
 					file={WAV_storage_url}
@@ -65,7 +65,7 @@ export default function Pricing({
 					namePrice="exclusivePrice"
 					defaultChecked={STEM_storage_url}
 					contractTitle={"Exclusive License"}
-					contractSubtext={"WAV + STEMS (Exclusive Terms)"}
+					contractSubtext={"Untagged WAV + STEMS (Exclusive Terms)"}
 					type={"STEM"}
 					value={exclusivePrice}
 					file={STEM_storage_url}

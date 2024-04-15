@@ -1,7 +1,6 @@
 import { getSession } from "@/libs/supabase/getSession";
 import { notFound, redirect } from "next/navigation";
 import {
-	getFileSources,
 	getPricingById,
 	getPricingIdById,
 } from "@/libs/supabase/supabaseQuery";

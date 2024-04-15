@@ -42,7 +42,7 @@ export default function PricingSwitch({
 			<div className="flex gap-2">
 				<span className="flex items-center p-2">
 					<Switch
-						disabled={nameSwitch === "basic" ? true : disabled}
+						disabled={disabled}
 						name={nameSwitch}
 						value={isChecked}
 						checked={isChecked}

@@ -2,7 +2,7 @@ import AccountCircle from "@mui/icons-material/AccountCircle"
 import Link from "next/link"
 import Button from "@mui/material/Button"
 
-export default function AccountButton({ session }) {
+export default function AccountButton({ session, toggleDrawer }) {
 	const buttonStyles = {
 		width: "120px",
 		height: "36px",
@@ -17,6 +17,7 @@ export default function AccountButton({ session }) {
 						variant="outlined"
 						startIcon={<AccountCircle />}
 						type="submit"
+						onClick={() => toggleDrawer()}
 					>
 						Logout
 					</Button>
@@ -27,6 +28,8 @@ export default function AccountButton({ session }) {
 						sx={buttonStyles}
 						variant="outlined"
 						startIcon={<AccountCircle />}
+						onClick={() => toggleDrawer()}
+
 					>
 						Login
 					</Button>

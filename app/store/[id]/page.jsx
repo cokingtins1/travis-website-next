@@ -3,7 +3,6 @@ import ProductMedia from "@/app/components/Store Components/Media Components/Pro
 
 import ProductMeta from "@/app/components/Store Components/ProductMeta/ProductMeta";
 import {
-	getFileSources,
 	getComments,
 	getPricingById,
 	getProductById,

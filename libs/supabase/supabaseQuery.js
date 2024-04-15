@@ -325,28 +325,35 @@ export async function getDownloadUrls(productsSold) {
 	const getUrls = async (filePaths) => {
 		const result = [];
 
-		//Only .zip will be sold
 		for (const product of filePaths) {
+			let typeExt;
+			switch (product.type) {
+				case "FREE":
+					typeExt = ".mp3";
+					break;
+				case "BASIC":
+					typeExt = ".wav";
+					break;
+				case "PREMIUM":
+					typeExt = ".zip";
+					break;
+				case "EXCLUSIVE":
+					typeExt = ".zip";
+					break;
+				default:
+					typeExt = ".mp3";
+					break;
+			}
+
 			const { data } = await supabaseClient
 				.from("product_files")
 				.select("storage_key")
 				.match({ product_id: product.product_id })
-				.match({ file_extension: ".zip" })
+				.match({ file_extension: typeExt })
 				.single();
 
 			result.push(data.storage_key);
 		}
-
-		// WAV and ZIP sold separately
-		// for (const product of filePaths) {
-		// 	const { data } = await supabaseClient
-		// 		.from("product_files")
-		// 		.select("storage_key")
-		// 		.match({ pricing_id: product.pricing_id })
-		// 		.single();
-
-		// 	result.push(data.storage_key);
-		// }
 
 		return result;
 	};
@@ -371,130 +378,6 @@ export async function getDownloadUrls(productsSold) {
 	const downloadUrls = await processFilePath(storageKeys);
 
 	return downloadUrls;
-}
-
-export async function getFileSources(product) {
-	const productId =
-		typeof product === "object" ? product.product_id : product;
-
-	try {
-		const { data, error } = await supabaseClient.storage
-			.from(`all_products`)
-			.list(`${productId}`, {
-				offset: 0,
-			});
-
-		if (error) {
-			throw new Error(error.message);
-		}
-
-		let audioFile_MP3 = null;
-		let audioFile_WAV = null;
-		let audioFile_STEM = null;
-		let imageFile = null;
-
-		if (!data) return;
-
-		if (data.some((file) => file.name === "MP3")) {
-			const { data: file, error } = await supabaseClient.storage
-				.from(`all_products`)
-				.list(`${productId}/MP3`, {
-					offset: 0,
-				});
-			audioFile_MP3 = file[0];
-		}
-
-		if (data.some((file) => file.name === "WAV")) {
-			const { data: file, error } = await supabaseClient.storage
-				.from(`all_products`)
-				.list(`${productId}/WAV`, {
-					offset: 0,
-				});
-			audioFile_WAV = file[0];
-		}
-
-		if (data.some((file) => file.name === "STEM")) {
-			const { data: file, error } = await supabaseClient.storage
-				.from(`all_products`)
-				.list(`${productId}/STEM`, {
-					offset: 0,
-				});
-			audioFile_STEM = file[0];
-		}
-
-		if (data.some((file) => file.name === "productImage")) {
-			const { data: file, error } = await supabaseClient.storage
-				.from(`all_products`)
-				.list(`${productId}/productImage`, {
-					offset: 0,
-				});
-			imageFile = file[0];
-		}
-
-		let audioSrc_MP3;
-		let audioSrc_WAV;
-		let audioSrc_STEM;
-		let imageSrc;
-
-		if (audioFile_MP3) {
-			const { data } = supabaseClient.storage
-				.from(`all_products`)
-				.getPublicUrl(`${productId}/MP3/${audioFile_MP3.name}`);
-			audioSrc_MP3 = data.publicUrl;
-		}
-
-		if (audioFile_WAV) {
-			const { data } = supabaseClient.storage
-				.from(`all_products`)
-				.getPublicUrl(`${productId}/WAV/${audioFile_WAV.name}`);
-			audioSrc_WAV = data.publicUrl;
-		}
-
-		if (audioFile_STEM) {
-			const { data } = supabaseClient.storage
-				.from(`all_products`)
-				.getPublicUrl(`${productId}/STEM/${audioFile_STEM.name}`);
-			audioSrc_STEM = data.publicUrl;
-		}
-
-		if (imageFile) {
-			const { data } = supabaseClient.storage
-				.from(`all_products`)
-				.getPublicUrl(`${productId}/productImage/${imageFile.name}`);
-			imageSrc = data.publicUrl;
-		}
-
-		const srcType_MP3 = audioFile_MP3?.metadata?.mimetype;
-		const srcType_WAV = audioFile_WAV?.metadata?.mimetype;
-		const srcType_STEM = audioFile_STEM?.metadata?.mimetype;
-
-		const storeSrc = audioSrc_MP3 || audioSrc_WAV;
-		const storeSrcType = srcType_MP3 || srcType_WAV || srcType_STEM;
-
-		return {
-			storeSrc,
-			storeSrcType,
-
-			audioFile_MP3,
-			audioFile_WAV,
-			audioFile_STEM,
-
-			audioSrc_MP3,
-			srcType_MP3,
-
-			audioSrc_WAV,
-			srcType_WAV,
-
-			audioSrc_STEM,
-			srcType_STEM,
-
-			imageFile,
-			imageSrc,
-		};
-	} catch (error) {
-		console.error(error);
-		throw new Error("Failed to fetch audio source by ID");
-	}
 }
 
 export async function getPricingById(id) {
@@ -578,86 +461,3 @@ export async function getPricingById(id) {
 	}
 }
 
-export async function getDownloadableImage(product_id) {
-	const productFileURL =
-		"https://njowjcfiaxbnflrcwcep.supabase.co/storage/v1/object/public/all_products";
-
-	const { data } = await supabaseClient.storage
-		.from(`all_products`)
-		.download(`${product_id}/productImage`, {
-			transform: {
-				width: 100,
-				height: 100,
-				quality: 80,
-			},
-		});
-}
-
-export async function getImageSrc(product_id) {
-	const productFileURL =
-		"https://njowjcfiaxbnflrcwcep.supabase.co/storage/v1/object/public/all_products";
-
-	const { data } = await supabaseClient.storage
-		.from(`all_products`)
-		.list(`${product_id}/productImage`, {
-			offset: 0,
-		});
-
-	if (data && data.length > 0) {
-		const imageData = data[0];
-		const src = `${productFileURL}/${product_id}/productImage/${imageData.name}`;
-
-		return src;
-	}
-
-	return null;
-}
-
-export async function getImages() {
-	const productFileURL =
-		"https://njowjcfiaxbnflrcwcep.supabase.co/storage/v1/object/public/all_products";
-
-	// https://njowjcfiaxbnflrcwcep.supabase.co/storage/v1/object/public/all_products/4d337ff9-675a-4470-bd88-74b5ccfd2ace/productImage/5AM Freestyle.jpg
-
-	const { data } = await supabaseClient
-		.from("products")
-		.select("product_id, image_name");
-
-	const imageSources = data.map((product) => ({
-		...product,
-		imageSrc: `${productFileURL}/${product.product_id}/productImage/${product.image_name}`,
-	}));
-
-	return imageSources;
-}
-
-// Filter and Pricing Functions:
-
-export async function getUniqueTags() {
-	const { data: tags } = await supabaseClient.rpc("get_unique_tags");
-
-	if (tags) {
-		return tags;
-	}
-	return null;
-}
-
-export async function getUniqueGenres() {
-	const { data: genres } = await supabaseClient.rpc("get_unique_genres");
-
-	if (genres) {
-		return genres;
-	}
-	return null;
-}
-
-export async function getAllColVals(columnName) {
-	const { data } = await supabaseClient.from("products").select(columnName);
-
-	if (data) {
-		return data.reduce((acc, obj) => {
-			return acc.concat(obj[columnName]);
-		}, []);
-	}
-	return null;
-}

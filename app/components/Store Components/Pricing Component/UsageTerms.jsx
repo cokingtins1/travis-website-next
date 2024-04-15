@@ -16,6 +16,7 @@ export default function UsageTerms({ selected }) {
 	];
 
 	const terms = {
+		default: ["select a license to view terms"],
 		basic: [
 			"used for recording",
 			"distribute up to 1,000 copies",
@@ -49,7 +50,7 @@ export default function UsageTerms({ selected }) {
 				selectedTerms.map((t, index) => (
 					<li key={index} className="text-text-secondary text-sm">
 						<span className="flex items-center gap-2">
-							{icons[index].value} {t.toUpperCase()}
+							{selected !== "default" && icons[index].value} {t.toUpperCase()}
 						</span>
 					</li>
 				))}

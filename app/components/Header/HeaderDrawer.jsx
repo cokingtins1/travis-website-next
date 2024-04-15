@@ -1,28 +1,28 @@
-"use client"
+"use client";
 
-import SwipeableDrawer from "@mui/material/SwipeableDrawer"
-import MenuIcon from "@mui/icons-material/Menu"
-import IconButton from "@mui/material/IconButton"
-import Image from "next/image"
-import logoImg from "@/public/TravLogoBlue.png" 
-import NavBar from "./NavBar"
-import useWindowSize from "../CustomHooks/useWindowSize"
-import AccountButton from "./AccountButton"
-import dynamic from "next/dynamic"
-import ExpandLessIcon from "@mui/icons-material/ExpandLess"
-import Link from "next/link"
-import { useState } from "react"
+import SwipeableDrawer from "@mui/material/SwipeableDrawer";
+import MenuIcon from "@mui/icons-material/Menu";
+import IconButton from "@mui/material/IconButton";
+import Image from "next/image";
+import logoImg from "@/public/TravLogoBlue.png";
+import NavBar from "./NavBar";
+import useWindowSize from "../CustomHooks/useWindowSize";
+import AccountButton from "./AccountButton";
+import dynamic from "next/dynamic";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import Link from "next/link";
+import { useState } from "react";
 
 export default function HeaderDrawer({ session, isAdmin }) {
-	const [openDrawer, setOpenDrawer] = useState(false)
-	const size = useWindowSize()
+	const [openDrawer, setOpenDrawer] = useState(false);
+	const size = useWindowSize();
 
 	const DynamicShoppingCart = dynamic(
 		() => import("./Shopping Cart Components/ShoppingCart"),
 		{
 			ssr: false,
 		}
-	)
+	);
 
 	const toggleDrawer = (event) => {
 		if (
@@ -30,11 +30,13 @@ export default function HeaderDrawer({ session, isAdmin }) {
 			event.type === "keydown" &&
 			(event.key === "Tab" || event.key === "Shift")
 		) {
-			return
+			return;
 		}
 
-		setOpenDrawer(!openDrawer)
-	}
+		if (size.width < 768) {
+			setOpenDrawer(!openDrawer);
+		}
+	};
 
 	return (
 		<div
@@ -57,10 +59,17 @@ export default function HeaderDrawer({ session, isAdmin }) {
 					</div>
 				</Link>
 				<div className="hidden md:block md:justify-self-center">
-					<NavBar session={session} isAdmin={isAdmin} />
+					<NavBar
+						session={session}
+						isAdmin={isAdmin}
+						toggleDrawer={toggleDrawer}
+					/>
 				</div>
 				<div className="hidden md:flex md:justify-self-end gap-4">
-					<AccountButton session={session} />
+					<AccountButton
+						session={session}
+						toggleDrawer={toggleDrawer}
+					/>
 					<DynamicShoppingCart />
 				</div>
 				{size.width < 768 && (
@@ -90,12 +99,19 @@ export default function HeaderDrawer({ session, isAdmin }) {
 				<div
 					className="flex flex-col p-4 h-[220px] mt-[72px]"
 					role="presentation"
-					onClick={toggleDrawer}
+					// onClick={toggleDrawer}
 					onKeyDown={toggleDrawer}
 				>
-					<NavBar session={session} orientation={"vertical"} />
+					<NavBar
+						session={session}
+						orientation={"vertical"}
+						toggleDrawer={toggleDrawer}
+					/>
 					<div className="flex flex-col items-end gap-4 mt-4">
-						<AccountButton />
+						<AccountButton
+							session={session}
+							toggleDrawer={toggleDrawer}
+						/>
 						<DynamicShoppingCart />
 					</div>
 				</div>
@@ -110,5 +126,5 @@ export default function HeaderDrawer({ session, isAdmin }) {
 				</div>
 			</SwipeableDrawer>
 		</div>
-	)
+	);
 }

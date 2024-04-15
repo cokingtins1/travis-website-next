@@ -57,7 +57,7 @@ export async function POST(req) {
 		pricing_id: pricing_id_mp3,
 		product_id: product_id,
 		type_id: "basic",
-		is_active: false, // Forced FALSE 
+		is_active: formData.get("basic"),  
 		price: formData.get("basicPrice"),
 	});
 

@@ -53,7 +53,7 @@ export async function PUT(req) {
 		await supabase
 			.from("pricing")
 			.update({
-				is_active: false,
+				is_active: formData.get("basic"),
 				price: formData.get("basicPrice"),
 			})
 			.eq("product_id", product_id)

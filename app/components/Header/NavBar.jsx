@@ -6,7 +6,7 @@ import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import ThemeProvider from "@/libs/contexts/ThemeContext";
 
-export default function NavBar({ session, orientation, isAdmin }) {
+export default function NavBar({ session, orientation, isAdmin, toggleDrawer }) {
 	const path = usePathname();
 	const page = path.replace(/^[^/]*\/([^/]*)\/?.*$/, "$1");
 
@@ -67,6 +67,7 @@ export default function NavBar({ session, orientation, isAdmin }) {
 								onClick={() => {
 									setTabValue(step.index);
 									router.push(`/${step.href}`);
+									toggleDrawer()
 								}}
 							/>
 						))}

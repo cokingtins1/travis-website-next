@@ -33,7 +33,7 @@ export default function AddToCartBtn({
 							onClick={() => {
 								setOpenModal(true);
 							}}
-							className="bg-bg-free rounded-md hover:ring-1 ring-white whitespace-nowrap px-2"
+							className="text-text-free rounded-md border-text-free whitespace-nowrap px-2"
 						>
 							<DownloadIcon sx={{ fontSize: "1rem" }} />{" "}
 							<span className="hidden md:inline pointer text-xs">
