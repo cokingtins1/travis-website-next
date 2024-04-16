@@ -69,33 +69,29 @@ export default function PricingSwitch({
 				)}
 			</div>
 
-			{nameSwitch !== "basic" && (
-				<div className="flex items-center gap-2">
-					<InputLabel htmlFor="outlined-adornment-password">
-						Price:
-					</InputLabel>
-					<TextField
-						name={namePrice}
-						disabled={!isChecked || !editing}
-						size="small"
-						type="number"
-						id="outlined-start-adornment"
-						sx={{ m: 1, width: "100px" }}
-						InputProps={{
-							startAdornment: (
-								<InputAdornment position="start">
-									$
-								</InputAdornment>
-							),
-						}}
-						value={inputValue}
-						onChange={(e) => {
-							setInputValue(e.target.value);
-							onChange && onChange(e.target.value);
-						}}
-					/>
-				</div>
-			)}
+			<div className="flex items-center gap-2">
+				<InputLabel htmlFor="outlined-adornment-password">
+					Price:
+				</InputLabel>
+				<TextField
+					name={namePrice}
+					disabled={!isChecked || !editing}
+					size="small"
+					type="number"
+					id="outlined-start-adornment"
+					sx={{ m: 1, width: "100px" }}
+					InputProps={{
+						startAdornment: (
+							<InputAdornment position="start">$</InputAdornment>
+						),
+					}}
+					value={inputValue}
+					onChange={(e) => {
+						setInputValue(e.target.value);
+						onChange && onChange(e.target.value);
+					}}
+				/>
+			</div>
 		</div>
 	);
 }

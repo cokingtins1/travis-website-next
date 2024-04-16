@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import Stripe from "stripe";
 import { headers } from "next/headers";
 
 import dayjs from "dayjs";
@@ -9,14 +8,6 @@ import { insertOrderData } from "@/libs/supabase/supabaseQuery";
 import { getStripe } from "../../../libs/stripe/stripe";
 
 export async function POST(req) {
-	// const env = process.env.NODE_ENV;
-
-	// const stripe = new Stripe(
-	// 	env === "development"
-	// 		? process.env.STRIPE_SECRET_KEY
-	// 		: process.env.STRIPE_SECRET_KEY_PRODUCTION
-	// );
-
 	const stripe = getStripe();
 
 	const endpointSecret = process.env.STRIPE_ENDPOINT_SECRET;
