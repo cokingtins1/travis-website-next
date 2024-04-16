@@ -3,9 +3,12 @@ import { headers } from "next/headers";
 
 import Stripe from "stripe";
 import { getDownloadUrls } from "@/libs/supabase/supabaseQuery";
+import { getStripe } from "@/libs/stripe/stripe";
 
 export async function POST(req) {
-	const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+	// const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
+	const stripe = getStripe();
 
 	const data = await req.json();
 	const origin = headers().get("origin");
