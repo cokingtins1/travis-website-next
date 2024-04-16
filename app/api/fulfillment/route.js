@@ -9,7 +9,7 @@ import { insertOrderData } from "@/libs/supabase/supabaseQuery";
 import { getStripe } from "../../../libs/stripe/stripe";
 
 export async function POST(req) {
-	const env = process.env.NODE_ENV;
+	// const env = process.env.NODE_ENV;
 
 	// const stripe = new Stripe(
 	// 	env === "development"
