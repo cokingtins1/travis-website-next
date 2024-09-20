@@ -11,13 +11,13 @@ export default function UsageTerms({ selected }) {
   //selected = "default" || "basic" || "premium" || "exclusive"
 
   const commonIcons = [
-    <MicNoneIcon />,
-    <FilterNoneIcon />,
-    <CellTowerIcon />,
-    <VideocamIcon />,
-    <ReceiptLongIcon />,
-    <GroupsIcon />,
-    <RadioIcon />,
+    <MicNoneIcon key="mic" />,
+    <FilterNoneIcon key="filter" />,
+    <CellTowerIcon key="tower" />,
+    <VideocamIcon key="video" />,
+    <ReceiptLongIcon key="receipt" />,
+    <GroupsIcon key="groups" />,
+    <RadioIcon key="radio" />,
   ];
 
   const terms = {
@@ -66,7 +66,7 @@ export default function UsageTerms({ selected }) {
       {selected !== "default" &&
         selectedTerms?.text.map((t, index) => (
           <li key={index} className="text-text-secondary text-sm">
-            <span key={index} className="flex items-center gap-2">
+            <span className="flex items-center gap-2">
               {selectedTerms.icon[index]} {t.toUpperCase()}
             </span>
           </li>
