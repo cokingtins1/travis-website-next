@@ -30,7 +30,7 @@
     ".next/types/**/*.ts",
     "**/*.ts",
     "**/*.tsx"
-  ],
+, "app/components/Store Components/Pricing Component/UsageTerms.jsx"  ],
   "exclude": [
     "node_modules"
   ]
