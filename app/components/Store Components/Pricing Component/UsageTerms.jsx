@@ -66,7 +66,7 @@ export default function UsageTerms({ selected }) {
       {selected !== "default" &&
         selectedTerms?.text.map((t, index) => (
           <li key={index} className="text-text-secondary text-sm">
-            <span className="flex items-center gap-2">
+            <span key={index} className="flex items-center gap-2">
               {selectedTerms.icon[index]} {t.toUpperCase()}
             </span>
           </li>
